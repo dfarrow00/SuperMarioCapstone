@@ -1,6 +1,9 @@
-﻿  Main.cpp
+﻿  Game.cpp
+C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Game.cpp(6,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  Main.cpp
   Generating code
-  Previous IPDB not found, fall back to full compilation.
-  All 26 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  103 of 103 functions (100.0%) were compiled.
+    78 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   Super_Mario_Bros_Remake.vcxproj -> C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Release\Super_Mario_Bros_Remake.exe

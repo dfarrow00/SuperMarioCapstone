@@ -1,2 +1,23 @@
-﻿  Main.cpp
+﻿  Game.cpp
+C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Game.cpp(8,64): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Game.cpp(8,39): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Game.cpp(10,64): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Game.cpp(10,40): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Game.cpp(11,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
   Super_Mario_Bros_Remake.vcxproj -> C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Debug\Super_Mario_Bros_Remake.exe
