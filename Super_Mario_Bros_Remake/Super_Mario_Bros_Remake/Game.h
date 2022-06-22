@@ -1,5 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "Mario.h"
+#include "Map.h"
 
 class Game
 {
@@ -9,15 +11,16 @@ public:
 
 	void update();
 	void render();
-	void handleInput();
+
+	void checkCollisions(std::vector<Tile>* currentLevel, Mario* mario);
 
 	sf::RenderWindow* getWindow();
 
 private:
-	sf::Vector2f movement;
-	sf::Clock timer;
-	sf::Time deltaTime;
+	sf::Clock clock;
 	sf::RenderWindow window;
-	sf::Texture texture;
-	sf::Sprite sprite;
+	Mario mario;
+	Map map;
+
+	std::vector<GameObject*> gameObjects;
 };

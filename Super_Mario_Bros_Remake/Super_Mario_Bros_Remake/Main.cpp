@@ -6,7 +6,6 @@ int main()
     Game game;
     while (game.getWindow()->isOpen())
     {
-        game.handleInput();
         game.update();
         game.render();
     }

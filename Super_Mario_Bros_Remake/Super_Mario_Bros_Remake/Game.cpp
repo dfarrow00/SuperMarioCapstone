@@ -3,13 +3,8 @@
 
 Game::Game() : window(sf::VideoMode(800, 600), "Super Mario Bros Remake")
 {
-	texture.loadFromFile("Resources/Mario.png");
-	sprite.setTexture(texture);
-	sprite.setOrigin(texture.getSize().x / 2, texture.getSize().y / 2);
-	sprite.scale(2, 2);
-	sprite.setPosition(window.getSize().x / 2, window.getSize().y / 2);
 	srand(time(nullptr));
-	deltaTime = timer.restart();
+	clock.restart();
 }
 
 Game::~Game()
@@ -18,9 +13,10 @@ Game::~Game()
 
 void Game::update()
 {
-	movement.x = movement.x * deltaTime.asSeconds();
-	movement.y = movement.y * deltaTime.asSeconds();
-	sprite.setPosition(sprite.getPosition() + movement);
+	float deltaTime = clock.getElapsedTime().asSeconds();
+
+	mario.update(deltaTime);
+	checkCollisions(map.getCurrentLevel(), &mario);
 
 	sf::Event event;
 	while (window.pollEvent(event))
@@ -30,39 +26,30 @@ void Game::update()
 			window.close();
 		}
 	}
-
-	deltaTime = timer.restart();
+	clock.restart();
 }
 
 void Game::render()
 {
-	window.clear(sf::Color::Black);
-	window.draw(sprite);
+	window.clear(sf::Color::Cyan);
+	map.draw(&window);
+	mario.draw(&window);
 	window.display();
-}
-
-void Game::handleInput()
-{
-	movement = sf::Vector2f(0.0f, 0.0f);
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-	{
-		movement.y -= 100;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-	{
-		movement.y += 100;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-	{
-		movement.x -= 100;
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-	{
-		movement.x += 100;
-	}
 }
 
 sf::RenderWindow* Game::getWindow()
 {
 	return &window;
+}
+
+void Game::checkCollisions(std::vector<Tile>* currentLevel, Mario* mario)
+{
+	sf::FloatRect marioAABB = mario->getAABB();
+	for (auto& tile : *currentLevel)
+	{
+		if (marioAABB.intersects(tile.sprite.getGlobalBounds()))
+		{
+			mario->handleCollision(tile);
+		}
+	}
 }
