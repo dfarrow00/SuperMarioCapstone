@@ -12,8 +12,6 @@ public:
 	void update();
 	void render();
 
-	void checkCollisions(std::vector<Tile>* currentLevel, Mario* mario);
-
 	sf::RenderWindow* getWindow();
 
 private:

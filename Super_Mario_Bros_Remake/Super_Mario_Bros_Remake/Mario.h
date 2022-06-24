@@ -10,10 +10,10 @@ public:
 	Mario(sf::Vector2f& pos);
 	~Mario();
 
-	void update(float deltaTime);
+	void update(float deltaTime, Level level);
 	void draw(sf::RenderWindow* window);
 
-	void handleCollision(Tile& tile);
+	bool colliding(Level level);
 
 	sf::FloatRect getAABB();
 

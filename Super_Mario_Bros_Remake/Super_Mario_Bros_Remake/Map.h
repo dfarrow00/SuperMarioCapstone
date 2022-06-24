@@ -8,7 +8,6 @@ struct Tile
 	Tile(sf::Texture tex) : texture(tex)
 	{
 		sprite.setTexture(texture);
-		sprite.setScale(3, 3);
 	}
 	~Tile() {}
 
@@ -19,10 +18,17 @@ struct Tile
 		sprite.setPosition(position);
 	}
 
+	sf::FloatRect getAABB()
+	{
+		return sprite.getGlobalBounds();
+	}
+
 	sf::Vector2f position;
 	sf::Texture texture;
 	sf::Sprite sprite;
 };
+
+using Level = std::vector<std::vector<int>>;
 
 class Map
 {
@@ -33,12 +39,11 @@ public:
 	void update(float deltaTime);
 	void draw(sf::RenderWindow* window);
 
-	std::vector<Tile>* getCurrentLevel();
+	Level getCurrentLevel();
 
 private:
-	std::vector<std::vector<unsigned int>> level;
+	Level level;
 	std::unordered_map<unsigned int, Tile*> tiles;
 	
-	std::vector<Tile> currentLevel;
 	unsigned int tileSize;
 };

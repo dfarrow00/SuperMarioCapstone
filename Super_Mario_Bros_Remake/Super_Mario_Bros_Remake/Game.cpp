@@ -15,8 +15,7 @@ void Game::update()
 {
 	float deltaTime = clock.getElapsedTime().asSeconds();
 
-	mario.update(deltaTime);
-	checkCollisions(map.getCurrentLevel(), &mario);
+	mario.update(deltaTime, map.getCurrentLevel());
 
 	sf::Event event;
 	while (window.pollEvent(event))
@@ -40,16 +39,4 @@ void Game::render()
 sf::RenderWindow* Game::getWindow()
 {
 	return &window;
-}
-
-void Game::checkCollisions(std::vector<Tile>* currentLevel, Mario* mario)
-{
-	sf::FloatRect marioAABB = mario->getAABB();
-	for (auto& tile : *currentLevel)
-	{
-		if (marioAABB.intersects(tile.sprite.getGlobalBounds()))
-		{
-			mario->handleCollision(tile);
-		}
-	}
 }
