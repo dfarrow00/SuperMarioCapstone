@@ -32,6 +32,7 @@ public:
 protected:
 	sf::Vector2f position;
 	sf::Vector2f velocity;
+	float maxVelocity;
 	sf::Texture texture;
 	sf::Sprite sprite;
 };

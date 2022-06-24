@@ -1,0 +1,8 @@
+Improvements:
+- Only draw tiles in view
+- Tweak physics to be more efficient and accurate to original
+- More detailed collision detection (Indicate which side of mario AABB is colliding)
+
+Features to add next:
+- Jumping (Most likely needs more detailed collision detection first)
+- More Tiles

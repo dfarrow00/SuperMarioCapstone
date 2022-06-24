@@ -1,10 +1,13 @@
 #include "Game.h"
 #include <iostream>
 
-Game::Game() : window(sf::VideoMode(800, 600), "Super Mario Bros Remake")
+Game::Game() : window(sf::VideoMode(768, 720), "Super Mario Bros Remake")
 {
 	srand(time(nullptr));
 	clock.restart();
+
+	view = window.getDefaultView();
+	window.setView(view);
 }
 
 Game::~Game()
@@ -13,9 +16,12 @@ Game::~Game()
 
 void Game::update()
 {
-	float deltaTime = clock.getElapsedTime().asSeconds();
-
+	float deltaTime = clock.restart().asSeconds();
 	mario.update(deltaTime, map.getCurrentLevel());
+
+	view.setCenter(mario.getPosition().x, window.getDefaultView().getCenter().y);
+	window.setView(view);
+
 
 	sf::Event event;
 	while (window.pollEvent(event))
@@ -25,7 +31,6 @@ void Game::update()
 			window.close();
 		}
 	}
-	clock.restart();
 }
 
 void Game::render()

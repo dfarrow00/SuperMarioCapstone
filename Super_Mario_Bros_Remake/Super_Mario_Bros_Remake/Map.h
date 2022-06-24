@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <unordered_map>
+#include <fstream>
+#include <sstream>
 #include "GameObject.h"
 
 struct Tile
@@ -38,6 +40,8 @@ public:
 
 	void update(float deltaTime);
 	void draw(sf::RenderWindow* window);
+
+	void loadMap(int mapNumber);
 
 	Level getCurrentLevel();
 

@@ -1,4 +1,5 @@
 #include "Map.h"
+#include <iostream>
 
 Map::Map()
 {
@@ -6,47 +7,13 @@ Map::Map()
 	sf::Texture texture;
 	texture.loadFromFile("Resources/Floor.png");
 	Tile* tile = new Tile(texture);
-	tiles.emplace(0, tile);
+	tiles.emplace(1, tile);
 
 	texture.loadFromFile("Resources/Brick.png");
 	Tile* tile2 = new Tile(texture);
-	tiles.emplace(1, tile2);
+	tiles.emplace(2, tile2);
 
-
-	Level testLevel = { {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-												{0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0},
-												{0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0},
-												{0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0},
-												{0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0},
-												{0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0},
-												{0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0},
-												{0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0},
-												{0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0},
-												{0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0},
-												{0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0},
-												{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} };
-	level = testLevel;
-
-	for (int x = 0; x < level.size(); x++)
-	{
-		for (int y = 0; y < level[x].size(); y++)
-		{
-			if (level[y][x] > 2)
-			{
-				continue;
-			}
-			else if (level[y][x] == 0)
-			{
-				tiles[0]->setPosition((x * tileSize * 3), (y * tileSize * 3));
-				Tile block = *tiles[0];
-			}
-			else if (level[y][x] == 1)
-			{
-				tiles[1]->setPosition((x * tileSize), (y * tileSize));
-				Tile block = *tiles[0];
-			}
-		}
-	}
+	loadMap(1);
 }
 
 Map::~Map()
@@ -68,10 +35,16 @@ void Map::draw(sf::RenderWindow* window)
 	{
 		for (int y = 0; y < level[x].size(); y++)
 		{
-			if (level[y][x] == 0)
+			if (level[x][y] == 1)
 			{
-				tiles[0]->setPosition(x * tileSize, y * tileSize);
-				window->draw(tiles[0]->sprite);
+				tiles[1]->setPosition(y * tileSize, x * tileSize);
+				window->draw(tiles[1]->sprite);
+			}
+
+			if (level[x][y] == 2)
+			{
+				tiles[2]->setPosition(y * tileSize, x * tileSize);
+				window->draw(tiles[2]->sprite);
 			}
 		}
 	}
@@ -80,4 +53,38 @@ void Map::draw(sf::RenderWindow* window)
 std::vector<std::vector<int>> Map::getCurrentLevel()
 {
 	return level;
+}
+
+void Map::loadMap(int mapNumber)
+{
+	std::ifstream file;
+	std::string fileName("Resources/Level");
+	fileName.append(std::to_string(mapNumber));
+	fileName.append(".txt");
+	std::cout << fileName << std::endl;
+	file.open(fileName);
+
+	if (!file.is_open())
+	{
+		std::cout << "Failed to load map file!" << std::endl;
+		return;
+	}
+
+	std::string line;
+	while (std::getline(file, line))
+	{
+		std::vector<int> row;
+		std::stringstream stream(line);
+		int number;
+		for (int x = 0; x < line.length(); x++)
+		{
+			stream >> number;
+			row.push_back(number);
+		}
+
+		level.push_back(row);
+	}
+
+	file.close();
+
 }

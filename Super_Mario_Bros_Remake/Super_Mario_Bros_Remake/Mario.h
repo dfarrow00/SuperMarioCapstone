@@ -13,10 +13,11 @@ public:
 	void update(float deltaTime, Level level);
 	void draw(sf::RenderWindow* window);
 
-	bool colliding(Level level);
+	bool colliding(sf::Vector2f currentPos, Level level);
 
 	sf::FloatRect getAABB();
 
 private:
 	float speed = 100.0f;
+	bool collidingOnY;
 };

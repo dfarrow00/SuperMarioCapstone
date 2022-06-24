@@ -20,5 +20,7 @@ private:
 	Mario mario;
 	Map map;
 
+	sf::View view;
+
 	std::vector<GameObject*> gameObjects;
 };
