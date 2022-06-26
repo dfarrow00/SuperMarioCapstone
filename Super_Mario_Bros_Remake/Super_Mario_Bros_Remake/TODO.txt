@@ -1,8 +1,12 @@
 Improvements:
-- Only draw tiles in view
 - Tweak physics to be more efficient and accurate to original
 - More detailed collision detection (Indicate which side of mario AABB is colliding)
+- Use a tile map instead of individual tile images for each tile.
 
 Features to add next:
 - Jumping (Most likely needs more detailed collision detection first)
 - More Tiles
+
+Fixes
+- deltaTime must be being calulated incorrectly somehow. Jumping only works when FPS is limited to 60. But using
+deltatime, the jump should be framerate independent and not affected by this change.

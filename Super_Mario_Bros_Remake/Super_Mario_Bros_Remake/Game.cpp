@@ -6,6 +6,8 @@ Game::Game() : window(sf::VideoMode(768, 720), "Super Mario Bros Remake")
 	srand(time(nullptr));
 	clock.restart();
 
+	window.setFramerateLimit(60);
+
 	view = window.getDefaultView();
 	window.setView(view);
 }
@@ -19,8 +21,11 @@ void Game::update()
 	float deltaTime = clock.restart().asSeconds();
 	mario.update(deltaTime, map.getCurrentLevel());
 
-	view.setCenter(mario.getPosition().x, window.getDefaultView().getCenter().y);
-	window.setView(view);
+	if (mario.getPosition().x > view.getCenter().x)//Camera only follows mario when moving fowards, stays still when mario is moving backwards.
+	{
+		view.setCenter(mario.getPosition().x, window.getDefaultView().getCenter().y);
+		window.setView(view);
+	}
 
 
 	sf::Event event;
@@ -36,7 +41,7 @@ void Game::update()
 void Game::render()
 {
 	window.clear(sf::Color::Cyan);
-	map.draw(&window);
+	map.draw(&window, &view);
 	mario.draw(&window);
 	window.display();
 }

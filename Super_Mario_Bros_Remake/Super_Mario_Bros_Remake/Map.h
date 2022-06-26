@@ -39,7 +39,7 @@ public:
 	~Map();
 
 	void update(float deltaTime);
-	void draw(sf::RenderWindow* window);
+	void draw(sf::RenderWindow* window, sf::View* view);
 
 	void loadMap(int mapNumber);
 

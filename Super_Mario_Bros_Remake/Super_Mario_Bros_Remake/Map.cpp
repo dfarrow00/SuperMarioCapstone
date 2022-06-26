@@ -4,6 +4,7 @@
 Map::Map()
 {
 	tileSize = 48;
+
 	sf::Texture texture;
 	texture.loadFromFile("Resources/Floor.png");
 	Tile* tile = new Tile(texture);
@@ -26,15 +27,24 @@ Map::~Map()
 
 void Map::update(float deltaTime)
 {
-
+	
 }
 
-void Map::draw(sf::RenderWindow* window)
+void Map::draw(sf::RenderWindow* window, sf::View* view)
 {
+	float viewWidth = view->getSize().x;
+	float viewHeight = view->getSize().y;
+	float viewLeft = view->getCenter().x - (viewWidth / 2);
+	float viewRight = viewLeft + viewWidth;
+
 	for (int x = 0; x < level.size(); x++)
 	{
 		for (int y = 0; y < level[x].size(); y++)
 		{
+			if ((y * tileSize) + tileSize < viewLeft || y * tileSize > viewRight)//If the tile is outside of the camera's view, dont draw it.
+			{
+				continue;
+			}
 			if (level[x][y] == 1)
 			{
 				tiles[1]->setPosition(y * tileSize, x * tileSize);
@@ -61,7 +71,6 @@ void Map::loadMap(int mapNumber)
 	std::string fileName("Resources/Level");
 	fileName.append(std::to_string(mapNumber));
 	fileName.append(".txt");
-	std::cout << fileName << std::endl;
 	file.open(fileName);
 
 	if (!file.is_open())
@@ -86,5 +95,4 @@ void Map::loadMap(int mapNumber)
 	}
 
 	file.close();
-
 }

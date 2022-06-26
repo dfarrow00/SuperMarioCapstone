@@ -59,6 +59,11 @@ void Mario::update(float deltaTime, Level level)
 		}
 	}
 
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && collidingOnY)
+	{
+		velocity.y = -35000 * deltaTime;
+	}
+
 	velocity.y += 800 * deltaTime;
 
 	if (colliding(position + sf::Vector2f(velocity.x * deltaTime, 0), level))
@@ -98,22 +103,22 @@ bool Mario::colliding(sf::Vector2f currentPos, Level level)
 	sf::Vector2f bottomLeft = topLeft; bottomLeft.y += 48;
 	sf::Vector2f bottomRight = topRight; bottomRight.y += 48;
 
-	if (level[topLeft.y / 48][topLeft.x / 48] == 1)
+	if (level[topLeft.y / 48][topLeft.x / 48] == 1 || level[topLeft.y / 48][topLeft.x / 48] == 2)
 	{
 		return true;
 	}
 
-	if (level[topRight.y / 48][topRight.x / 48] == 1)
+	if (level[topRight.y / 48][topRight.x / 48] == 1 || level[topRight.y / 48][topRight.x / 48] == 2)
 	{
 		return true;
 	}
 
-	if (level[bottomLeft.y / 48][bottomLeft.x / 48] == 1)
+	if (level[bottomLeft.y / 48][bottomLeft.x / 48] == 1 || level[bottomLeft.y / 48][bottomLeft.x / 48] == 2)
 	{
 		return true;
 	}
 
-	if (level[bottomRight.y / 48][bottomRight.x / 48] == 1)
+	if (level[bottomRight.y / 48][bottomRight.x / 48] == 1 || level[bottomRight.y / 48][bottomRight.x / 48] == 2)
 	{
 		return true;
 	}
