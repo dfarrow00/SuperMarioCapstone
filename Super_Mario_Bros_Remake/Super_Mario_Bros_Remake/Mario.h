@@ -19,5 +19,5 @@ public:
 
 private:
 	float speed = 100.0f;
-	bool collidingOnY;
+	bool onGround;
 };

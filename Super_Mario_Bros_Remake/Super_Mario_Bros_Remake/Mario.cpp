@@ -8,7 +8,7 @@ Mario::Mario() : GameObject()
 	position = sf::Vector2f(96.0f, 96.0f);
 	velocity = sf::Vector2f(0.0f, 0.0f);
 	maxVelocity = 400.0f;
-	collidingOnY = false;
+	onGround = false;
 }
 
 Mario::Mario(sf::Vector2f& pos)
@@ -18,7 +18,7 @@ Mario::Mario(sf::Vector2f& pos)
 	position = pos;
 	velocity = sf::Vector2f(0.0f, 0.0f);
 	maxVelocity = 400.0f;
-	collidingOnY = false;
+	onGround = false;
 }
 
 Mario::~Mario()
@@ -47,21 +47,26 @@ void Mario::update(float deltaTime, Level level)
 		}
 	}
 
-	if (!(sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && sf::Keyboard::isKeyPressed(sf::Keyboard::Left)))
+	if (velocity.x > 0)
 	{
-		if (velocity.x > 0)
+		velocity.x -= 400 * deltaTime; //DRAG
+		if (velocity.x < 0.0f)
 		{
-			velocity.x -= 400 * deltaTime; //DRAG
-		}
-		else if (velocity.x < 0 * deltaTime)
-		{
-			velocity.x += 400 * deltaTime;
+			velocity.x = 0.0f;
 		}
 	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && collidingOnY)
+	else if (velocity.x < 0)
 	{
-		velocity.y = -35000 * deltaTime;
+		velocity.x += 400 * deltaTime;
+		if (velocity.x > 0.0f)
+		{
+			velocity.x = 0.0f;
+		}
+	}
+	
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && onGround)
+	{
+		velocity.y = -600; //Not multiplied by dt as it is an impulse force and will be the same for all framerates
 	}
 
 	velocity.y += 800 * deltaTime;
@@ -71,14 +76,18 @@ void Mario::update(float deltaTime, Level level)
 		velocity.x = 0.0f;
 	}
 
-	if (colliding(position + sf::Vector2f(0, velocity.y * deltaTime), level))
+	if (colliding(position + sf::Vector2f(0, velocity.y * deltaTime), level))//Causes mario to stop briefly before hitting floor on low fps. Needs fix
 	{
 		velocity.y = 0.0f;
-		collidingOnY = true;
+	}
+	
+	if (colliding(position + sf::Vector2f(0, 1), level))
+	{
+		onGround = true;
 	}
 	else
 	{
-		collidingOnY = false;
+		onGround = false;
 	}
 
 	position = position + (velocity * deltaTime);
@@ -103,22 +112,31 @@ bool Mario::colliding(sf::Vector2f currentPos, Level level)
 	sf::Vector2f bottomLeft = topLeft; bottomLeft.y += 48;
 	sf::Vector2f bottomRight = topRight; bottomRight.y += 48;
 
-	if (level[topLeft.y / 48][topLeft.x / 48] == 1 || level[topLeft.y / 48][topLeft.x / 48] == 2)
+	if (topLeft.x < 0)
 	{
 		return true;
 	}
 
-	if (level[topRight.y / 48][topRight.x / 48] == 1 || level[topRight.y / 48][topRight.x / 48] == 2)
+	unsigned int tile = level[topLeft.y / 48][topLeft.x / 48];
+	if (tile > 0)
 	{
 		return true;
 	}
 
-	if (level[bottomLeft.y / 48][bottomLeft.x / 48] == 1 || level[bottomLeft.y / 48][bottomLeft.x / 48] == 2)
+	tile = level[topRight.y / 48][topRight.x / 48];
+	if (tile > 0)
 	{
 		return true;
 	}
 
-	if (level[bottomRight.y / 48][bottomRight.x / 48] == 1 || level[bottomRight.y / 48][bottomRight.x / 48] == 2)
+	tile = level[bottomLeft.y / 48][bottomLeft.x / 48];
+	if (tile > 0)
+	{
+		return true;
+	}
+
+	tile = level[bottomRight.y / 48][bottomRight.x / 48];
+	if (tile > 0)
 	{
 		return true;
 	}
