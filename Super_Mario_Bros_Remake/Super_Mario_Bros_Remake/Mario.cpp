@@ -1,7 +1,7 @@
 #include "Mario.h"
 #include <iostream>
 
-Mario::Mario() : GameObject()
+Mario::Mario() : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.2), JumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1)
 {
 	texture.loadFromFile("Resources/Mario.png");
 	sprite.setTexture(texture);
@@ -9,9 +9,11 @@ Mario::Mario() : GameObject()
 	velocity = sf::Vector2f(0.0f, 0.0f);
 	maxVelocity = 400.0f;
 	onGround = false;
+	currentState = State::Idle;
+	currentAnim = nullptr;
 }
 
-Mario::Mario(sf::Vector2f& pos)
+Mario::Mario(sf::Vector2f& pos) : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1, 10), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.5), JumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1, 0.5)
 {
 	texture.loadFromFile("Resources/Mario.png");
 	sprite.setTexture(texture);
@@ -19,6 +21,8 @@ Mario::Mario(sf::Vector2f& pos)
 	velocity = sf::Vector2f(0.0f, 0.0f);
 	maxVelocity = 400.0f;
 	onGround = false;
+	currentState = State::Idle;
+	currentAnim = nullptr;
 }
 
 Mario::~Mario()
@@ -27,8 +31,28 @@ Mario::~Mario()
 
 void Mario::update(float deltaTime, Level level)
 {
-	sf::Vector2f oldPosition = getPosition();
+	currentState = State::Idle;
 
+	handleInput(deltaTime);
+	checkCollisions(deltaTime, level);
+	updateState(deltaTime);
+
+	position = position + (velocity * deltaTime);
+	sprite.setPosition(position);
+}
+
+void Mario::draw(sf::RenderWindow* window)
+{
+	window->draw(sprite);
+}
+
+sf::FloatRect Mario::getAABB()
+{
+	return sprite.getGlobalBounds();
+}
+
+void Mario::handleInput(float deltaTime)
+{
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
 		velocity.x -= 800 * deltaTime;
@@ -36,6 +60,8 @@ void Mario::update(float deltaTime, Level level)
 		{
 			velocity.x = -maxVelocity;
 		}
+		currentState = State::Running_Left;
+		facingLeft = true;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
@@ -45,6 +71,14 @@ void Mario::update(float deltaTime, Level level)
 		{
 			velocity.x = maxVelocity;
 		}
+		currentState = State::Running_Right;
+		facingLeft = false;
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && onGround)
+	{
+		velocity.y = -600; //Not multiplied by dt as it is an impulse force and will be the same for all framerates
+		currentState = State::Jumping;
 	}
 
 	if (velocity.x > 0)
@@ -63,14 +97,12 @@ void Mario::update(float deltaTime, Level level)
 			velocity.x = 0.0f;
 		}
 	}
-	
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && onGround)
-	{
-		velocity.y = -600; //Not multiplied by dt as it is an impulse force and will be the same for all framerates
-	}
 
 	velocity.y += 800 * deltaTime;
+}
 
+void Mario::checkCollisions(float deltaTime, Level level)
+{
 	if (colliding(position + sf::Vector2f(velocity.x * deltaTime, 0), level))
 	{
 		velocity.x = 0.0f;
@@ -80,7 +112,7 @@ void Mario::update(float deltaTime, Level level)
 	{
 		velocity.y = 0.0f;
 	}
-	
+
 	if (colliding(position + sf::Vector2f(0, 1), level))
 	{
 		onGround = true;
@@ -88,20 +120,35 @@ void Mario::update(float deltaTime, Level level)
 	else
 	{
 		onGround = false;
+		currentState = State::Jumping;
+	}
+}
+
+void Mario::updateState(float deltaTime)
+{
+	if (currentState == State::Idle && currentAnim != &idleAnim)
+	{
+		currentAnim = &idleAnim;
+		currentAnim->reset();
+	}
+	else if ((currentState == State::Running_Right || currentState == State::Running_Left) && currentAnim != &runningAnim)
+	{
+		currentAnim = &runningAnim;
+		currentAnim->reset();
+	}
+	else if (currentState == State::Jumping && currentAnim != &JumpingAnim)
+	{
+		currentAnim = &JumpingAnim;
+		currentAnim->reset();
 	}
 
-	position = position + (velocity * deltaTime);
-	sprite.setPosition(position);
-}
-
-void Mario::draw(sf::RenderWindow* window)
-{
-	window->draw(sprite);
-}
-
-sf::FloatRect Mario::getAABB()
-{
-	return sprite.getGlobalBounds();
+	currentAnim->update(deltaTime);
+	sprite = currentAnim->getCurrentSprite();
+	if (facingLeft)
+	{
+		sprite.setOrigin({ sprite.getLocalBounds().width, 0 });
+		sprite.scale(-1, 1);
+	}
 }
 
 

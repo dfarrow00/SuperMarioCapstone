@@ -2,6 +2,12 @@
 #include <SFML/Graphics.hpp>
 #include "GameObject.h"
 #include "Map.h"
+#include "Animation.h"
+
+enum class State
+{
+	Idle, Running_Right, Running_Left, Jumping
+};
 
 class Mario : public GameObject
 {
@@ -18,6 +24,17 @@ public:
 	sf::FloatRect getAABB();
 
 private:
+	void handleInput(float deltaTime);
+	void checkCollisions(float deltaTime, Level level);
+	void updateState(float deltaTime);
+
 	float speed = 100.0f;
 	bool onGround;
+	bool facingLeft;
+	Animation* currentAnim;
+	Animation idleAnim;
+	Animation runningAnim;
+	Animation JumpingAnim;
+
+	State currentState;
 };

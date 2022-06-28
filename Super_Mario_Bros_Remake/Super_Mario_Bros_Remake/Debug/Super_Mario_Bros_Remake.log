@@ -1,19 +1,47 @@
-﻿  Map.cpp
-C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Map.cpp(60,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Map.cpp(62,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Map.cpp(70,43): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Map.cpp(70,29): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Map.cpp(76,43): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Map.cpp(76,29): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Map.cpp(82,43): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Map.cpp(82,29): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Map.cpp(88,43): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Map.cpp(88,29): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Map.cpp(94,43): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Map.cpp(94,29): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Map.cpp(100,43): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Map.cpp(100,29): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Map.cpp(106,43): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Map.cpp(106,29): warning C4244: 'argument': conversion from 'unsigned int' to 'float', possible loss of data
-C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Map.cpp(138,21): warning C4018: '<': signed/unsigned mismatch
+﻿  Game.cpp
+C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Game.cpp(6,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  Main.cpp
+  Mario.cpp
+C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Mario.cpp(5,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Mario.cpp(167,38): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Mario.cpp(167,54): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Mario.cpp(173,26): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Mario.cpp(173,43): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Mario.cpp(179,28): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Mario.cpp(179,47): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Mario.cpp(185,29): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Super_Mario_Bros_Remake\Mario.cpp(185,49): warning C4244: 'argument': conversion from 'T' to 'const unsigned int', possible loss of data
+          with
+          [
+              T=float
+          ]
+  Generating Code...
   Super_Mario_Bros_Remake.vcxproj -> C:\Users\Dominic\Desktop\UNI\Year 3\Capstone Project\capstone-project-summer-development\Super_Mario_Bros_Remake\Debug\Super_Mario_Bros_Remake.exe
