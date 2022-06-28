@@ -5,24 +5,19 @@ Mario::Mario() : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1)
 {
 	texture.loadFromFile("Resources/Mario.png");
 	sprite.setTexture(texture);
-	position = sf::Vector2f(96.0f, 96.0f);
+	position = sf::Vector2f(96.0f, 480.0f);
 	velocity = sf::Vector2f(0.0f, 0.0f);
 	maxVelocity = 400.0f;
 	onGround = false;
 	currentState = State::Idle;
 	currentAnim = nullptr;
+	facingLeft = false;
 }
 
 Mario::Mario(sf::Vector2f& pos) : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1, 10), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.5), JumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1, 0.5)
 {
-	texture.loadFromFile("Resources/Mario.png");
-	sprite.setTexture(texture);
+	Mario();
 	position = pos;
-	velocity = sf::Vector2f(0.0f, 0.0f);
-	maxVelocity = 400.0f;
-	onGround = false;
-	currentState = State::Idle;
-	currentAnim = nullptr;
 }
 
 Mario::~Mario()
