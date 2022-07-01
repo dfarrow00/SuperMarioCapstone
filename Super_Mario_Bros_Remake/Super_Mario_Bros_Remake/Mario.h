@@ -4,7 +4,7 @@
 #include "Map.h"
 #include "Animation.h"
 
-enum class State
+enum class MarioState
 {
 	Idle, Running_Right, Running_Left, Jumping
 };
@@ -15,6 +15,9 @@ public:
 	Mario();
 	Mario(sf::Vector2f& pos);
 	~Mario();
+
+	void setup();
+	void reset();
 
 	void update(float deltaTime, Level level);
 	void draw(sf::RenderWindow* window);
@@ -36,5 +39,5 @@ private:
 	Animation runningAnim;
 	Animation JumpingAnim;
 
-	State currentState;
+	MarioState currentState;
 };

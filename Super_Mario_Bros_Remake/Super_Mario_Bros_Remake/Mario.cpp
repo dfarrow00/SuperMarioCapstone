@@ -3,20 +3,12 @@
 
 Mario::Mario() : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.2), JumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1)
 {
-	texture.loadFromFile("Resources/Mario.png");
-	sprite.setTexture(texture);
-	position = sf::Vector2f(96.0f, 480.0f);
-	velocity = sf::Vector2f(0.0f, 0.0f);
-	maxVelocity = 400.0f;
-	onGround = false;
-	currentState = State::Idle;
-	currentAnim = nullptr;
-	facingLeft = false;
+	setup();
 }
 
 Mario::Mario(sf::Vector2f& pos) : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1, 10), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.5), JumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1, 0.5)
 {
-	Mario();
+	setup();
 	position = pos;
 }
 
@@ -24,9 +16,28 @@ Mario::~Mario()
 {
 }
 
+void Mario::setup()
+{
+	currentAnim = &idleAnim;
+	sprite = currentAnim->getCurrentSprite();
+	position = sf::Vector2f(96.0f, 575.5f);
+	velocity = sf::Vector2f(0.0f, 0.0f);
+	sprite.setPosition(position);
+	maxVelocity = 400.0f;
+	onGround = false;
+	currentState = MarioState::Idle;
+	currentAnim = nullptr;
+	facingLeft = false;
+}
+
+void Mario::reset()
+{
+	setup();
+}
+
 void Mario::update(float deltaTime, Level level)
 {
-	currentState = State::Idle;
+	currentState = MarioState::Idle;
 
 	handleInput(deltaTime);
 	checkCollisions(deltaTime, level);
@@ -55,7 +66,7 @@ void Mario::handleInput(float deltaTime)
 		{
 			velocity.x = -maxVelocity;
 		}
-		currentState = State::Running_Left;
+		currentState = MarioState::Running_Left;
 		facingLeft = true;
 	}
 
@@ -66,14 +77,14 @@ void Mario::handleInput(float deltaTime)
 		{
 			velocity.x = maxVelocity;
 		}
-		currentState = State::Running_Right;
+		currentState = MarioState::Running_Right;
 		facingLeft = false;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && onGround)
 	{
 		velocity.y = -600; //Not multiplied by dt as it is an impulse force and will be the same for all framerates
-		currentState = State::Jumping;
+		currentState = MarioState::Jumping;
 	}
 
 	if (velocity.x > 0)
@@ -115,23 +126,23 @@ void Mario::checkCollisions(float deltaTime, Level level)
 	else
 	{
 		onGround = false;
-		currentState = State::Jumping;
+		currentState = MarioState::Jumping;
 	}
 }
 
 void Mario::updateState(float deltaTime)
 {
-	if (currentState == State::Idle && currentAnim != &idleAnim)
+	if (currentState == MarioState::Idle && currentAnim != &idleAnim)
 	{
 		currentAnim = &idleAnim;
 		currentAnim->reset();
 	}
-	else if ((currentState == State::Running_Right || currentState == State::Running_Left) && currentAnim != &runningAnim)
+	else if ((currentState == MarioState::Running_Right || currentState == MarioState::Running_Left) && currentAnim != &runningAnim)
 	{
 		currentAnim = &runningAnim;
 		currentAnim->reset();
 	}
-	else if (currentState == State::Jumping && currentAnim != &JumpingAnim)
+	else if (currentState == MarioState::Jumping && currentAnim != &JumpingAnim)
 	{
 		currentAnim = &JumpingAnim;
 		currentAnim->reset();

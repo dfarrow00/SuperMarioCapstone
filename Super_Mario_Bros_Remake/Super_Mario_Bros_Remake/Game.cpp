@@ -1,7 +1,7 @@
 #include "Game.h"
 #include <iostream>
 
-Game::Game() : window(sf::VideoMode(768, 720), "Super Mario Bros Remake")
+Game::Game() : window(sf::VideoMode(768, 720), "Super Mario Bros Remake"), stateManager(&window)
 {
 	srand(time(nullptr));
 	clock.restart();
@@ -20,13 +20,7 @@ void Game::update()
 {
 	float deltaTime = clock.restart().asSeconds();
 	//std::cout << 1 / deltaTime << std::endl;
-	mario.update(deltaTime, map.getCurrentLevel());
-
-	if (mario.getPosition().x > view.getCenter().x)//Camera only follows mario when moving fowards, stays still when mario is moving backwards.
-	{
-		view.setCenter(mario.getPosition().x, window.getDefaultView().getCenter().y);
-		window.setView(view);
-	}
+	stateManager.update(deltaTime);
 
 	sf::Event event;
 	while (window.pollEvent(event))
@@ -41,8 +35,7 @@ void Game::update()
 void Game::render()
 {
 	window.clear(sf::Color::Cyan);
-	map.draw(&window, &view);
-	mario.draw(&window);
+	stateManager.draw(&window);
 	window.display();
 }
 

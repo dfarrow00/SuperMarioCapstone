@@ -10,6 +10,7 @@ Animation::Animation(std::string filePath, int rowNumber, int frames, float anim
 		sprites.push_back(frame);
 	}
 
+	std::reverse(sprites.begin(), sprites.end());
 	currentFrame = 0;
 	currentSprite = sprites[0];
 	elapsedTime = 0.0f;
