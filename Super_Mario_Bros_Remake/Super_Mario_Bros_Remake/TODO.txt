@@ -1,9 +1,8 @@
 Improvements:
 - Tweak physics to be more efficient and accurate to original
-- Use a tile map instead of individual tile images for each tile.
 
 Features to add next:
 - More Tiles
 
 Known Bugs:
-- Map reading repeats last column several times at end of level.
+- Hitting side of ? block updates to empty ? block.

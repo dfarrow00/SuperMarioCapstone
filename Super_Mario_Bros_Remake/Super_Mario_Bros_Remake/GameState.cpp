@@ -1,7 +1,7 @@
 #include "GameState.h"
 #include <iostream>
 
-GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stateMgr), window(win)
+GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stateMgr), window(win), mario(&map)
 {
 	isTransparent = false;
 	view = window->getDefaultView();
@@ -22,7 +22,7 @@ void GameState::deactivate()
 
 void GameState::update(float deltaTime)
 {
-	mario.update(deltaTime, map.getCurrentLevel());
+	mario.update(deltaTime);
 	if (mario.getPosition().x > view.getCenter().x)//Camera only follows mario when moving fowards, stays still when mario is moving backwards.
 	{
 		view.setCenter(mario.getPosition().x, window->getDefaultView().getCenter().y);

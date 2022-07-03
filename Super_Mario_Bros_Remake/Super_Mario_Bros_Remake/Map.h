@@ -7,9 +7,8 @@
 
 struct Tile
 {
-	Tile(sf::Texture tex) : texture(tex)
+	Tile(sf::Sprite spr) : sprite(spr)
 	{
-		sprite.setTexture(texture);
 	}
 	~Tile() {}
 
@@ -26,7 +25,6 @@ struct Tile
 	}
 
 	sf::Vector2f position;
-	sf::Texture texture;
 	sf::Sprite sprite;
 };
 
@@ -42,11 +40,13 @@ public:
 	void draw(sf::RenderWindow* window, sf::View* view);
 
 	void loadMap(int mapNumber);
+	void updateTile(int x, int y, int tile);
 
 	Level getCurrentLevel();
 
 private:
 	Level level;
+	sf::Texture tileSheet;
 	std::unordered_map<unsigned int, Tile*> tiles;
 	
 	unsigned int tileSize;

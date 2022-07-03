@@ -1,12 +1,12 @@
 #include "Mario.h"
 #include <iostream>
 
-Mario::Mario() : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.2), JumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1)
+Mario::Mario(Map* gameMap) : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.2), JumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1), map(gameMap)
 {
 	setup();
 }
 
-Mario::Mario(sf::Vector2f& pos) : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1, 10), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.5), JumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1, 0.5)
+Mario::Mario(Map* gameMap, sf::Vector2f& pos) : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1, 10), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.5), JumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1, 0.5), map(gameMap)
 {
 	setup();
 	position = pos;
@@ -35,12 +35,12 @@ void Mario::reset()
 	setup();
 }
 
-void Mario::update(float deltaTime, Level level)
+void Mario::update(float deltaTime)
 {
 	currentState = MarioState::Idle;
 
 	handleInput(deltaTime);
-	checkCollisions(deltaTime, level);
+	checkCollisions(deltaTime);
 	updateState(deltaTime);
 
 	position = position + (velocity * deltaTime);
@@ -107,19 +107,19 @@ void Mario::handleInput(float deltaTime)
 	velocity.y += 800 * deltaTime;
 }
 
-void Mario::checkCollisions(float deltaTime, Level level)
+void Mario::checkCollisions(float deltaTime)
 {
-	if (colliding(position + sf::Vector2f(velocity.x * deltaTime, 0), level))
+	if (colliding(position + sf::Vector2f(velocity.x * deltaTime, 0)))
 	{
 		velocity.x = 0.0f;
 	}
 
-	if (colliding(position + sf::Vector2f(0, velocity.y * deltaTime), level))//Causes mario to stop briefly before hitting floor on low fps. Needs fix
+	if (colliding(position + sf::Vector2f(0, velocity.y * deltaTime)))//Causes mario to stop briefly before hitting floor on low fps. Needs fix
 	{
 		velocity.y = 0.0f;
 	}
 
-	if (colliding(position + sf::Vector2f(0, 1), level))
+	if (colliding(position + sf::Vector2f(0, 1)))
 	{
 		onGround = true;
 	}
@@ -158,8 +158,10 @@ void Mario::updateState(float deltaTime)
 }
 
 
-bool Mario::colliding(sf::Vector2f currentPos, Level level)
+bool Mario::colliding(sf::Vector2f currentPos)
 {
+	Level level = map->getCurrentLevel();
+
 	sf::Vector2f topLeft = currentPos;
 	sf::Vector2f topRight = topLeft; topRight.x += 48;
 	sf::Vector2f bottomLeft = topLeft; bottomLeft.y += 48;
@@ -173,12 +175,20 @@ bool Mario::colliding(sf::Vector2f currentPos, Level level)
 	unsigned int tile = level[topLeft.y / 48][topLeft.x / 48];
 	if (tile > 0)
 	{
+		if (tile == 3)
+		{
+			map->updateTile(topLeft.x / 48, topLeft.y / 48, 8);
+		}
 		return true;
 	}
 
 	tile = level[topRight.y / 48][topRight.x / 48];
 	if (tile > 0)
 	{
+		if (tile == 3)
+		{
+			map->updateTile(topRight.x / 48, topRight.y / 48, 8);
+		}
 		return true;
 	}
 

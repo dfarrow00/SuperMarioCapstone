@@ -12,23 +12,23 @@ enum class MarioState
 class Mario : public GameObject
 {
 public:
-	Mario();
-	Mario(sf::Vector2f& pos);
+	Mario(Map* gameMap);
+	Mario(Map* gameMap, sf::Vector2f& pos);
 	~Mario();
 
 	void setup();
 	void reset();
 
-	void update(float deltaTime, Level level);
+	void update(float deltaTime);
 	void draw(sf::RenderWindow* window);
 
-	bool colliding(sf::Vector2f currentPos, Level level);
+	bool colliding(sf::Vector2f currentPos);
 
 	sf::FloatRect getAABB();
 
 private:
 	void handleInput(float deltaTime);
-	void checkCollisions(float deltaTime, Level level);
+	void checkCollisions(float deltaTime);
 	void updateState(float deltaTime);
 
 	float speed = 100.0f;
@@ -40,4 +40,6 @@ private:
 	Animation JumpingAnim;
 
 	MarioState currentState;
+
+	Map* map;
 };

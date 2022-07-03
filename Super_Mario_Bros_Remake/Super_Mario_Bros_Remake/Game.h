@@ -21,9 +21,5 @@ private:
 	sf::View view;
 
 	StateManager stateManager;
-
-	Mario mario;
-	Map map;
-
 	std::vector<GameObject*> gameObjects;
 };

@@ -5,34 +5,18 @@ Map::Map()
 {
 	tileSize = 48;
 
-	sf::Texture texture;
-	texture.loadFromFile("Resources/Floor.png");
-	Tile* tile = new Tile(texture);
-	tiles.emplace(1, tile);
-
-	texture.loadFromFile("Resources/Brick.png");
-	Tile* tile2 = new Tile(texture);
-	tiles.emplace(2, tile2);
-
-	texture.loadFromFile("Resources/Q.png");
-	Tile* tile3 = new Tile(texture);
-	tiles.emplace(3, tile3);
-
-	texture.loadFromFile("Resources/Left_Pipe.png");
-	Tile* tile4 = new Tile(texture);
-	tiles.emplace(4, tile4);
-
-	texture.loadFromFile("Resources/Right_Pipe.png");
-	Tile* tile5 = new Tile(texture);
-	tiles.emplace(5, tile5);
-
-	texture.loadFromFile("Resources/Top_Left_Pipe.png");
-	Tile* tile6 = new Tile(texture);
-	tiles.emplace(6, tile6);
-
-	texture.loadFromFile("Resources/Top_Right_Pipe.png");
-	Tile* tile7 = new Tile(texture);
-	tiles.emplace(7, tile7);
+	tileSheet.loadFromFile("Resources/Tile_Sheet.png");
+	int tileCount = 1;
+	for (int y = 0; y < tileSize * 2; y += tileSize)
+	{
+		for (int x = 0; x < tileSize * 4; x += tileSize)
+		{
+			sf::Sprite sprite(tileSheet, sf::IntRect(x, y, tileSize, tileSize));
+			Tile* tile = new Tile(sprite);
+			tiles.emplace(tileCount, tile);
+			tileCount++;
+		}
+	}
 
 	loadMap(1);
 }
@@ -43,6 +27,7 @@ Map::~Map()
 	{
 		delete itr.second;
 	}
+	tiles.clear();
 }
 
 void Map::update(float deltaTime)
@@ -57,54 +42,23 @@ void Map::draw(sf::RenderWindow* window, sf::View* view)
 	float viewLeft = view->getCenter().x - (viewWidth / 2);
 	float viewRight = viewLeft + viewWidth;
 
-	for (int x = 0; x < level.size(); x++)
+	for (int y = 0; y < level.size(); y++)
 	{
-		for (int y = 0; y < level[x].size(); y++)
+		for (int x = 0; x < level[y].size(); x++)
 		{
-			if ((y * tileSize) + tileSize < viewLeft || y * tileSize > viewRight)//If the tile is outside of the camera's view, dont draw it.
+			if ((x * tileSize) + tileSize < viewLeft || x * tileSize > viewRight)//If the tile is outside of the camera's view, dont draw it.
 			{
 				continue;
 			}
-			else if (level[x][y] == 1)
+			else if (level[y][x] == 0)
 			{
-				tiles[1]->setPosition(y * tileSize, x * tileSize);
-				window->draw(tiles[1]->sprite);
+				continue;
 			}
-
-			else if (level[x][y] == 2)
+			else
 			{
-				tiles[2]->setPosition(y * tileSize, x * tileSize);
-				window->draw(tiles[2]->sprite);
-			}
-
-			else if (level[x][y] == 3)
-			{
-				tiles[3]->setPosition(y * tileSize, x * tileSize);
-				window->draw(tiles[3]->sprite);
-			}
-
-			else if (level[x][y] == 4)
-			{
-				tiles[4]->setPosition(y * tileSize, x * tileSize);
-				window->draw(tiles[4]->sprite);
-			}
-
-			else if (level[x][y] == 5)
-			{
-				tiles[5]->setPosition(y * tileSize, x * tileSize);
-				window->draw(tiles[5]->sprite);
-			}
-
-			else if (level[x][y] == 6)
-			{
-				tiles[6]->setPosition(y * tileSize, x * tileSize);
-				window->draw(tiles[6]->sprite);
-			}
-
-			else if (level[x][y] == 7)
-			{
-				tiles[7]->setPosition(y * tileSize, x * tileSize);
-				window->draw(tiles[7]->sprite);
+				int tileNumber = level[y][x];
+				tiles[tileNumber]->setPosition(x * tileSize, y * tileSize);
+				window->draw(tiles[tileNumber]->sprite);
 			}
 		}
 	}
@@ -139,9 +93,15 @@ void Map::loadMap(int mapNumber)
 		{
 			stream >> number;
 			row.push_back(number);
+			number = 0;
 		}
 		level.push_back(row);
 	}
 
 	file.close();
+}
+
+void Map::updateTile(int x, int y, int tile)
+{
+	level[y][x] = tile;
 }
