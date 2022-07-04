@@ -6,7 +6,7 @@ Game::Game() : window(sf::VideoMode(768, 720), "Super Mario Bros Remake"), state
 	srand(time(nullptr));
 	clock.restart();
 
-	//window.setFramerateLimit(60);
+	//window.setFramerateLimit(30);
 
 	view = window.getDefaultView();
 	window.setView(view);

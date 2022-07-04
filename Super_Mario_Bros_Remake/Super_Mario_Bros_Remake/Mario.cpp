@@ -28,6 +28,7 @@ void Mario::setup()
 	currentState = MarioState::Idle;
 	currentAnim = nullptr;
 	facingLeft = false;
+	alive = true;
 }
 
 void Mario::reset()
@@ -50,11 +51,6 @@ void Mario::update(float deltaTime)
 void Mario::draw(sf::RenderWindow* window)
 {
 	window->draw(sprite);
-}
-
-sf::FloatRect Mario::getAABB()
-{
-	return sprite.getGlobalBounds();
 }
 
 void Mario::handleInput(float deltaTime)
@@ -83,8 +79,17 @@ void Mario::handleInput(float deltaTime)
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && onGround)
 	{
-		velocity.y = -600; //Not multiplied by dt as it is an impulse force and will be the same for all framerates
+		velocity.y = -350; //Not multiplied by dt as it is an impulse force and will be the same for all framerates
 		currentState = MarioState::Jumping;
+		jumpTime = 0.4f;
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !onGround)
+	{
+		jumpTime -= deltaTime;
+	}
+	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+	{
+		jumpTime = 0.0f;
 	}
 
 	if (velocity.x > 0)
@@ -104,22 +109,25 @@ void Mario::handleInput(float deltaTime)
 		}
 	}
 
-	velocity.y += 800 * deltaTime;
+	if (jumpTime <= 0.0f)
+	{
+		velocity.y += 800 * deltaTime;
+	}
 }
 
 void Mario::checkCollisions(float deltaTime)
 {
-	if (colliding(position + sf::Vector2f(velocity.x * deltaTime, 0)))
+	if (map->isColliding(position, sf::Vector2f(velocity.x * deltaTime, 0)))
 	{
 		velocity.x = 0.0f;
 	}
 
-	if (colliding(position + sf::Vector2f(0, velocity.y * deltaTime)))//Causes mario to stop briefly before hitting floor on low fps. Needs fix
+	if (map->isColliding(position, sf::Vector2f(0, velocity.y * deltaTime)))//Causes mario to stop briefly before hitting floor on low fps. Needs fix
 	{
 		velocity.y = 0.0f;
 	}
 
-	if (colliding(position + sf::Vector2f(0, 1)))
+	if (map->isColliding(position, sf::Vector2f(0, 1)))
 	{
 		onGround = true;
 	}
@@ -157,52 +165,13 @@ void Mario::updateState(float deltaTime)
 	}
 }
 
-
-bool Mario::colliding(sf::Vector2f currentPos)
+void Mario::hit()
 {
-	Level level = map->getCurrentLevel();
+	alive = false;
+	std::cout << "Hit" << std::endl;
+}
 
-	sf::Vector2f topLeft = currentPos;
-	sf::Vector2f topRight = topLeft; topRight.x += 48;
-	sf::Vector2f bottomLeft = topLeft; bottomLeft.y += 48;
-	sf::Vector2f bottomRight = topRight; bottomRight.y += 48;
-
-	if (topLeft.x < 0)
-	{
-		return true;
-	}
-
-	unsigned int tile = level[topLeft.y / 48][topLeft.x / 48];
-	if (tile > 0)
-	{
-		if (tile == 3)
-		{
-			map->updateTile(topLeft.x / 48, topLeft.y / 48, 8);
-		}
-		return true;
-	}
-
-	tile = level[topRight.y / 48][topRight.x / 48];
-	if (tile > 0)
-	{
-		if (tile == 3)
-		{
-			map->updateTile(topRight.x / 48, topRight.y / 48, 8);
-		}
-		return true;
-	}
-
-	tile = level[bottomLeft.y / 48][bottomLeft.x / 48];
-	if (tile > 0)
-	{
-		return true;
-	}
-
-	tile = level[bottomRight.y / 48][bottomRight.x / 48];
-	if (tile > 0)
-	{
-		return true;
-	}
-
-	return false;
+void Mario::powerUp()
+{
+	std::cout << "Power Up" << std::endl;
 }

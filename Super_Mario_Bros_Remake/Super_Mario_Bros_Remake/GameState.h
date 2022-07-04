@@ -1,6 +1,7 @@
 #pragma once
 #include "StateManager.h"
 #include "Mario.h"
+#include "Mushroom.h"
 
 class GameState : public State
 {
@@ -13,10 +14,14 @@ public:
 
 	void update(float deltaTime);
 	void draw(sf::RenderWindow* window);
+
+	void checkObjectCollisions();
+	void addMushroom(sf::Vector2f pos);
 private:
-	Mario mario;
+	Mario* mario;
 	Map map;
 	sf::RenderWindow* window;
 	sf::View view;
+
 	std::vector<GameObject*> gameObjects;
 };

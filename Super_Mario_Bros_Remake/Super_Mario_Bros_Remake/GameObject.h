@@ -7,7 +7,15 @@ public:
 	GameObject() {};
 	virtual ~GameObject() {};
 
-	virtual sf::FloatRect getAABB() = 0;
+	virtual void update(float deltaTime) = 0;
+	virtual void draw(sf::RenderWindow* window) = 0;
+
+	virtual void hit() = 0;
+
+	sf::FloatRect getAABB()
+	{
+		return sprite.getGlobalBounds();
+	}
 
 	const sf::Vector2f getPosition() const
 	{
@@ -29,10 +37,18 @@ public:
 		return sprite;
 	}
 
+	const bool isAlive() const
+	{
+		return alive;
+	}
+
 protected:
+	bool alive;
+
 	sf::Vector2f position;
 	sf::Vector2f velocity;
 	float maxVelocity;
+
 	sf::Texture texture;
 	sf::Sprite sprite;
 };

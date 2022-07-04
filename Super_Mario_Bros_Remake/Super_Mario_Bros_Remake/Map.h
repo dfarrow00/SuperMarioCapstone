@@ -30,10 +30,12 @@ struct Tile
 
 using Level = std::vector<std::vector<int>>;
 
+class GameState;
+
 class Map
 {
 public:
-	Map();
+	Map(GameState* gameState);
 	~Map();
 
 	void update(float deltaTime);
@@ -42,12 +44,16 @@ public:
 	void loadMap(int mapNumber);
 	void updateTile(int x, int y, int tile);
 
+	bool isColliding(sf::Vector2f pos, sf::Vector2f velocity);
+
 	Level getCurrentLevel();
 
 private:
+	GameState* game;
+
 	Level level;
 	sf::Texture tileSheet;
 	std::unordered_map<unsigned int, Tile*> tiles;
-	
+
 	unsigned int tileSize;
 };

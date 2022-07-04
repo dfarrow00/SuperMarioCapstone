@@ -22,15 +22,15 @@ public:
 	void update(float deltaTime);
 	void draw(sf::RenderWindow* window);
 
-	bool colliding(sf::Vector2f currentPos);
-
-	sf::FloatRect getAABB();
+	void hit();
+	void powerUp();
 
 private:
 	void handleInput(float deltaTime);
 	void checkCollisions(float deltaTime);
 	void updateState(float deltaTime);
 
+	float jumpTime = 0.0f;
 	float speed = 100.0f;
 	bool onGround;
 	bool facingLeft;

@@ -1,7 +1,8 @@
 #include "Map.h"
+#include "GameState.h"
 #include <iostream>
 
-Map::Map()
+Map::Map(GameState* gameState) : game(gameState)
 {
 	tileSize = 48;
 
@@ -32,7 +33,7 @@ Map::~Map()
 
 void Map::update(float deltaTime)
 {
-	
+
 }
 
 void Map::draw(sf::RenderWindow* window, sf::View* view)
@@ -104,4 +105,52 @@ void Map::loadMap(int mapNumber)
 void Map::updateTile(int x, int y, int tile)
 {
 	level[y][x] = tile;
+}
+
+bool Map::isColliding(sf::Vector2f pos, sf::Vector2f velocity)
+{
+	bool colliding = false;
+
+	sf::Vector2f topLeft = pos + velocity;
+	sf::Vector2f topRight = topLeft; topRight.x += tileSize;
+	sf::Vector2f bottomLeft = topLeft; bottomLeft.y += tileSize;
+	sf::Vector2f bottomRight = topRight; bottomRight.y += tileSize;
+
+	unsigned int tile = level[topLeft.y / tileSize][topLeft.x / tileSize];
+	if (tile > 0)
+	{
+		if (tile == 3 && pos.y > topLeft.y)
+		{
+			sf::Vector2f mushroomPos((int)(topLeft.x / tileSize) * tileSize, (int)(topLeft.y / tileSize) * tileSize - 1);
+			game->addMushroom(sf::Vector2f(mushroomPos));
+			updateTile(topLeft.x / tileSize, topLeft.y / tileSize, 8);
+		}
+		colliding = true;
+	}
+
+	tile = level[topRight.y / tileSize][topRight.x / tileSize];
+	if (tile > 0)
+	{
+		if (tile == 3 && pos.y > topRight.y)
+		{
+			sf::Vector2f mushroomPos((int)(topRight.x / tileSize) * tileSize, (int)(topRight.y / tileSize) * tileSize - 1);
+			game->addMushroom(sf::Vector2f(mushroomPos));
+			updateTile(topRight.x / tileSize, topRight.y / tileSize, 8);
+		}
+		colliding = true;
+	}
+
+	tile = level[bottomLeft.y / tileSize][bottomLeft.x / tileSize];
+	if (tile > 0)
+	{
+		colliding = true;
+	}
+
+	tile = level[bottomRight.y / tileSize][bottomRight.x / tileSize];
+	if (tile > 0)
+	{
+		colliding = true;
+	}
+
+	return colliding;
 }
