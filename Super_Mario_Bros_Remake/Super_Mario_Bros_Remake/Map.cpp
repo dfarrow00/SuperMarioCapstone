@@ -8,9 +8,9 @@ Map::Map(GameState* gameState) : game(gameState)
 
 	tileSheet.loadFromFile("Resources/Tile_Sheet.png");
 	int tileCount = 1;
-	for (int y = 0; y < tileSize * 2; y += tileSize)
+	for (int y = 0; y < tileSize * 3; y += tileSize)
 	{
-		for (int x = 0; x < tileSize * 4; x += tileSize)
+		for (int x = 0; x < tileSize * 3; x += tileSize)
 		{
 			sf::Sprite sprite(tileSheet, sf::IntRect(x, y, tileSize, tileSize));
 			Tile* tile = new Tile(sprite);
@@ -18,7 +18,6 @@ Map::Map(GameState* gameState) : game(gameState)
 			tileCount++;
 		}
 	}
-
 	loadMap(1);
 }
 

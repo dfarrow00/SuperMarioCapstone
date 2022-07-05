@@ -42,6 +42,9 @@
     <ClCompile Include="Mushroom.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Goomba.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -72,6 +75,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="Mushroom.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Goomba.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

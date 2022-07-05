@@ -42,8 +42,14 @@ public:
 		return alive;
 	}
 
+	const bool isActive() const
+	{
+		return active;
+	}
+
 protected:
-	bool alive;
+	bool alive = true;
+	bool active = true;
 
 	sf::Vector2f position;
 	sf::Vector2f velocity;

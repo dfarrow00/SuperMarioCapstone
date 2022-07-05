@@ -9,11 +9,20 @@ GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stat
 
 	Mario* player = new Mario(&map);
 	mario = player;
+
+	Goomba* goomba = new Goomba(&map, sf::Vector2f(600.0f, 570.0f));
+
 	gameObjects.push_back(player);
+	gameObjects.push_back(goomba);
 }
 
 GameState::~GameState()
 {
+	for (GameObject* object : gameObjects)
+	{
+		delete object;
+	}
+	gameObjects.clear();
 }
 
 void GameState::activate()
@@ -75,7 +84,8 @@ void GameState::checkObjectCollisions()
 		for (itr2 = itr + 1; itr2 != gameObjects.end(); itr2++)
 		{
 			GameObject* other = *itr2;
-			if (current->getAABB().intersects(other->getAABB()))
+			sf::FloatRect intersection;
+			if (current->getAABB().intersects(other->getAABB(), intersection))
 			{
 				if (Mario* newCurrent = dynamic_cast<Mario*>(current))
 				{
@@ -83,6 +93,49 @@ void GameState::checkObjectCollisions()
 					{
 						other->hit();
 						newCurrent->powerUp();
+					}
+					else if (Goomba* newOther = dynamic_cast<Goomba*>(other))
+					{
+						if (intersection.top == newOther->getAABB().top && intersection.width > intersection.height)
+						{
+							if (other->isActive())
+							{
+								newCurrent->addVelocity(sf::Vector2f(0, -775));
+							}
+							other->hit();
+						}
+						else if (newOther->isActive())
+						{
+							newCurrent->hit();
+						}
+					}
+				}
+
+				else if (Mushroom* newCurrent = dynamic_cast<Mushroom*>(current))
+				{
+					if (Mario* newOther = dynamic_cast<Mario*>(other))
+					{
+						newCurrent->hit();
+						newOther->powerUp();
+					}
+				}
+
+				else if (Goomba* newCurrent = dynamic_cast<Goomba*>(current))
+				{
+					if (Mario* newOther = dynamic_cast<Mario*>(other))
+					{
+						if (intersection.top == newCurrent->getAABB().top && intersection.width > intersection.height)
+						{
+							if (newCurrent->isActive())
+							{
+								newOther->addVelocity(sf::Vector2f(0, -775));
+							}
+							newCurrent->hit();
+						}
+						else if (newCurrent->isActive())
+						{
+							newOther->hit();
+						}
 					}
 				}
 			}
@@ -94,4 +147,10 @@ void GameState::addMushroom(sf::Vector2f pos)
 {
 	Mushroom* mushroom = new Mushroom(&map, pos);
 	gameObjects.push_back(mushroom);
+}
+
+void GameState::addGoomba(sf::Vector2f pos)
+{
+	Goomba* goomba = new Goomba(&map, pos);
+	gameObjects.push_back(goomba);
 }

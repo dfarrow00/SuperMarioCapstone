@@ -117,6 +117,14 @@ void Mario::handleInput(float deltaTime)
 
 void Mario::checkCollisions(float deltaTime)
 {
+	if (position.x + (velocity.x * deltaTime) < 0 || position.y + (velocity.y * deltaTime) >= 670)
+	{
+		velocity.x = 0.0f;
+		velocity.y = 0.0f;
+		alive = false;
+		return;
+	}
+
 	if (map->isColliding(position, sf::Vector2f(velocity.x * deltaTime, 0)))
 	{
 		velocity.x = 0.0f;
@@ -174,4 +182,9 @@ void Mario::hit()
 void Mario::powerUp()
 {
 	std::cout << "Power Up" << std::endl;
+}
+
+void Mario::addVelocity(sf::Vector2f vel)
+{
+	velocity += vel;
 }

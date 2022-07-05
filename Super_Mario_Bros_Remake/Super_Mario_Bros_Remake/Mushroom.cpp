@@ -28,6 +28,14 @@ void Mushroom::update(float deltaTime)
 	}
 	else
 	{
+		if (position.y + (velocity.y * deltaTime) >= 670)
+		{
+			velocity.x = 0.0f;
+			velocity.y = 0.0f;
+			hit();
+			return;
+		}
+
 		if (map->isColliding(position, sf::Vector2f(velocity.x * deltaTime, 0)))
 		{
 			velocity.x = -velocity.x;

@@ -25,6 +25,8 @@ public:
 	void hit();
 	void powerUp();
 
+	void addVelocity(sf::Vector2f vel);
+
 private:
 	void handleInput(float deltaTime);
 	void checkCollisions(float deltaTime);
