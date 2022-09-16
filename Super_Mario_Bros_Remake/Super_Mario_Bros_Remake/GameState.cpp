@@ -10,10 +10,9 @@ GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stat
 	Mario* player = new Mario(&map);
 	mario = player;
 
-	Goomba* goomba = new Goomba(&map, sf::Vector2f(600.0f, 570.0f));
-
 	gameObjects.push_back(player);
-	gameObjects.push_back(goomba);
+	
+	map.loadMap(1);
 }
 
 GameState::~GameState()
@@ -37,11 +36,11 @@ void GameState::update(float deltaTime)
 {
 	for (int x = 0; x < gameObjects.size(); x++)
 	{
-		if (gameObjects[x]->isAlive())
+		if (gameObjects[x]->isAlive() && gameObjects[x]->getDistance(mario) <= 768)
 		{
 			gameObjects[x]->update(deltaTime);
 		}
-		else
+		else if (!gameObjects[x]->isAlive())
 		{
 			delete gameObjects[x];
 			gameObjects.erase(gameObjects.begin() + x);
@@ -136,6 +135,12 @@ void GameState::checkObjectCollisions()
 						{
 							newOther->hit();
 						}
+					}
+
+					else if (Goomba* newOther = dynamic_cast<Goomba*>(other))
+					{
+						newCurrent->setVelocity(-newCurrent->getVelocity());
+						newOther->setVelocity(-newOther->getVelocity());
 					}
 				}
 			}
