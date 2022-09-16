@@ -7,7 +7,8 @@ Goomba::Goomba(Map* gameMap, sf::Vector2f pos) : map(gameMap), walkingAnim("Reso
 	currentAnim = &walkingAnim;
 	sprite = currentAnim->getCurrentSprite();
 	sprite.setPosition(position);
-	velocity = sf::Vector2f(-75, 0);
+	velocity = sf::Vector2f(-50, 0);
+	alive = true;
 	deadTimer = 2.0f;
 }
 
@@ -24,11 +25,6 @@ void Goomba::update(float deltaTime)
 		{
 			alive = false;
 		}
-		return;
-	}
-
-	if (!active)
-	{
 		return;
 	}
 
@@ -77,9 +73,4 @@ void Goomba::hit()
 	sprite = currentAnim->getCurrentSprite();
 	sprite.setPosition(position);
 	active = false;
-}
-
-void Goomba::activate()
-{
-	active = true;
 }

@@ -13,7 +13,6 @@ public:
 	void draw(sf::RenderWindow* window);
 
 	void hit();
-	void activate();
 
 private:
 	Map* map;

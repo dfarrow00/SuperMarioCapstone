@@ -1,7 +1,5 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <cmath>
-#include <iostream>
 
 class GameObject
 {
@@ -47,21 +45,6 @@ public:
 	const bool isActive() const
 	{
 		return active;
-	}
-
-	void setVelocity(sf::Vector2f vel)
-	{
-		velocity = vel;
-	}
-
-	void setActive(bool act)
-	{
-		active = act;
-	}
-
-	float getDistance(GameObject* obj)
-	{
-		return sqrt(pow(position.x - obj->getPosition().x, 2) + pow(position.y - obj->getPosition().y, 2));
 	}
 
 protected:

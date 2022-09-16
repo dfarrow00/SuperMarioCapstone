@@ -18,6 +18,7 @@ Map::Map(GameState* gameState) : game(gameState)
 			tileCount++;
 		}
 	}
+	loadMap(1);
 }
 
 Map::~Map()
@@ -85,32 +86,16 @@ void Map::loadMap(int mapNumber)
 	std::string line;
 	while (std::getline(file, line))
 	{
-		if (isdigit(line.at(0)))
+		std::vector<int> row;
+		std::stringstream stream(line);
+		int number;
+		for (int x = 0; x < line.length(); x++)
 		{
-			std::vector<int> row;
-			std::stringstream stream(line);
-			int number;
-			for (int x = 0; x < line.length(); x++)
-			{
-				stream >> number;
-				row.push_back(number);
-				number = 0;
-			}
-			level.push_back(row);
+			stream >> number;
+			row.push_back(number);
+			number = 0;
 		}
-		else
-		{
-			std::string entity;
-			float x;
-			float y;
-			std::stringstream stream(line);
-			stream >> entity >> x >> y;
-
-			if (entity == "Goomba")
-			{
-				game->addGoomba(sf::Vector2f(x, y));
-			}
-		}
+		level.push_back(row);
 	}
 
 	file.close();
