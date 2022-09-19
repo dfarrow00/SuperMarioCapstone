@@ -63,7 +63,6 @@ void Goomba::update(float deltaTime)
 	currentAnim->update(deltaTime);
 	sprite = currentAnim->getCurrentSprite();
 	sprite.setPosition(position);
-
 }
 
 void Goomba::draw(sf::RenderWindow* window)

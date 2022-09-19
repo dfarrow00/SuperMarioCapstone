@@ -1,6 +1,7 @@
 Improvements:
 - Tweak physics to be more efficient and accurate to original
 - Use goomba side detection method from GameState.cpp for ? blocks
+- Rearrange includes (#include in cpp and forward declare in header)
 
 Features to add next:
 - More Tiles

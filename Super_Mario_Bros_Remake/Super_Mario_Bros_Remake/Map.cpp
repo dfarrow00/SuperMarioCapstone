@@ -56,8 +56,16 @@ void Map::draw(sf::RenderWindow* window, sf::View* view)
 			else
 			{
 				int tileNumber = level[y][x];
-				tiles[tileNumber]->setPosition(x * tileSize, y * tileSize);
-				window->draw(tiles[tileNumber]->sprite);
+				if (tileNumber == 20)
+				{
+					tiles[3]->setPosition(x * tileSize, y * tileSize);
+					window->draw(tiles[3]->sprite);
+				}
+				else
+				{
+					tiles[tileNumber]->setPosition(x * tileSize, y * tileSize);
+					window->draw(tiles[tileNumber]->sprite);
+				}
 			}
 		}
 	}
@@ -112,7 +120,6 @@ void Map::loadMap(int mapNumber)
 			}
 		}
 	}
-
 	file.close();
 }
 
@@ -135,17 +142,32 @@ bool Map::isColliding(sf::Vector2f pos, sf::Vector2f velocity)
 	{
 		if (tile == 3 && pos.y > topLeft.y)
 		{
+			sf::Vector2f coinPos((int)(topLeft.x / tileSize) * tileSize, (int)(topLeft.y / tileSize) * tileSize - 1);
+			game->addCoin(sf::Vector2f(coinPos));
+			updateTile(topLeft.x / tileSize, topLeft.y / tileSize, 8);
+		}
+
+		else if (tile == 20 && pos.y > topLeft.y)
+		{
 			sf::Vector2f mushroomPos((int)(topLeft.x / tileSize) * tileSize, (int)(topLeft.y / tileSize) * tileSize - 1);
 			game->addMushroom(sf::Vector2f(mushroomPos));
 			updateTile(topLeft.x / tileSize, topLeft.y / tileSize, 8);
 		}
+
 		colliding = true;
 	}
 
 	tile = level[topRight.y / tileSize][topRight.x / tileSize];
 	if (tile > 0)
 	{
-		if (tile == 3 && pos.y > topRight.y)
+		if (tile == 3 && pos.y > topLeft.y)
+		{
+			sf::Vector2f coinPos((int)(topRight.x / tileSize) * tileSize, (int)(topRight.y / tileSize) * tileSize - 1);
+			game->addCoin(sf::Vector2f(coinPos));
+			updateTile(topRight.x / tileSize, topRight.y / tileSize, 8);
+		}
+
+		else if (tile == 20 && pos.y > topRight.y)
 		{
 			sf::Vector2f mushroomPos((int)(topRight.x / tileSize) * tileSize, (int)(topRight.y / tileSize) * tileSize - 1);
 			game->addMushroom(sf::Vector2f(mushroomPos));

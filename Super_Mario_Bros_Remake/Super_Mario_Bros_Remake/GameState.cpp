@@ -9,7 +9,6 @@ GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stat
 
 	Mario* player = new Mario(&map);
 	mario = player;
-
 	gameObjects.push_back(player);
 	
 	map.loadMap(1);
@@ -158,4 +157,10 @@ void GameState::addGoomba(sf::Vector2f pos)
 {
 	Goomba* goomba = new Goomba(&map, pos);
 	gameObjects.push_back(goomba);
+}
+
+void GameState::addCoin(sf::Vector2f pos)
+{
+	Coin* coin = new Coin(pos);
+	gameObjects.push_back(coin);
 }

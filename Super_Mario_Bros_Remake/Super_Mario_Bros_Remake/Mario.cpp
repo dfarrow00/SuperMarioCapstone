@@ -57,7 +57,7 @@ void Mario::handleInput(float deltaTime)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
-		velocity.x -= 800 * deltaTime;
+		velocity.x -= speed * deltaTime;
 		if (velocity.x < -maxVelocity)
 		{
 			velocity.x = -maxVelocity;
@@ -68,7 +68,7 @@ void Mario::handleInput(float deltaTime)
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 	{
-		velocity.x += 800 * deltaTime;
+		velocity.x += speed * deltaTime;
 		if (velocity.x > maxVelocity)
 		{
 			velocity.x = maxVelocity;
@@ -77,9 +77,10 @@ void Mario::handleInput(float deltaTime)
 		facingLeft = false;
 	}
 
+	//Jumping
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && onGround)
 	{
-		velocity.y = -350; //Not multiplied by dt as it is an impulse force and will be the same for all framerates
+		velocity.y = -jumpVelocity; //Not multiplied by dt as it is an impulse force and will be the same for all framerates
 		currentState = MarioState::Jumping;
 		jumpTime = 0.4f;
 	}
@@ -92,9 +93,10 @@ void Mario::handleInput(float deltaTime)
 		jumpTime = 0.0f;
 	}
 
+	//Applying drag
 	if (velocity.x > 0)
 	{
-		velocity.x -= 400 * deltaTime; //DRAG
+		velocity.x -= drag * deltaTime;
 		if (velocity.x < 0.0f)
 		{
 			velocity.x = 0.0f;
@@ -102,22 +104,23 @@ void Mario::handleInput(float deltaTime)
 	}
 	else if (velocity.x < 0)
 	{
-		velocity.x += 400 * deltaTime;
+		velocity.x += drag * deltaTime;
 		if (velocity.x > 0.0f)
 		{
 			velocity.x = 0.0f;
 		}
 	}
 
+	//If jump time limit reached, start pulling player downwards
 	if (jumpTime <= 0.0f)
 	{
-		velocity.y += 800 * deltaTime;
+		velocity.y += gravity * deltaTime;
 	}
 }
 
 void Mario::checkCollisions(float deltaTime)
 {
-	if (position.x + (velocity.x * deltaTime) < 0 || position.y + (velocity.y * deltaTime) >= 670)
+	if (position.x + (velocity.x * deltaTime) < 0 || position.y + (velocity.y * deltaTime) >= 670)//Out of bounds check.
 	{
 		velocity.x = 0.0f;
 		velocity.y = 0.0f;
@@ -125,17 +128,17 @@ void Mario::checkCollisions(float deltaTime)
 		return;
 	}
 
-	if (map->isColliding(position, sf::Vector2f(velocity.x * deltaTime, 0)))
+	if (map->isColliding(position, sf::Vector2f(velocity.x * deltaTime, 0)))//Checking collision along the x axis
 	{
 		velocity.x = 0.0f;
 	}
 
-	if (map->isColliding(position, sf::Vector2f(0, velocity.y * deltaTime)))//Causes mario to stop briefly before hitting floor on low fps. Needs fix
+	if (map->isColliding(position, sf::Vector2f(0, velocity.y * deltaTime)))//Checking collision along the y axis. Causes mario to stop briefly before hitting floor on low fps. Needs fix
 	{
 		velocity.y = 0.0f;
 	}
 
-	if (map->isColliding(position, sf::Vector2f(0, 1)))
+	if (map->isColliding(position, sf::Vector2f(0, 1)))//Ground check
 	{
 		onGround = true;
 	}
@@ -176,7 +179,6 @@ void Mario::updateState(float deltaTime)
 void Mario::hit()
 {
 	alive = false;
-	std::cout << "Hit" << std::endl;
 }
 
 void Mario::powerUp()

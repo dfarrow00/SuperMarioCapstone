@@ -3,6 +3,7 @@
 #include "Mario.h"
 #include "Mushroom.h"
 #include "Goomba.h"
+#include "Coin.h"
 
 class GameState : public State
 {
@@ -17,8 +18,10 @@ public:
 	void draw(sf::RenderWindow* window);
 
 	void checkObjectCollisions();
+
 	void addMushroom(sf::Vector2f pos);
 	void addGoomba(sf::Vector2f pos);
+	void addCoin(sf::Vector2f pos);
 private:
 	Mario* mario;
 	Map map;

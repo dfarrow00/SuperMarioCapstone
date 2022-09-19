@@ -33,9 +33,14 @@ private:
 	void updateState(float deltaTime);
 
 	float jumpTime = 0.0f;
-	float speed = 100.0f;
+	float jumpVelocity = 450.0f;
+	float speed = 800.0f;
+	float drag = 400.0f;
+	float gravity = 1600.0f;
+
 	bool onGround;
 	bool facingLeft;
+
 	Animation* currentAnim;
 	Animation idleAnim;
 	Animation runningAnim;
