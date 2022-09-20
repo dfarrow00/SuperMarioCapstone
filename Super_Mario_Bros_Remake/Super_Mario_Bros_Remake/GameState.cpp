@@ -1,7 +1,7 @@
 #include "GameState.h"
 #include <iostream>
 
-GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stateMgr), window(win), map(this)
+GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stateMgr), window(win), map(this), hud(window)
 {
 	isTransparent = false;
 	view = window->getDefaultView();
@@ -11,7 +11,8 @@ GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stat
 	mario = player;
 	gameObjects.push_back(player);
 	
-	map.loadMap(1);
+	map.loadMap(levelNumber);
+	hud.setLevel(1);
 }
 
 GameState::~GameState()
@@ -25,10 +26,12 @@ GameState::~GameState()
 
 void GameState::activate()
 {
+	hud.activate();
 }
 
 void GameState::deactivate()
 {
+	hud.deactivate();
 }
 
 void GameState::update(float deltaTime)
@@ -61,6 +64,14 @@ void GameState::update(float deltaTime)
 		window->setView(view);
 		stateManager->changeState(StateType::Menu);
 	}
+
+	currentTimeInterval += deltaTime;
+	if (currentTimeInterval >= timerInterval)
+	{
+		timer--;
+		currentTimeInterval = 0.0f;
+	}
+	hud.update(score, timer);
 }
 
 void GameState::draw(sf::RenderWindow* window)
@@ -70,6 +81,7 @@ void GameState::draw(sf::RenderWindow* window)
 		object->draw(window);
 	}
 	map.draw(window, &view);
+	hud.draw(window);
 }
 
 void GameState::checkObjectCollisions()
@@ -91,6 +103,7 @@ void GameState::checkObjectCollisions()
 					{
 						other->hit();
 						newCurrent->powerUp();
+						score += 200;
 					}
 					else if (Goomba* newOther = dynamic_cast<Goomba*>(other))
 					{
@@ -98,13 +111,16 @@ void GameState::checkObjectCollisions()
 						{
 							if (other->isActive())
 							{
-								newCurrent->addVelocity(sf::Vector2f(0, -775));
+								newCurrent->setVelocityY(-300);
+								score += 100;
 							}
 							other->hit();
 						}
 						else if (newOther->isActive())
 						{
 							newCurrent->hit();
+							lives--;
+							hud.setLives(lives);
 						}
 					}
 				}
@@ -126,13 +142,16 @@ void GameState::checkObjectCollisions()
 						{
 							if (newCurrent->isActive())
 							{
-								newOther->addVelocity(sf::Vector2f(0, -775));
+								newOther->setVelocityY(-300);
 							}
 							newCurrent->hit();
+							score += 100;
 						}
 						else if (newCurrent->isActive())
 						{
 							newOther->hit();
+							lives--;
+							hud.setLives(lives);
 						}
 					}
 
@@ -163,4 +182,11 @@ void GameState::addCoin(sf::Vector2f pos)
 {
 	Coin* coin = new Coin(pos);
 	gameObjects.push_back(coin);
+	coins++;
+	hud.setCoins(coins);
+}
+
+void GameState::addScore(int addedScore)
+{
+	score += addedScore;
 }

@@ -26,6 +26,7 @@ public:
 	void powerUp();
 
 	void addVelocity(sf::Vector2f vel);
+	void setVelocityY(float value);
 
 private:
 	void handleInput(float deltaTime);

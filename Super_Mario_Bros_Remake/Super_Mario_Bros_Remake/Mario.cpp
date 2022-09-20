@@ -190,3 +190,8 @@ void Mario::addVelocity(sf::Vector2f vel)
 {
 	velocity += vel;
 }
+
+void Mario::setVelocityY(float value)
+{
+	velocity.y = value;
+}

@@ -23,10 +23,12 @@ void StateManager::changeState(StateType state)
 	{
 		if (itr->first == state)
 		{
+			states.back().second->deactivate();
 			StateType tempType = itr->first;
 			State* tempState = itr->second;
 			states.erase(itr);
 			states.emplace_back(tempType, tempState);
+			states.back().second->activate();
 			return;
 		}
 	}

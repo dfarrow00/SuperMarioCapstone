@@ -2,7 +2,14 @@ Improvements:
 - Tweak physics to be more efficient and accurate to original
 - Use goomba side detection method from GameState.cpp for ? blocks
 - Rearrange includes (#include in cpp and forward declare in header)
+- Changing HUD score to be updated when score changes may be more efficient that updating every frame.
+- Possibly change where stats are stored (e.g. lives in mario class instead of gamestate) and how they are updated in HUD.
 
 Features to add next:
 - More Tiles
-- Add data to level file for gameobject spawn positions
+- Prevent movement past left side of the screen.
+
+Changelog:
+- Stats such as score, lives, timer etc.
+- Fully functional HUD.
+- Fixed mario goomba bounce velocity to be consistent

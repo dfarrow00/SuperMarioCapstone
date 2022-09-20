@@ -144,6 +144,7 @@ bool Map::isColliding(sf::Vector2f pos, sf::Vector2f velocity)
 		{
 			sf::Vector2f coinPos((int)(topLeft.x / tileSize) * tileSize, (int)(topLeft.y / tileSize) * tileSize - 1);
 			game->addCoin(sf::Vector2f(coinPos));
+			game->addScore(100);
 			updateTile(topLeft.x / tileSize, topLeft.y / tileSize, 8);
 		}
 
@@ -164,6 +165,7 @@ bool Map::isColliding(sf::Vector2f pos, sf::Vector2f velocity)
 		{
 			sf::Vector2f coinPos((int)(topRight.x / tileSize) * tileSize, (int)(topRight.y / tileSize) * tileSize - 1);
 			game->addCoin(sf::Vector2f(coinPos));
+			game->addScore(100);
 			updateTile(topRight.x / tileSize, topRight.y / tileSize, 8);
 		}
 
