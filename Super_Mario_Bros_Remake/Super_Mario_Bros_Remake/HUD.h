@@ -10,17 +10,18 @@ public:
 	void activate();
 	void deactivate();
 
-	void update(int newScore, int newTime);
+	void update(int newTime);
 	void draw(sf::RenderWindow* window);
 
 	void setLevel(int levelNumber);
 	void setCoins(int newCoins);
 	void setLives(int lives);
+	void setScore(int newScore);
 
 private:
 	void setupText(sf::Text* text);
 
-	int score;
+	int score = 0;
 	int level = 1;
 	int time = 400;
 	int coins = 0;

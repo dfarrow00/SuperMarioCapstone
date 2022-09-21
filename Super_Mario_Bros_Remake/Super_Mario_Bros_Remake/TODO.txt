@@ -10,6 +10,7 @@ Features to add next:
 - Prevent movement past left side of the screen.
 
 Changelog:
-- Stats such as score, lives, timer etc.
-- Fully functional HUD.
-- Fixed mario goomba bounce velocity to be consistent
+- HUD score is now updated only when the value changes, not every frame.
+- When player dies, level resets.
+- When all lives lost, game resets.
+- Mushroom now powers up mario when picked up.

@@ -78,6 +78,7 @@ std::vector<std::vector<int>> Map::getCurrentLevel()
 
 void Map::loadMap(int mapNumber)
 {
+	level.clear();
 	std::ifstream file;
 	std::string fileName("Resources/Level");
 	fileName.append(std::to_string(mapNumber));
@@ -128,14 +129,20 @@ void Map::updateTile(int x, int y, int tile)
 	level[y][x] = tile;
 }
 
-bool Map::isColliding(sf::Vector2f pos, sf::Vector2f velocity)
+bool Map::isColliding(sf::Vector2f pos, sf::Vector2f velocity, bool isBig)
 {
 	bool colliding = false;
 
+	int objectHeight = 48;
+	if (isBig)
+	{
+		objectHeight = 96;
+	}
+
 	sf::Vector2f topLeft = pos + velocity;
 	sf::Vector2f topRight = topLeft; topRight.x += tileSize;
-	sf::Vector2f bottomLeft = topLeft; bottomLeft.y += tileSize;
-	sf::Vector2f bottomRight = topRight; bottomRight.y += tileSize;
+	sf::Vector2f bottomLeft = topLeft; bottomLeft.y += objectHeight;
+	sf::Vector2f bottomRight = topRight; bottomRight.y += objectHeight;
 
 	unsigned int tile = level[topLeft.y / tileSize][topLeft.x / tileSize];
 	if (tile > 0)
@@ -144,7 +151,6 @@ bool Map::isColliding(sf::Vector2f pos, sf::Vector2f velocity)
 		{
 			sf::Vector2f coinPos((int)(topLeft.x / tileSize) * tileSize, (int)(topLeft.y / tileSize) * tileSize - 1);
 			game->addCoin(sf::Vector2f(coinPos));
-			game->addScore(100);
 			updateTile(topLeft.x / tileSize, topLeft.y / tileSize, 8);
 		}
 
@@ -165,7 +171,6 @@ bool Map::isColliding(sf::Vector2f pos, sf::Vector2f velocity)
 		{
 			sf::Vector2f coinPos((int)(topRight.x / tileSize) * tileSize, (int)(topRight.y / tileSize) * tileSize - 1);
 			game->addCoin(sf::Vector2f(coinPos));
-			game->addScore(100);
 			updateTile(topRight.x / tileSize, topRight.y / tileSize, 8);
 		}
 

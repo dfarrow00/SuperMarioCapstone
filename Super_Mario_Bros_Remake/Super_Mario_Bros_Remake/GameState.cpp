@@ -36,6 +36,18 @@ void GameState::deactivate()
 
 void GameState::update(float deltaTime)
 {
+	if (!mario->isAlive())
+	{
+		if (lives > 0)
+		{
+			resetLevel();
+		}
+		else
+		{
+			endGame();
+		}
+	}
+
 	for (int x = 0; x < gameObjects.size(); x++)
 	{
 		if (gameObjects[x]->isAlive() && gameObjects[x]->getDistance(mario) <= 768)
@@ -59,10 +71,7 @@ void GameState::update(float deltaTime)
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 	{
-		mario->reset();
-		view = window->getDefaultView();
-		window->setView(view);
-		stateManager->changeState(StateType::Menu);
+		endGame();
 	}
 
 	currentTimeInterval += deltaTime;
@@ -71,7 +80,7 @@ void GameState::update(float deltaTime)
 		timer--;
 		currentTimeInterval = 0.0f;
 	}
-	hud.update(score, timer);
+	hud.update(timer);
 }
 
 void GameState::draw(sf::RenderWindow* window)
@@ -103,7 +112,7 @@ void GameState::checkObjectCollisions()
 					{
 						other->hit();
 						newCurrent->powerUp();
-						score += 200;
+						addScore(200);
 					}
 					else if (Goomba* newOther = dynamic_cast<Goomba*>(other))
 					{
@@ -112,15 +121,14 @@ void GameState::checkObjectCollisions()
 							if (other->isActive())
 							{
 								newCurrent->setVelocityY(-300);
-								score += 100;
+								addScore(100);
 							}
 							other->hit();
 						}
-						else if (newOther->isActive())
+						else if (newOther->isActive() && !newCurrent->getInvinsible())
 						{
 							newCurrent->hit();
-							lives--;
-							hud.setLives(lives);
+							loseLife();
 						}
 					}
 				}
@@ -145,13 +153,12 @@ void GameState::checkObjectCollisions()
 								newOther->setVelocityY(-300);
 							}
 							newCurrent->hit();
-							score += 100;
+							addScore(100);
 						}
-						else if (newCurrent->isActive())
+						else if (newCurrent->isActive() && !newOther->getInvinsible())
 						{
 							newOther->hit();
-							lives--;
-							hud.setLives(lives);
+							loseLife();
 						}
 					}
 
@@ -184,9 +191,38 @@ void GameState::addCoin(sf::Vector2f pos)
 	gameObjects.push_back(coin);
 	coins++;
 	hud.setCoins(coins);
+	addScore(100);
 }
 
 void GameState::addScore(int addedScore)
 {
 	score += addedScore;
+	hud.setScore(score);
+}
+
+void GameState::loseLife()
+{
+	lives--;
+	hud.setLives(lives);
+}
+
+void GameState::resetLevel()
+{
+	gameObjects.clear();
+	mario->reset();
+	gameObjects.push_back(mario);
+	map.loadMap(1);
+	timer = 400;
+	coins = 0;
+	score = 0;
+	view = window->getDefaultView();
+	window->setView(view);
+}
+
+void GameState::endGame()
+{
+	mario->reset();
+	view = window->getDefaultView();
+	window->setView(view);
+	stateManager->changeState(StateType::Menu);
 }

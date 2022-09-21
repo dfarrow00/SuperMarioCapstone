@@ -4,7 +4,7 @@
 class Animation
 {
 public:
-	Animation(std::string filePath, int rowNumber, int frames, float animSpeed = 100);
+	Animation(std::string filePath, int rowNumber, int frames, float animSpeed = 100, bool big = false);
 	~Animation();
 
 	void reset();

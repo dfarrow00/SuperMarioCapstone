@@ -1,12 +1,16 @@
 #include "Mario.h"
 #include <iostream>
 
-Mario::Mario(Map* gameMap) : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.2), JumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1), map(gameMap)
+Mario::Mario(Map* gameMap) : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.2),
+JumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1), bigIdleAnim("Resources/Big_Mario_SpriteSheet.png", 0, 1, 100.0f, true), bigRunningAnim("Resources/Big_Mario_SpriteSheet.png", 1, 3, 0.2, true),
+bigJumpingAnim("Resources/Big_Mario_SpriteSheet.png", 2, 1, 100.0f, true), map(gameMap)
 {
 	setup();
 }
 
-Mario::Mario(Map* gameMap, sf::Vector2f& pos) : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1, 10), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.5), JumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1, 0.5), map(gameMap)
+Mario::Mario(Map* gameMap, sf::Vector2f& pos) : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1, 10), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.5),
+JumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1, 0.5), bigIdleAnim("Resources/Big_Mario_SpriteSheet.png", 0, 1, 100.0f, true), bigRunningAnim("Resources/Big_Mario_SpriteSheet.png", 1, 3, 0.2, true),
+bigJumpingAnim("Resources/Big_Mario_SpriteSheet.png", 2, 1, 100.0f, true), map(gameMap)
 {
 	setup();
 	position = pos;
@@ -29,6 +33,8 @@ void Mario::setup()
 	currentAnim = nullptr;
 	facingLeft = false;
 	alive = true;
+	isBig = false;
+	invinsible = false;
 }
 
 void Mario::reset()
@@ -39,6 +45,15 @@ void Mario::reset()
 void Mario::update(float deltaTime)
 {
 	currentState = MarioState::Idle;
+
+	if (invinsible)
+	{
+		currentInvTime += deltaTime;
+		if (currentInvTime > invinsibilityTime)
+		{
+			invinsible = false;
+		}
+	}
 
 	handleInput(deltaTime);
 	checkCollisions(deltaTime);
@@ -128,17 +143,17 @@ void Mario::checkCollisions(float deltaTime)
 		return;
 	}
 
-	if (map->isColliding(position, sf::Vector2f(velocity.x * deltaTime, 0)))//Checking collision along the x axis
+	if (map->isColliding(position, sf::Vector2f(velocity.x * deltaTime, 0), isBig))//Checking collision along the x axis
 	{
 		velocity.x = 0.0f;
 	}
 
-	if (map->isColliding(position, sf::Vector2f(0, velocity.y * deltaTime)))//Checking collision along the y axis. Causes mario to stop briefly before hitting floor on low fps. Needs fix
+	if (map->isColliding(position, sf::Vector2f(0, velocity.y * deltaTime), isBig))//Checking collision along the y axis. Causes mario to stop briefly before hitting floor on low fps. Needs fix
 	{
 		velocity.y = 0.0f;
 	}
 
-	if (map->isColliding(position, sf::Vector2f(0, 1)))//Ground check
+	if (map->isColliding(position, sf::Vector2f(0, 1), isBig))//Ground check
 	{
 		onGround = true;
 	}
@@ -151,20 +166,41 @@ void Mario::checkCollisions(float deltaTime)
 
 void Mario::updateState(float deltaTime)
 {
-	if (currentState == MarioState::Idle && currentAnim != &idleAnim)
+	if (!isBig)
 	{
-		currentAnim = &idleAnim;
-		currentAnim->reset();
+		if (currentState == MarioState::Idle && currentAnim != &idleAnim)
+		{
+			currentAnim = &idleAnim;
+			currentAnim->reset();
+		}
+		else if ((currentState == MarioState::Running_Right || currentState == MarioState::Running_Left) && currentAnim != &runningAnim)
+		{
+			currentAnim = &runningAnim;
+			currentAnim->reset();
+		}
+		else if (currentState == MarioState::Jumping && currentAnim != &JumpingAnim)
+		{
+			currentAnim = &JumpingAnim;
+			currentAnim->reset();
+		}
 	}
-	else if ((currentState == MarioState::Running_Right || currentState == MarioState::Running_Left) && currentAnim != &runningAnim)
+	else
 	{
-		currentAnim = &runningAnim;
-		currentAnim->reset();
-	}
-	else if (currentState == MarioState::Jumping && currentAnim != &JumpingAnim)
-	{
-		currentAnim = &JumpingAnim;
-		currentAnim->reset();
+		if (currentState == MarioState::Idle && currentAnim != &bigIdleAnim)
+		{
+			currentAnim = &bigIdleAnim;
+			currentAnim->reset();
+		}
+		else if ((currentState == MarioState::Running_Right || currentState == MarioState::Running_Left) && currentAnim != &bigRunningAnim)
+		{
+			currentAnim = &bigRunningAnim;
+			currentAnim->reset();
+		}
+		else if (currentState == MarioState::Jumping && currentAnim != &bigJumpingAnim)
+		{
+			currentAnim = &bigJumpingAnim;
+			currentAnim->reset();
+		}
 	}
 
 	currentAnim->update(deltaTime);
@@ -178,12 +214,20 @@ void Mario::updateState(float deltaTime)
 
 void Mario::hit()
 {
-	alive = false;
+	if (isBig)
+	{
+		setBig(false);
+		invinsible = true;
+	}
+	else
+	{
+		alive = false;
+	}
 }
 
 void Mario::powerUp()
 {
-	std::cout << "Power Up" << std::endl;
+	setBig(true);
 }
 
 void Mario::addVelocity(sf::Vector2f vel)
@@ -194,4 +238,23 @@ void Mario::addVelocity(sf::Vector2f vel)
 void Mario::setVelocityY(float value)
 {
 	velocity.y = value;
+}
+
+void Mario::setBig(bool value)
+{
+	if (!isBig && value)
+	{
+		isBig = value;
+		position.y -= 48;
+	}
+	else if (isBig && !value)
+	{
+		isBig = value;
+		position.y += 48;
+	}
+}
+
+bool Mario::getInvinsible()
+{
+	return invinsible;
 }

@@ -26,10 +26,15 @@ public:
 
 	void addScore(int addedScore);
 private:
-	int score = 0;
+	void loseLife();
+	void resetLevel();
+	void endGame();
+
 	int timer = 400;
 	float timerInterval = 0.4;
 	float currentTimeInterval = 0.0f;
+
+	int score = 0;
 	int coins = 0;
 	int lives = 3;
 	int levelNumber = 1;

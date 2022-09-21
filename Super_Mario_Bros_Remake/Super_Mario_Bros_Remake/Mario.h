@@ -28,6 +28,10 @@ public:
 	void addVelocity(sf::Vector2f vel);
 	void setVelocityY(float value);
 
+	void setBig(bool value);
+
+	bool getInvinsible();
+
 private:
 	void handleInput(float deltaTime);
 	void checkCollisions(float deltaTime);
@@ -38,14 +42,23 @@ private:
 	float speed = 800.0f;
 	float drag = 400.0f;
 	float gravity = 1600.0f;
+	float invinsibilityTime = 2.0f;
+	float currentInvTime = 0.0f;
 
 	bool onGround;
 	bool facingLeft;
+	bool isBig;
+	bool invinsible;
 
 	Animation* currentAnim;
+
 	Animation idleAnim;
 	Animation runningAnim;
 	Animation JumpingAnim;
+
+	Animation bigIdleAnim;
+	Animation bigRunningAnim;
+	Animation bigJumpingAnim;
 
 	MarioState currentState;
 

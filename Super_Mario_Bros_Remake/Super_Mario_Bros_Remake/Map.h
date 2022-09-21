@@ -44,7 +44,7 @@ public:
 	void loadMap(int mapNumber);
 	void updateTile(int x, int y, int tile);
 
-	bool isColliding(sf::Vector2f pos, sf::Vector2f velocity);
+	bool isColliding(sf::Vector2f pos, sf::Vector2f velocity, bool isBig = false);
 
 	Level getCurrentLevel();
 

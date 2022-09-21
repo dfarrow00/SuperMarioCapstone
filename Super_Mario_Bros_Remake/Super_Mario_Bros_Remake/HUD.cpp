@@ -31,10 +31,9 @@ HUD::~HUD()
 {
 }
 
-void HUD::update(int newScore, int newTime)
+void HUD::update(int newTime)
 {
 	time = newTime;
-	score = newScore;
 
 	scoreValueText.setString(std::to_string(score));
 	timeValueText.setString(std::to_string(time));
@@ -111,4 +110,10 @@ void HUD::setLives(int newLives)
 {
 	lives = newLives;
 	livesValueText.setString(std::to_string(lives));
+}
+
+void HUD::setScore(int newScore)
+{
+	score = newScore;
+	scoreValueText.setString(std::to_string(score));
 }

@@ -1,12 +1,17 @@
 #include "Animation.h"
 #include <iostream>
 
-Animation::Animation(std::string filePath, int rowNumber, int frames, float animSpeed) : animationSpeed(animSpeed)
+Animation::Animation(std::string filePath, int rowNumber, int frames, float animSpeed, bool big) : animationSpeed(animSpeed)
 {
 	spriteSheet.loadFromFile(filePath);
+	int rowHeight = 48;
+	if (big)
+	{
+		rowHeight = 96;
+	}
 	for (int x = 0; x < frames * 48; x += 48)
 	{
-		sf::Sprite frame(spriteSheet, sf::IntRect(x, rowNumber * 48, 48, 48));
+		sf::Sprite frame(spriteSheet, sf::IntRect(x, rowNumber * rowHeight, 48, rowHeight));
 		sprites.push_back(frame);
 	}
 
