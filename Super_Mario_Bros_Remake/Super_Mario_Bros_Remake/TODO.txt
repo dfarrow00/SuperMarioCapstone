@@ -2,15 +2,17 @@ Improvements:
 - Tweak physics to be more efficient and accurate to original
 - Use goomba side detection method from GameState.cpp for ? blocks
 - Rearrange includes (#include in cpp and forward declare in header)
-- Changing HUD score to be updated when score changes may be more efficient that updating every frame.
 - Possibly change where stats are stored (e.g. lives in mario class instead of gamestate) and how they are updated in HUD.
 
 Features to add next:
 - More Tiles
 - Prevent movement past left side of the screen.
 
+Known Bugs:
+- Mario in big state can go through blocks with side collision at a certain height. May need to add
+middle left and middle right collision checks when mario is big.
+
 Changelog:
-- HUD score is now updated only when the value changes, not every frame.
-- When player dies, level resets.
-- When all lives lost, game resets.
-- Mushroom now powers up mario when picked up.
+- Added flashing effect when mario is hit is big state
+- Fixed goombas colliding with other goombas that are inactive
+- Added remaining mushroom ? blocks to map.

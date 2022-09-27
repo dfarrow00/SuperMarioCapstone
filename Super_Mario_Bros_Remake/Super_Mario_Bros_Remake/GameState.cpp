@@ -164,8 +164,11 @@ void GameState::checkObjectCollisions()
 
 					else if (Goomba* newOther = dynamic_cast<Goomba*>(other))
 					{
-						newCurrent->setVelocity(-newCurrent->getVelocity());
-						newOther->setVelocity(-newOther->getVelocity());
+						if (newCurrent->isActive() && newOther->isActive())
+						{
+							newCurrent->setVelocity(-newCurrent->getVelocity());
+							newOther->setVelocity(-newOther->getVelocity());
+						}
 					}
 				}
 			}

@@ -49,9 +49,17 @@ void Mario::update(float deltaTime)
 	if (invinsible)
 	{
 		currentInvTime += deltaTime;
+		flashingTimer += deltaTime;
+		if (flashingTimer >= flashingRate)
+		{
+			isVisible = !isVisible;
+			flashingTimer = 0.0f;
+		}
 		if (currentInvTime > invinsibilityTime)
 		{
 			invinsible = false;
+			isVisible = true;
+			currentInvTime = 0.0f;
 		}
 	}
 
@@ -65,7 +73,10 @@ void Mario::update(float deltaTime)
 
 void Mario::draw(sf::RenderWindow* window)
 {
-	window->draw(sprite);
+	if (isVisible)
+	{
+		window->draw(sprite);
+	}
 }
 
 void Mario::handleInput(float deltaTime)

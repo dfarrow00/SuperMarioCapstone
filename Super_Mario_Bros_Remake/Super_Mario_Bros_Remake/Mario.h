@@ -42,13 +42,17 @@ private:
 	float speed = 800.0f;
 	float drag = 400.0f;
 	float gravity = 1600.0f;
+
 	float invinsibilityTime = 2.0f;
 	float currentInvTime = 0.0f;
+	float flashingTimer = 0.0f;
+	float flashingRate = 0.1f;
 
 	bool onGround;
 	bool facingLeft;
 	bool isBig;
 	bool invinsible;
+	bool isVisible = true;
 
 	Animation* currentAnim;
 
