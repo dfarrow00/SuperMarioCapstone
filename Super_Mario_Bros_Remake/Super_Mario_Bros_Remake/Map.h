@@ -49,6 +49,8 @@ public:
 	Level getCurrentLevel();
 
 private:
+	bool checkPoint(unsigned int tile, sf::Vector2f point, sf::Vector2f pos, bool isBig);
+
 	GameState* game;
 
 	Level level;

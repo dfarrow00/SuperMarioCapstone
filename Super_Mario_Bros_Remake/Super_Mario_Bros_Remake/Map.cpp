@@ -5,7 +5,6 @@
 Map::Map(GameState* gameState) : game(gameState)
 {
 	tileSize = 48;
-
 	tileSheet.loadFromFile("Resources/Tile_Sheet.png");
 	int tileCount = 1;
 	for (int y = 0; y < tileSize * 3; y += tileSize)
@@ -132,68 +131,64 @@ void Map::updateTile(int x, int y, int tile)
 bool Map::isColliding(sf::Vector2f pos, sf::Vector2f velocity, bool isBig)
 {
 	bool colliding = false;
+	std::vector<sf::Vector2f> points;
 
-	int objectHeight = 48;
+	sf::Vector2f topLeft = pos + velocity; points.push_back(topLeft);
+	sf::Vector2f topRight = topLeft; topRight.x += tileSize; points.push_back(topRight);
+	sf::Vector2f bottomLeft = topLeft; bottomLeft.y += tileSize; points.push_back(bottomLeft);
+	sf::Vector2f bottomRight = topRight; bottomRight.y += tileSize; points.push_back(bottomRight);
+
+	for (sf::Vector2f point : points)
+	{
+		unsigned int tile = level[point.y / tileSize][point.x / tileSize];
+		if (checkPoint(tile, point, pos, isBig))
+		{
+			colliding = true;
+		}
+	}
+
 	if (isBig)
 	{
-		objectHeight = 96;
-	}
+		sf::Vector2f bigBottomLeft = bottomLeft; bigBottomLeft.y += tileSize;
+		sf::Vector2f bigBottomRight = bigBottomLeft; bigBottomRight.x += tileSize;
 
-	sf::Vector2f topLeft = pos + velocity;
-	sf::Vector2f topRight = topLeft; topRight.x += tileSize;
-	sf::Vector2f bottomLeft = topLeft; bottomLeft.y += objectHeight;
-	sf::Vector2f bottomRight = topRight; bottomRight.y += objectHeight;
-
-	unsigned int tile = level[topLeft.y / tileSize][topLeft.x / tileSize];
-	if (tile > 0)
-	{
-		if (tile == 3 && pos.y > topLeft.y)
+		unsigned int tile = level[bigBottomLeft.y / tileSize][bigBottomLeft.x / tileSize];
+		if (checkPoint(tile, bigBottomLeft, pos, isBig))
 		{
-			sf::Vector2f coinPos((int)(topLeft.x / tileSize) * tileSize, (int)(topLeft.y / tileSize) * tileSize - 1);
-			game->addCoin(sf::Vector2f(coinPos));
-			updateTile(topLeft.x / tileSize, topLeft.y / tileSize, 8);
+			colliding = true;
 		}
 
-		else if (tile == 20 && pos.y > topLeft.y)
+		tile = level[bigBottomRight.y / tileSize][bigBottomRight.x / tileSize];
+		if (checkPoint(tile, bigBottomRight, pos, isBig))
 		{
-			sf::Vector2f mushroomPos((int)(topLeft.x / tileSize) * tileSize, (int)(topLeft.y / tileSize) * tileSize - 1);
-			game->addMushroom(sf::Vector2f(mushroomPos));
-			updateTile(topLeft.x / tileSize, topLeft.y / tileSize, 8);
+			colliding = true;
 		}
-
-		colliding = true;
 	}
-
-	tile = level[topRight.y / tileSize][topRight.x / tileSize];
-	if (tile > 0)
-	{
-		if (tile == 3 && pos.y > topLeft.y)
-		{
-			sf::Vector2f coinPos((int)(topRight.x / tileSize) * tileSize, (int)(topRight.y / tileSize) * tileSize - 1);
-			game->addCoin(sf::Vector2f(coinPos));
-			updateTile(topRight.x / tileSize, topRight.y / tileSize, 8);
-		}
-
-		else if (tile == 20 && pos.y > topRight.y)
-		{
-			sf::Vector2f mushroomPos((int)(topRight.x / tileSize) * tileSize, (int)(topRight.y / tileSize) * tileSize - 1);
-			game->addMushroom(sf::Vector2f(mushroomPos));
-			updateTile(topRight.x / tileSize, topRight.y / tileSize, 8);
-		}
-		colliding = true;
-	}
-
-	tile = level[bottomLeft.y / tileSize][bottomLeft.x / tileSize];
-	if (tile > 0)
-	{
-		colliding = true;
-	}
-
-	tile = level[bottomRight.y / tileSize][bottomRight.x / tileSize];
-	if (tile > 0)
-	{
-		colliding = true;
-	}
-
 	return colliding;
+}
+
+bool Map::checkPoint(unsigned int tile, sf::Vector2f point, sf::Vector2f pos, bool isBig)
+{
+	if (tile > 0)
+	{
+		if (tile == 3 && pos.y > point.y)
+		{
+			sf::Vector2f coinPos((int)(point.x / tileSize) * tileSize, (int)(point.y / tileSize) * tileSize - 1);
+			game->addCoin(sf::Vector2f(coinPos));
+			updateTile(point.x / tileSize, point.y / tileSize, 8);
+		}
+
+		else if (tile == 20 && pos.y > point.y)
+		{
+			sf::Vector2f mushroomPos((int)(point.x / tileSize) * tileSize, (int)(point.y / tileSize) * tileSize - 1);
+			game->addMushroom(sf::Vector2f(mushroomPos));
+			updateTile(point.x / tileSize, point.y / tileSize, 8);
+		}
+		else if (isBig && tile == 2 && pos.y > point.y)
+		{
+			updateTile(point.x / tileSize, point.y / tileSize, 0);
+		}
+		return true;
+	}
+	return false;
 }

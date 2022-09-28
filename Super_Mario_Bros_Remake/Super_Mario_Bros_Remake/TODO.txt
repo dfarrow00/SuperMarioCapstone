@@ -9,10 +9,9 @@ Features to add next:
 - Prevent movement past left side of the screen.
 
 Known Bugs:
-- Mario in big state can go through blocks with side collision at a certain height. May need to add
-middle left and middle right collision checks when mario is big.
+
 
 Changelog:
-- Added flashing effect when mario is hit is big state
-- Fixed goombas colliding with other goombas that are inactive
-- Added remaining mushroom ? blocks to map.
+- Fixed mario collision bug.
+- Tidied up map collision code
+- Bricks now break when big mario hits bottom
