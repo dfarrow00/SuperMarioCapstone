@@ -2,15 +2,17 @@
 #include <iostream>
 
 Mario::Mario(Map* gameMap) : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.2),
-JumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1), bigIdleAnim("Resources/Big_Mario_SpriteSheet.png", 0, 1, 100.0f, true), bigRunningAnim("Resources/Big_Mario_SpriteSheet.png", 1, 3, 0.2, true),
-bigJumpingAnim("Resources/Big_Mario_SpriteSheet.png", 2, 1, 100.0f, true), map(gameMap)
+JumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1), flagGrabAnim("Resources/Mario_SpriteSheet.png", 3, 1), deathAnim("Resources/Mario_SpriteSheet.png", 4, 1), 
+bigIdleAnim("Resources/Big_Mario_SpriteSheet.png", 0, 1, 100.0f, true), bigRunningAnim("Resources/Big_Mario_SpriteSheet.png", 1, 3, 0.2, true), 
+bigJumpingAnim("Resources/Big_Mario_SpriteSheet.png", 2, 1, 100.0f, true), bigFlagGrabAnim("Resources/Big_Mario_SpriteSheet.png", 3, 2, 0.2, true), map(gameMap)
 {
 	setup();
 }
 
-Mario::Mario(Map* gameMap, sf::Vector2f& pos) : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1, 10), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.5),
-JumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1, 0.5), bigIdleAnim("Resources/Big_Mario_SpriteSheet.png", 0, 1, 100.0f, true), bigRunningAnim("Resources/Big_Mario_SpriteSheet.png", 1, 3, 0.2, true),
-bigJumpingAnim("Resources/Big_Mario_SpriteSheet.png", 2, 1, 100.0f, true), map(gameMap)
+Mario::Mario(Map* gameMap, sf::Vector2f& pos) : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.2),
+JumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1), flagGrabAnim("Resources/Mario_SpriteSheet.png", 3, 1), deathAnim("Resources/Mario_SpriteSheet.png", 4, 1),
+bigIdleAnim("Resources/Big_Mario_SpriteSheet.png", 0, 1, 100.0f, true), bigRunningAnim("Resources/Big_Mario_SpriteSheet.png", 1, 3, 0.2, true),
+bigJumpingAnim("Resources/Big_Mario_SpriteSheet.png", 2, 1, 100.0f, true), bigFlagGrabAnim("Resources/Big_Mario_SpriteSheet.png", 3, 2, 0.2, true), map(gameMap)
 {
 	setup();
 	position = pos;
@@ -35,6 +37,8 @@ void Mario::setup()
 	alive = true;
 	isBig = false;
 	invinsible = false;
+	playingLevelCompleteAnim = false;
+	finishReached = false;
 }
 
 void Mario::reset()
@@ -45,30 +49,24 @@ void Mario::reset()
 void Mario::update(float deltaTime)
 {
 	currentState = MarioState::Idle;
-
-	if (invinsible)
+	if (playingLevelCompleteAnim)
 	{
-		currentInvTime += deltaTime;
-		flashingTimer += deltaTime;
-		if (flashingTimer >= flashingRate)
-		{
-			isVisible = !isVisible;
-			flashingTimer = 0.0f;
-		}
-		if (currentInvTime > invinsibilityTime)
-		{
-			invinsible = false;
-			isVisible = true;
-			currentInvTime = 0.0f;
-		}
+		updateLevelCompleteAnim(deltaTime);
 	}
-
-	handleInput(deltaTime);
-	checkCollisions(deltaTime);
-	updateState(deltaTime);
+	else
+	{
+		handleInput(deltaTime);
+		checkCollisions(deltaTime);
+		updateState(deltaTime);
+	}
 
 	position = position + (velocity * deltaTime);
 	sprite.setPosition(position);
+
+	if (invinsible)
+	{
+		handleInvincibility(deltaTime);
+	}
 }
 
 void Mario::draw(sf::RenderWindow* window)
@@ -194,6 +192,11 @@ void Mario::updateState(float deltaTime)
 			currentAnim = &JumpingAnim;
 			currentAnim->reset();
 		}
+		else if (currentState == MarioState::Grabbing_Flag && currentAnim != &flagGrabAnim)
+		{
+			currentAnim = &flagGrabAnim;
+			currentAnim->reset();
+		}
 	}
 	else
 	{
@@ -212,6 +215,11 @@ void Mario::updateState(float deltaTime)
 			currentAnim = &bigJumpingAnim;
 			currentAnim->reset();
 		}
+		else if (currentState == MarioState::Grabbing_Flag && currentAnim != &bigFlagGrabAnim)
+		{
+			currentAnim = &bigFlagGrabAnim;
+			currentAnim->reset();
+		}
 	}
 
 	currentAnim->update(deltaTime);
@@ -220,6 +228,23 @@ void Mario::updateState(float deltaTime)
 	{
 		sprite.setOrigin({ sprite.getLocalBounds().width, 0 });
 		sprite.scale(-1, 1);
+	}
+}
+
+void Mario::handleInvincibility(float deltaTime)
+{
+	currentInvTime += deltaTime;
+	flashingTimer += deltaTime;
+	if (flashingTimer >= flashingRate)
+	{
+		isVisible = !isVisible;
+		flashingTimer = 0.0f;
+	}
+	if (currentInvTime > invinsibilityTime)
+	{
+		invinsible = false;
+		isVisible = true;
+		currentInvTime = 0.0f;
 	}
 }
 
@@ -268,4 +293,62 @@ void Mario::setBig(bool value)
 bool Mario::getInvinsible()
 {
 	return invinsible;
+}
+
+void Mario::playLevelCompleteAnim()
+{
+	playingLevelCompleteAnim = true;
+	currentState = MarioState::Grabbing_Flag;
+
+	sf::Vector2f flagPolePos = map->getFlagPolePos();
+	position.x = flagPolePos.x;
+	if (facingLeft)
+	{
+		position.x += 24;
+	}
+	else
+	{
+		position.x -= 24;
+	}
+
+	if (position.y < flagPolePos.y)
+	{
+		position.y = flagPolePos.y;
+	}
+	else if (!isBig && position.y > 528)
+	{
+		position.y = 528;
+	}
+	else if (isBig && position.y > 480)
+	{
+		position.y = 480;
+	}
+	velocity = sf::Vector2f(0, 200);
+}
+
+void Mario::updateLevelCompleteAnim(float deltaTime)
+{
+	if (velocity.x == 0)
+	{
+		currentState = MarioState::Grabbing_Flag;
+	}
+	updateState(deltaTime);
+
+	if ((!isBig && position.y >= 528 && !velocity.y == 0.0f) || (isBig && position.y >= 480 && !velocity.y == 0.0f))
+	{
+		velocity.y = 0.0f;
+	}
+	else if (velocity.y == 0.0f)
+	{
+		currentLevelCompleteTime += deltaTime;
+		if (currentLevelCompleteTime >= levelCompleteDelay)
+		{
+			finishReached = true;
+		}
+	}
+}
+
+bool Mario::getFinishReached()
+{
+	return finishReached;
 }

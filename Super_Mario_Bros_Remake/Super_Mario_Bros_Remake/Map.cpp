@@ -7,7 +7,7 @@ Map::Map(GameState* gameState) : game(gameState)
 	tileSize = 48;
 	tileSheet.loadFromFile("Resources/Tile_Sheet.png");
 	int tileCount = 1;
-	for (int y = 0; y < tileSize * 3; y += tileSize)
+	for (int y = 0; y < tileSize * 4; y += tileSize)
 	{
 		for (int x = 0; x < tileSize * 3; x += tileSize)
 		{
@@ -17,6 +17,12 @@ Map::Map(GameState* gameState) : game(gameState)
 			tileCount++;
 		}
 	}
+
+	flagPoleScores.emplace(95, 100);
+	flagPoleScores.emplace(96, 400);
+	flagPoleScores.emplace(97, 800);
+	flagPoleScores.emplace(98, 2000);
+	flagPoleScores.emplace(99, 4000);
 }
 
 Map::~Map()
@@ -60,6 +66,16 @@ void Map::draw(sf::RenderWindow* window, sf::View* view)
 					tiles[3]->setPosition(x * tileSize, y * tileSize);
 					window->draw(tiles[3]->sprite);
 				}
+				else if (tileNumber >= 95 && tileNumber <= 98)
+				{
+					tiles[10]->setPosition(x * tileSize, y * tileSize);
+					window->draw(tiles[10]->sprite);
+				}
+				else if (tileNumber == 99)
+				{
+					tiles[11]->setPosition(x * tileSize, y * tileSize);
+					window->draw(tiles[11]->sprite);
+				}
 				else
 				{
 					tiles[tileNumber]->setPosition(x * tileSize, y * tileSize);
@@ -101,6 +117,10 @@ void Map::loadMap(int mapNumber)
 			for (int x = 0; x < line.length(); x++)
 			{
 				stream >> number;
+				if (number == 99)
+				{
+					flagPolePos = sf::Vector2f(x * tileSize, level.size() + 1 * tileSize);
+				}
 				row.push_back(number);
 				number = 0;
 			}
@@ -140,6 +160,10 @@ bool Map::isColliding(sf::Vector2f pos, sf::Vector2f velocity, bool isBig)
 
 	for (sf::Vector2f point : points)
 	{
+		if (point.y < 0)
+		{
+			continue;
+		}
 		unsigned int tile = level[point.y / tileSize][point.x / tileSize];
 		if (checkPoint(tile, point, pos, isBig))
 		{
@@ -152,16 +176,22 @@ bool Map::isColliding(sf::Vector2f pos, sf::Vector2f velocity, bool isBig)
 		sf::Vector2f bigBottomLeft = bottomLeft; bigBottomLeft.y += tileSize;
 		sf::Vector2f bigBottomRight = bigBottomLeft; bigBottomRight.x += tileSize;
 
-		unsigned int tile = level[bigBottomLeft.y / tileSize][bigBottomLeft.x / tileSize];
-		if (checkPoint(tile, bigBottomLeft, pos, isBig))
+		if (bigBottomLeft.y > 0.0)
 		{
-			colliding = true;
+			unsigned int tile = level[bigBottomLeft.y / tileSize][bigBottomLeft.x / tileSize];
+			if (checkPoint(tile, bigBottomLeft, pos, isBig))
+			{
+				colliding = true;
+			}
 		}
 
-		tile = level[bigBottomRight.y / tileSize][bigBottomRight.x / tileSize];
-		if (checkPoint(tile, bigBottomRight, pos, isBig))
+		if (bigBottomRight.y > 0.0)
 		{
-			colliding = true;
+			unsigned int tile = level[bigBottomRight.y / tileSize][bigBottomRight.x / tileSize];
+			if (checkPoint(tile, bigBottomRight, pos, isBig))
+			{
+				colliding = true;
+			}
 		}
 	}
 	return colliding;
@@ -184,6 +214,10 @@ bool Map::checkPoint(unsigned int tile, sf::Vector2f point, sf::Vector2f pos, bo
 			game->addMushroom(sf::Vector2f(mushroomPos));
 			updateTile(point.x / tileSize, point.y / tileSize, 8);
 		}
+		else if (tile >= 95)
+		{
+			game->levelComplete(flagPoleScores[tile]);
+		}
 		else if (isBig && tile == 2 && pos.y > point.y)
 		{
 			updateTile(point.x / tileSize, point.y / tileSize, 0);
@@ -191,4 +225,9 @@ bool Map::checkPoint(unsigned int tile, sf::Vector2f point, sf::Vector2f pos, bo
 		return true;
 	}
 	return false;
+}
+
+sf::Vector2f Map::getFlagPolePos()
+{
+	return flagPolePos;
 }

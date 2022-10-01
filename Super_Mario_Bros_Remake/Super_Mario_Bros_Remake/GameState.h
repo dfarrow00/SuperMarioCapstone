@@ -23,8 +23,9 @@ public:
 	void addMushroom(sf::Vector2f pos);
 	void addGoomba(sf::Vector2f pos);
 	void addCoin(sf::Vector2f pos);
-
 	void addScore(int addedScore);
+
+	void levelComplete(int flagScore);
 private:
 	void loseLife();
 	void resetLevel();
@@ -38,6 +39,8 @@ private:
 	int coins = 0;
 	int lives = 3;
 	int levelNumber = 1;
+
+	bool paused = false;
 
 	Mario* mario;
 	Map map;

@@ -4,7 +4,7 @@ Improvements:
 - Rearrange includes (#include in cpp and forward declare in header)
 - Possibly change where stats are stored (e.g. lives in mario class instead of gamestate) and how they are updated in HUD.
 
-Features to add next:
+Features to add:
 - More Tiles
 - Prevent movement past left side of the screen.
 
@@ -12,6 +12,5 @@ Known Bugs:
 
 
 Changelog:
-- Fixed mario collision bug.
-- Tidied up map collision code
-- Bricks now break when big mario hits bottom
+- Added goal flag and level complete animation
+- Fixed crash if mario moves past top of window

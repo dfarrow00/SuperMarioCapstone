@@ -36,6 +36,11 @@ void GameState::deactivate()
 
 void GameState::update(float deltaTime)
 {
+	if (paused)
+	{
+		return;
+	}
+
 	if (!mario->isAlive())
 	{
 		if (lives > 0)
@@ -46,6 +51,11 @@ void GameState::update(float deltaTime)
 		{
 			endGame();
 		}
+	}
+	else if (mario->getFinishReached())
+	{
+		//next level
+		endGame();
 	}
 
 	for (int x = 0; x < gameObjects.size(); x++)
@@ -218,14 +228,21 @@ void GameState::resetLevel()
 	timer = 400;
 	coins = 0;
 	score = 0;
+	hud.setScore(score);
+	hud.setCoins(coins);
 	view = window->getDefaultView();
 	window->setView(view);
 }
 
 void GameState::endGame()
 {
-	mario->reset();
-	view = window->getDefaultView();
-	window->setView(view);
+	resetLevel();
 	stateManager->changeState(StateType::Menu);
+}
+
+void GameState::levelComplete(int flagScore)
+{
+	score += flagScore;
+	hud.setScore(score);
+	mario->playLevelCompleteAnim();
 }

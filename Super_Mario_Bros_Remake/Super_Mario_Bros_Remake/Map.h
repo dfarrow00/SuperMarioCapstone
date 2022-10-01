@@ -47,6 +47,7 @@ public:
 	bool isColliding(sf::Vector2f pos, sf::Vector2f velocity, bool isBig = false);
 
 	Level getCurrentLevel();
+	sf::Vector2f getFlagPolePos();
 
 private:
 	bool checkPoint(unsigned int tile, sf::Vector2f point, sf::Vector2f pos, bool isBig);
@@ -56,6 +57,8 @@ private:
 	Level level;
 	sf::Texture tileSheet;
 	std::unordered_map<unsigned int, Tile*> tiles;
+	std::unordered_map<unsigned int, unsigned int> flagPoleScores;
+	sf::Vector2f flagPolePos;
 
 	unsigned int tileSize;
 };
