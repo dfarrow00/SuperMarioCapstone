@@ -1,0 +1,44 @@
+#include "Particle.h"
+
+Particle::Particle(std::string spriteSheetPath, sf::Vector2f pos, sf::Vector2f vel, bool isFacingLeft)
+{
+	texture.loadFromFile(spriteSheetPath);
+	sprite.setTexture(texture);
+
+	position = pos;
+	velocity = vel;
+	facingLeft = isFacingLeft;
+
+	sprite.setPosition(position);
+	if (facingLeft)
+	{
+		sprite.setOrigin({ sprite.getLocalBounds().width, 0 });
+		sprite.scale(-1, 1);
+	}
+}
+
+Particle::~Particle()
+{
+}
+
+void Particle::update(float deltaTime)
+{
+	currentLifetime += deltaTime;
+	if (currentLifetime >= maxLifetime)
+	{
+		alive = false;
+	}
+
+	velocity.y += gravity;
+	position += velocity * deltaTime;
+	sprite.setPosition(position);
+}
+
+void Particle::draw(sf::RenderWindow* window)
+{
+	window->draw(sprite);
+}
+
+void Particle::hit()
+{
+}

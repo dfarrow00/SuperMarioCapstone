@@ -9,8 +9,9 @@ Features to add:
 - Prevent movement past left side of the screen.
 
 Known Bugs:
-
+- Lives decrease when mario goes from big state to small, should only decrease when mario dies.
 
 Changelog:
-- Added goal flag and level complete animation
-- Fixed crash if mario moves past top of window
+- Added death animation
+- Added particle effect when brick blocks are broken
+- Moved lives to mario class and fixed lives decreasing when mario loses big state.

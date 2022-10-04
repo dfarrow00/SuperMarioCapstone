@@ -221,6 +221,7 @@ bool Map::checkPoint(unsigned int tile, sf::Vector2f point, sf::Vector2f pos, bo
 		else if (isBig && tile == 2 && pos.y > point.y)
 		{
 			updateTile(point.x / tileSize, point.y / tileSize, 0);
+			game->addParticles(sf::Vector2f((int)(point.x / tileSize) * tileSize, ((int)point.y / tileSize) * tileSize));
 		}
 		return true;
 	}

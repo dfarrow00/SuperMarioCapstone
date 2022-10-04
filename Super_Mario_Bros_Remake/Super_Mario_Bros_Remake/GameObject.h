@@ -61,7 +61,7 @@ public:
 
 	float getDistance(GameObject* obj)
 	{
-		return sqrt(pow(position.x - obj->getPosition().x, 2) + pow(position.y - obj->getPosition().y, 2));
+		return std::abs(position.x - obj->getPosition().x);
 	}
 
 protected:

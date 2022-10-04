@@ -6,7 +6,7 @@
 
 enum class MarioState
 {
-	Idle, Running_Right, Running_Left, Jumping, Grabbing_Flag
+	Idle, Running_Right, Running_Left, Jumping, Grabbing_Flag, Dead
 };
 
 class Mario : public GameObject
@@ -29,7 +29,9 @@ public:
 	void addVelocity(sf::Vector2f vel);
 	void setVelocityY(float value);
 	void setBig(bool value);
+	void resetLives();
 
+	int getLives();
 	bool getInvinsible();
 	bool getFinishReached();
 
@@ -39,7 +41,11 @@ private:
 	void updateState(float deltaTime);
 	void handleInvincibility(float deltaTime);
 
+	void playDeathAnim();
+	void updateDeathAnim(float deltaTime);
 	void updateLevelCompleteAnim(float deltaTime);
+
+	int lives = 3;
 
 	float jumpTime = 0.0f;
 	float jumpVelocity = 450.0f;
@@ -51,8 +57,12 @@ private:
 	float currentInvTime = 0.0f;
 	float flashingTimer = 0.0f;
 	float flashingRate = 0.1f;
+
 	float levelCompleteDelay = 1.0f;
 	float currentLevelCompleteTime = 0.0f;
+
+	float deathAnimTime = 3.0f;
+	float currentDeathAnimTime = 0.0f;
 
 	bool onGround;
 	bool facingLeft;
@@ -60,13 +70,14 @@ private:
 	bool invinsible;
 	bool isVisible = true;
 	bool playingLevelCompleteAnim = false;
+	bool playingDeathAnim = false;
 	bool finishReached = false;
 
 	Animation* currentAnim;
 
 	Animation idleAnim;
 	Animation runningAnim;
-	Animation JumpingAnim;
+	Animation jumpingAnim;
 	Animation flagGrabAnim;
 	Animation deathAnim;
 

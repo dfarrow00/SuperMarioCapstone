@@ -2,7 +2,7 @@
 #include <iostream>
 
 Mario::Mario(Map* gameMap) : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.2),
-JumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1), flagGrabAnim("Resources/Mario_SpriteSheet.png", 3, 1), deathAnim("Resources/Mario_SpriteSheet.png", 4, 1), 
+jumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1), flagGrabAnim("Resources/Mario_SpriteSheet.png", 3, 1), deathAnim("Resources/Mario_SpriteSheet.png", 4, 1), 
 bigIdleAnim("Resources/Big_Mario_SpriteSheet.png", 0, 1, 100.0f, true), bigRunningAnim("Resources/Big_Mario_SpriteSheet.png", 1, 3, 0.2, true), 
 bigJumpingAnim("Resources/Big_Mario_SpriteSheet.png", 2, 1, 100.0f, true), bigFlagGrabAnim("Resources/Big_Mario_SpriteSheet.png", 3, 2, 0.2, true), map(gameMap)
 {
@@ -10,7 +10,7 @@ bigJumpingAnim("Resources/Big_Mario_SpriteSheet.png", 2, 1, 100.0f, true), bigFl
 }
 
 Mario::Mario(Map* gameMap, sf::Vector2f& pos) : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.2),
-JumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1), flagGrabAnim("Resources/Mario_SpriteSheet.png", 3, 1), deathAnim("Resources/Mario_SpriteSheet.png", 4, 1),
+jumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1), flagGrabAnim("Resources/Mario_SpriteSheet.png", 3, 1), deathAnim("Resources/Mario_SpriteSheet.png", 4, 1),
 bigIdleAnim("Resources/Big_Mario_SpriteSheet.png", 0, 1, 100.0f, true), bigRunningAnim("Resources/Big_Mario_SpriteSheet.png", 1, 3, 0.2, true),
 bigJumpingAnim("Resources/Big_Mario_SpriteSheet.png", 2, 1, 100.0f, true), bigFlagGrabAnim("Resources/Big_Mario_SpriteSheet.png", 3, 2, 0.2, true), map(gameMap)
 {
@@ -24,17 +24,23 @@ Mario::~Mario()
 
 void Mario::setup()
 {
+	currentState = MarioState::Idle;
 	currentAnim = &idleAnim;
 	sprite = currentAnim->getCurrentSprite();
+
 	position = sf::Vector2f(96.0f, 575.5f);
 	velocity = sf::Vector2f(0.0f, 0.0f);
 	sprite.setPosition(position);
+
 	maxVelocity = 400.0f;
+	currentDeathAnimTime = 0.0f;
+	currentLevelCompleteTime = 0.0f;
+
 	onGround = false;
-	currentState = MarioState::Idle;
 	currentAnim = nullptr;
 	facingLeft = false;
 	alive = true;
+	active = true;
 	isBig = false;
 	invinsible = false;
 	playingLevelCompleteAnim = false;
@@ -53,20 +59,25 @@ void Mario::update(float deltaTime)
 	{
 		updateLevelCompleteAnim(deltaTime);
 	}
+	else if (playingDeathAnim)
+	{
+		updateDeathAnim(deltaTime);
+	}
 	else
 	{
 		handleInput(deltaTime);
 		checkCollisions(deltaTime);
-		updateState(deltaTime);
 	}
 
-	position = position + (velocity * deltaTime);
-	sprite.setPosition(position);
+	updateState(deltaTime);
 
 	if (invinsible)
 	{
 		handleInvincibility(deltaTime);
 	}
+
+	position = position + (velocity * deltaTime);
+	sprite.setPosition(position);
 }
 
 void Mario::draw(sf::RenderWindow* window)
@@ -187,14 +198,19 @@ void Mario::updateState(float deltaTime)
 			currentAnim = &runningAnim;
 			currentAnim->reset();
 		}
-		else if (currentState == MarioState::Jumping && currentAnim != &JumpingAnim)
+		else if (currentState == MarioState::Jumping && currentAnim != &jumpingAnim)
 		{
-			currentAnim = &JumpingAnim;
+			currentAnim = &jumpingAnim;
 			currentAnim->reset();
 		}
 		else if (currentState == MarioState::Grabbing_Flag && currentAnim != &flagGrabAnim)
 		{
 			currentAnim = &flagGrabAnim;
+			currentAnim->reset();
+		}
+		else if (currentState == MarioState::Dead && currentAnim != &deathAnim)
+		{
+			currentAnim = &deathAnim;
 			currentAnim->reset();
 		}
 	}
@@ -257,7 +273,8 @@ void Mario::hit()
 	}
 	else
 	{
-		alive = false;
+		lives--;
+		playDeathAnim();
 	}
 }
 
@@ -332,7 +349,6 @@ void Mario::updateLevelCompleteAnim(float deltaTime)
 	{
 		currentState = MarioState::Grabbing_Flag;
 	}
-	updateState(deltaTime);
 
 	if ((!isBig && position.y >= 528 && !velocity.y == 0.0f) || (isBig && position.y >= 480 && !velocity.y == 0.0f))
 	{
@@ -351,4 +367,35 @@ void Mario::updateLevelCompleteAnim(float deltaTime)
 bool Mario::getFinishReached()
 {
 	return finishReached;
+}
+
+void Mario::playDeathAnim()
+{
+	playingDeathAnim = true;
+	active = false;
+	currentState = MarioState::Dead;
+	velocity = sf::Vector2f(0, -750);
+}
+
+void Mario::updateDeathAnim(float deltaTime)
+{
+	currentState = MarioState::Dead;
+	currentDeathAnimTime += deltaTime;
+	if (currentDeathAnimTime >= deathAnimTime)
+	{
+		alive = false;
+		playingDeathAnim = false;
+		return;
+	}
+	velocity.y += gravity * deltaTime;
+}
+
+int Mario::getLives()
+{
+	return lives;
+}
+
+void Mario::resetLives()
+{
+	lives = 3;
 }

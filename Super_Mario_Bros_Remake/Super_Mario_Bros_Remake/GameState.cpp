@@ -1,4 +1,5 @@
 #include "GameState.h"
+#include "Particle.h"
 #include <iostream>
 
 GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stateMgr), window(win), map(this), hud(window)
@@ -12,6 +13,8 @@ GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stat
 	gameObjects.push_back(player);
 	
 	map.loadMap(levelNumber);
+	mario->resetLives();
+	hud.setLives(mario->getLives());
 	hud.setLevel(1);
 }
 
@@ -43,7 +46,7 @@ void GameState::update(float deltaTime)
 
 	if (!mario->isAlive())
 	{
-		if (lives > 0)
+		if (mario->getLives() > 0)
 		{
 			resetLevel();
 		}
@@ -95,11 +98,13 @@ void GameState::update(float deltaTime)
 
 void GameState::draw(sf::RenderWindow* window)
 {
-	for (GameObject* object : gameObjects)
+	//All game objects are drawn other than first in array. This is because mario is always the first object and should be drawn above the map for the death animaton to be visible
+	for (int x = 1; x < gameObjects.size(); x++)
 	{
-		object->draw(window);
+		gameObjects[x]->draw(window);
 	}
 	map.draw(window, &view);
+	mario->draw(window);
 	hud.draw(window);
 }
 
@@ -114,7 +119,7 @@ void GameState::checkObjectCollisions()
 		{
 			GameObject* other = *itr2;
 			sf::FloatRect intersection;
-			if (current->getAABB().intersects(other->getAABB(), intersection))
+			if (current->isActive() && other->isActive() && current->getAABB().intersects(other->getAABB(), intersection))
 			{
 				if (Mario* newCurrent = dynamic_cast<Mario*>(current))
 				{
@@ -138,7 +143,7 @@ void GameState::checkObjectCollisions()
 						else if (newOther->isActive() && !newCurrent->getInvinsible())
 						{
 							newCurrent->hit();
-							loseLife();
+							hud.setLives(mario->getLives());
 						}
 					}
 				}
@@ -168,7 +173,7 @@ void GameState::checkObjectCollisions()
 						else if (newCurrent->isActive() && !newOther->getInvinsible())
 						{
 							newOther->hit();
-							loseLife();
+							hud.setLives(mario->getLives());
 						}
 					}
 
@@ -207,16 +212,22 @@ void GameState::addCoin(sf::Vector2f pos)
 	addScore(100);
 }
 
+void GameState::addParticles(sf::Vector2f pos)
+{
+	Particle* particle1 = new Particle("Resources/Brick_Particle.png", sf::Vector2f(pos.x, pos.y + 10), sf::Vector2f(-100, -300), true);
+	Particle* particle2 = new Particle("Resources/Brick_Particle.png", sf::Vector2f(pos.x, pos.y + 10), sf::Vector2f(100, -300), false);
+	Particle* particle3 = new Particle("Resources/Brick_Particle.png", sf::Vector2f(pos.x, pos.y - 10), sf::Vector2f(-100, -300), true);
+	Particle* particle4 = new Particle("Resources/Brick_Particle.png", sf::Vector2f(pos.x, pos.y - 10), sf::Vector2f(100, -300), false);
+	gameObjects.push_back(particle1);
+	gameObjects.push_back(particle2);
+	gameObjects.push_back(particle3);
+	gameObjects.push_back(particle4);
+}
+
 void GameState::addScore(int addedScore)
 {
 	score += addedScore;
 	hud.setScore(score);
-}
-
-void GameState::loseLife()
-{
-	lives--;
-	hud.setLives(lives);
 }
 
 void GameState::resetLevel()
@@ -228,6 +239,7 @@ void GameState::resetLevel()
 	timer = 400;
 	coins = 0;
 	score = 0;
+	hud.setLives(mario->getLives());
 	hud.setScore(score);
 	hud.setCoins(coins);
 	view = window->getDefaultView();
@@ -236,6 +248,7 @@ void GameState::resetLevel()
 
 void GameState::endGame()
 {
+	mario->resetLives();
 	resetLevel();
 	stateManager->changeState(StateType::Menu);
 }
