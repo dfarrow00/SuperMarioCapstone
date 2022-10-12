@@ -3,6 +3,9 @@
 #include <cmath>
 #include <iostream>
 
+class Map;
+class Animation;
+
 class GameObject
 {
 public:
@@ -39,6 +42,11 @@ public:
 		return sprite;
 	}
 
+	const bool getFacingLeft() const
+	{
+		return facingLeft;
+	}
+
 	const bool isAlive() const
 	{
 		return alive;
@@ -59,6 +67,11 @@ public:
 		active = act;
 	}
 
+	void setFacingLeft(const bool val)
+	{
+		isBig = val;
+	}
+
 	float getDistance(GameObject* obj)
 	{
 		return std::abs(position.x - obj->getPosition().x);
@@ -67,10 +80,20 @@ public:
 protected:
 	bool alive = true;
 	bool active = true;
+	bool facingLeft = false;
+	bool isBig;
+
+	float maxVelocity;
+	const float GRAVITY = 1600.0f;
+
+	int spriteHeight;
+
+	Animation* currentAnim;
+
+	Map* map;
 
 	sf::Vector2f position;
 	sf::Vector2f velocity;
-	float maxVelocity;
 
 	sf::Texture texture;
 	sf::Sprite sprite;

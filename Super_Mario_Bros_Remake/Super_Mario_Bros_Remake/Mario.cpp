@@ -1,21 +1,24 @@
 #include "Mario.h"
+#include "Map.h"
 #include <iostream>
 
 Mario::Mario(Map* gameMap) : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.2),
 jumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1), flagGrabAnim("Resources/Mario_SpriteSheet.png", 3, 1), deathAnim("Resources/Mario_SpriteSheet.png", 4, 1), 
-bigIdleAnim("Resources/Big_Mario_SpriteSheet.png", 0, 1, 100.0f, true), bigRunningAnim("Resources/Big_Mario_SpriteSheet.png", 1, 3, 0.2, true), 
-bigJumpingAnim("Resources/Big_Mario_SpriteSheet.png", 2, 1, 100.0f, true), bigFlagGrabAnim("Resources/Big_Mario_SpriteSheet.png", 3, 2, 0.2, true), map(gameMap)
+bigIdleAnim("Resources/Big_Mario_SpriteSheet.png", 0, 1, 100.0f, 96), bigRunningAnim("Resources/Big_Mario_SpriteSheet.png", 1, 3, 0.2, 96), 
+bigJumpingAnim("Resources/Big_Mario_SpriteSheet.png", 2, 1, 100.0f, 96), bigFlagGrabAnim("Resources/Big_Mario_SpriteSheet.png", 3, 2, 0.2, 96)
 {
+	map = gameMap;
 	setup();
 }
 
 Mario::Mario(Map* gameMap, sf::Vector2f& pos) : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.2),
 jumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1), flagGrabAnim("Resources/Mario_SpriteSheet.png", 3, 1), deathAnim("Resources/Mario_SpriteSheet.png", 4, 1),
-bigIdleAnim("Resources/Big_Mario_SpriteSheet.png", 0, 1, 100.0f, true), bigRunningAnim("Resources/Big_Mario_SpriteSheet.png", 1, 3, 0.2, true),
-bigJumpingAnim("Resources/Big_Mario_SpriteSheet.png", 2, 1, 100.0f, true), bigFlagGrabAnim("Resources/Big_Mario_SpriteSheet.png", 3, 2, 0.2, true), map(gameMap)
+bigIdleAnim("Resources/Big_Mario_SpriteSheet.png", 0, 1, 100.0f, 96), bigRunningAnim("Resources/Big_Mario_SpriteSheet.png", 1, 3, 0.2, 96),
+bigJumpingAnim("Resources/Big_Mario_SpriteSheet.png", 2, 1, 100.0f, 96), bigFlagGrabAnim("Resources/Big_Mario_SpriteSheet.png", 3, 2, 0.2, 96)
 {
-	setup();
+	map = gameMap;
 	position = pos;
+	setup();
 }
 
 Mario::~Mario()
@@ -42,6 +45,7 @@ void Mario::setup()
 	alive = true;
 	active = true;
 	isBig = false;
+	spriteHeight = 48;
 	invinsible = false;
 	playingLevelCompleteAnim = false;
 	finishReached = false;
@@ -149,7 +153,7 @@ void Mario::handleInput(float deltaTime)
 	//If jump time limit reached, start pulling player downwards
 	if (jumpTime <= 0.0f)
 	{
-		velocity.y += gravity * deltaTime;
+		velocity.y += GRAVITY * deltaTime;
 	}
 }
 
@@ -163,17 +167,17 @@ void Mario::checkCollisions(float deltaTime)
 		return;
 	}
 
-	if (map->isColliding(position, sf::Vector2f(velocity.x * deltaTime, 0), isBig))//Checking collision along the x axis
+	if (map->isColliding(position, sf::Vector2f(velocity.x * deltaTime, 0), spriteHeight))//Checking collision along the x axis
 	{
 		velocity.x = 0.0f;
 	}
 
-	if (map->isColliding(position, sf::Vector2f(0, velocity.y * deltaTime), isBig))//Checking collision along the y axis. Causes mario to stop briefly before hitting floor on low fps. Needs fix
+	if (map->isColliding(position, sf::Vector2f(0, velocity.y * deltaTime), spriteHeight))//Checking collision along the y axis. Causes mario to stop briefly before hitting floor on low fps. Needs fix
 	{
 		velocity.y = 0.0f;
 	}
 
-	if (map->isColliding(position, sf::Vector2f(0, 1), isBig))//Ground check
+	if (map->isColliding(position, sf::Vector2f(0, 1), spriteHeight))//Ground check
 	{
 		onGround = true;
 	}
@@ -299,11 +303,13 @@ void Mario::setBig(bool value)
 	{
 		isBig = value;
 		position.y -= 48;
+		spriteHeight = 96;
 	}
 	else if (isBig && !value)
 	{
 		isBig = value;
 		position.y += 48;
+		spriteHeight = 48;
 	}
 }
 
@@ -387,7 +393,7 @@ void Mario::updateDeathAnim(float deltaTime)
 		playingDeathAnim = false;
 		return;
 	}
-	velocity.y += gravity * deltaTime;
+	velocity.y += GRAVITY * deltaTime;
 }
 
 int Mario::getLives()

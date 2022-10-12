@@ -17,7 +17,6 @@ public:
 private:
 	float maxLifetime = 1.0f;
 	float currentLifetime = 0.0f;
-	float gravity = 2.0f;
 
 	bool facingLeft;
 };

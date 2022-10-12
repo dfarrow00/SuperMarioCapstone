@@ -1,8 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "StateManager.h"
-#include "Mario.h"
-#include "Map.h"
 
 class Game
 {
@@ -21,5 +19,4 @@ private:
 	sf::View view;
 
 	StateManager stateManager;
-	std::vector<GameObject*> gameObjects;
 };

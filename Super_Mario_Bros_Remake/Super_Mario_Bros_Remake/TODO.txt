@@ -1,17 +1,15 @@
 Improvements:
-- Tweak physics to be more efficient and accurate to original
-- Use goomba side detection method from GameState.cpp for ? blocks
-- Rearrange includes (#include in cpp and forward declare in header)
-- Possibly change where stats are stored (e.g. lives in mario class instead of gamestate) and how they are updated in HUD.
+- Look into arena allocation for game objects
+- Make deltaTime parameters const
+- Possibly move input handing to GameState instead of mario class
 
 Features to add:
-- More Tiles
 - Prevent movement past left side of the screen.
 
 Known Bugs:
-- Lives decrease when mario goes from big state to small, should only decrease when mario dies.
+
 
 Changelog:
-- Added death animation
-- Added particle effect when brick blocks are broken
-- Moved lives to mario class and fixed lives decreasing when mario loses big state.
+- Fixed gravity inconsistency with brick partciles.
+- Added Koopa Troopa enemy
+- Refactored some code for better readability and performance

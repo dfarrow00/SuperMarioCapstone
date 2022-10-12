@@ -4,7 +4,7 @@
 class Animation
 {
 public:
-	Animation(std::string filePath, int rowNumber, int frames, float animSpeed = 100, bool big = false);
+	Animation(std::string filePath, int rowNumber, int frames, float animSpeed = 100, int spriteHeight = 48);
 	~Animation();
 
 	void reset();

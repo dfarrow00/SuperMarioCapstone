@@ -1,5 +1,4 @@
 #include "StateManager.h"
-#include <iostream>
 
 StateManager::StateManager(sf::RenderWindow* window)
 {

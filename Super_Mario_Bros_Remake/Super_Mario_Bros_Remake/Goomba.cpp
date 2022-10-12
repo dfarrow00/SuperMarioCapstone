@@ -1,14 +1,19 @@
 #include "Goomba.h"
+#include "Map.h"
 #include <iostream>
 
-Goomba::Goomba(Map* gameMap, sf::Vector2f pos) : map(gameMap), walkingAnim("Resources/Goomba_SpriteSheet.png", 0, 2, 0.3), deadAnim("Resources/Goomba_SpriteSheet.png", 1, 1, 0.1)
+Goomba::Goomba(Map* gameMap, sf::Vector2f pos) : walkingAnim("Resources/Goomba_SpriteSheet.png", 0, 2, 0.3), deadAnim("Resources/Goomba_SpriteSheet.png", 1, 1, 0.1)
 {
+	map = gameMap;
 	position = pos;
 	currentAnim = &walkingAnim;
 	sprite = currentAnim->getCurrentSprite();
 	sprite.setPosition(position);
 	velocity = sf::Vector2f(-75, 0);
 	deadTimer = 2.0f;
+	isBig = false;
+	facingLeft = true;
+	spriteHeight = 48;
 }
 
 Goomba::~Goomba()
@@ -31,38 +36,7 @@ void Goomba::update(float deltaTime)
 	{
 		return;
 	}
-
-	//Not tested
-	if (position.y + (velocity.y * deltaTime) >= 670)
-	{
-		velocity.x = 0.0f;
-		velocity.y = 0.0f;
-		hit();
-		return;
-	}
-
-	if (position.x + velocity.x < 0)
-	{
-		velocity.x = -velocity.x;
-	}
-
-	if (map->isColliding(position, sf::Vector2f(velocity.x * deltaTime, 0)))
-	{
-		velocity.x = -velocity.x;
-	}
-
-	velocity.y += 800 * deltaTime;
-
-	if (map->isColliding(position, sf::Vector2f(0, velocity.y * deltaTime)))
-	{
-		velocity.y = 0.0f;
-	}
-
-	position += velocity * deltaTime;
-
-	currentAnim->update(deltaTime);
-	sprite = currentAnim->getCurrentSprite();
-	sprite.setPosition(position);
+	move(deltaTime);
 }
 
 void Goomba::draw(sf::RenderWindow* window)

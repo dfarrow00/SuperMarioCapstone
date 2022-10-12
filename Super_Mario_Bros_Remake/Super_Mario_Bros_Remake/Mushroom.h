@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
-#include "Map.h"
+
+class Map;
 
 class Mushroom : public GameObject
 {

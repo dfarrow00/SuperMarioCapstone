@@ -1,9 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <unordered_map>
-#include <fstream>
-#include <sstream>
-#include "GameObject.h"
 
 struct Tile
 {
@@ -44,13 +41,13 @@ public:
 	void loadMap(int mapNumber);
 	void updateTile(int x, int y, int tile);
 
-	bool isColliding(sf::Vector2f pos, sf::Vector2f velocity, bool isBig = false);
+	bool isColliding(sf::Vector2f pos, sf::Vector2f velocity, int spriteHeight);
 
 	Level getCurrentLevel();
 	sf::Vector2f getFlagPolePos();
 
 private:
-	bool checkPoint(unsigned int tile, sf::Vector2f point, sf::Vector2f pos, bool isBig);
+	bool checkPoint(unsigned int tile, sf::Vector2f point, sf::Vector2f pos, int spriteHeight);
 
 	GameState* game;
 

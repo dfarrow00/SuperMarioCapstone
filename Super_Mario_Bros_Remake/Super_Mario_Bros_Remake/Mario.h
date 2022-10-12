@@ -1,7 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "GameObject.h"
-#include "Map.h"
 #include "Animation.h"
 
 enum class MarioState
@@ -48,10 +47,9 @@ private:
 	int lives = 3;
 
 	float jumpTime = 0.0f;
-	float jumpVelocity = 450.0f;
+	float jumpVelocity = 400.0f;
 	float speed = 800.0f;
 	float drag = 400.0f;
-	float gravity = 1600.0f;
 
 	float invinsibilityTime = 2.0f;
 	float currentInvTime = 0.0f;
@@ -65,15 +63,12 @@ private:
 	float currentDeathAnimTime = 0.0f;
 
 	bool onGround;
-	bool facingLeft;
 	bool isBig;
 	bool invinsible;
 	bool isVisible = true;
 	bool playingLevelCompleteAnim = false;
 	bool playingDeathAnim = false;
 	bool finishReached = false;
-
-	Animation* currentAnim;
 
 	Animation idleAnim;
 	Animation runningAnim;
@@ -87,6 +82,4 @@ private:
 	Animation bigFlagGrabAnim;
 
 	MarioState currentState;
-
-	Map* map;
 };

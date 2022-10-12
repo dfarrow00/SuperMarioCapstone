@@ -1,5 +1,7 @@
 #include "Map.h"
 #include "GameState.h"
+#include <fstream>
+#include <sstream>
 #include <iostream>
 
 Map::Map(GameState* gameState) : game(gameState)
@@ -138,6 +140,10 @@ void Map::loadMap(int mapNumber)
 			{
 				game->addGoomba(sf::Vector2f(x, y));
 			}
+			else if (entity == "Koopa")
+			{
+				game->addKoopaTroopa(sf::Vector2f(x, y));
+			}
 		}
 	}
 	file.close();
@@ -148,15 +154,23 @@ void Map::updateTile(int x, int y, int tile)
 	level[y][x] = tile;
 }
 
-bool Map::isColliding(sf::Vector2f pos, sf::Vector2f velocity, bool isBig)
+bool Map::isColliding(sf::Vector2f pos, sf::Vector2f velocity, int spriteHeight)
 {
 	bool colliding = false;
 	std::vector<sf::Vector2f> points;
 
 	sf::Vector2f topLeft = pos + velocity; points.push_back(topLeft);
 	sf::Vector2f topRight = topLeft; topRight.x += tileSize; points.push_back(topRight);
-	sf::Vector2f bottomLeft = topLeft; bottomLeft.y += tileSize; points.push_back(bottomLeft);
-	sf::Vector2f bottomRight = topRight; bottomRight.y += tileSize; points.push_back(bottomRight);
+	sf::Vector2f bottomLeft = topLeft; bottomLeft.y += spriteHeight; points.push_back(bottomLeft);
+	sf::Vector2f bottomRight = topRight; bottomRight.y += spriteHeight; points.push_back(bottomRight);
+
+	if (spriteHeight >= 96)
+	{
+		sf::Vector2f middleLeft = topLeft; middleLeft.y += (spriteHeight / 2);
+		sf::Vector2f middleRight = middleLeft; middleRight.x += tileSize;
+		points.push_back(middleLeft);
+		points.push_back(middleRight);
+	}
 
 	for (sf::Vector2f point : points)
 	{
@@ -165,39 +179,15 @@ bool Map::isColliding(sf::Vector2f pos, sf::Vector2f velocity, bool isBig)
 			continue;
 		}
 		unsigned int tile = level[point.y / tileSize][point.x / tileSize];
-		if (checkPoint(tile, point, pos, isBig))
+		if (checkPoint(tile, point, pos, spriteHeight))
 		{
 			colliding = true;
-		}
-	}
-
-	if (isBig)
-	{
-		sf::Vector2f bigBottomLeft = bottomLeft; bigBottomLeft.y += tileSize;
-		sf::Vector2f bigBottomRight = bigBottomLeft; bigBottomRight.x += tileSize;
-
-		if (bigBottomLeft.y > 0.0)
-		{
-			unsigned int tile = level[bigBottomLeft.y / tileSize][bigBottomLeft.x / tileSize];
-			if (checkPoint(tile, bigBottomLeft, pos, isBig))
-			{
-				colliding = true;
-			}
-		}
-
-		if (bigBottomRight.y > 0.0)
-		{
-			unsigned int tile = level[bigBottomRight.y / tileSize][bigBottomRight.x / tileSize];
-			if (checkPoint(tile, bigBottomRight, pos, isBig))
-			{
-				colliding = true;
-			}
 		}
 	}
 	return colliding;
 }
 
-bool Map::checkPoint(unsigned int tile, sf::Vector2f point, sf::Vector2f pos, bool isBig)
+bool Map::checkPoint(unsigned int tile, sf::Vector2f point, sf::Vector2f pos, int spriteHeight)
 {
 	if (tile > 0)
 	{
@@ -218,7 +208,7 @@ bool Map::checkPoint(unsigned int tile, sf::Vector2f point, sf::Vector2f pos, bo
 		{
 			game->levelComplete(flagPoleScores[tile]);
 		}
-		else if (isBig && tile == 2 && pos.y > point.y)
+		else if (spriteHeight == 96 && tile == 2 && pos.y > point.y)
 		{
 			updateTile(point.x / tileSize, point.y / tileSize, 0);
 			game->addParticles(sf::Vector2f((int)(point.x / tileSize) * tileSize, ((int)point.y / tileSize) * tileSize));

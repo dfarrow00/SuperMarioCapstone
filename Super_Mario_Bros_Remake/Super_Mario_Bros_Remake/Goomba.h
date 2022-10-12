@@ -1,9 +1,10 @@
 #pragma once
-#include "GameObject.h"
+#include "Enemy.h"
 #include "Animation.h"
-#include "Map.h"
 
-class Goomba : public GameObject
+class Map;
+
+class Goomba : public Enemy
 {
 public:
 	Goomba(Map* gameMap, sf::Vector2f pos);
@@ -16,8 +17,6 @@ public:
 	void activate();
 
 private:
-	Map* map;
-	Animation* currentAnim;
 	Animation walkingAnim;
 	Animation deadAnim;
 

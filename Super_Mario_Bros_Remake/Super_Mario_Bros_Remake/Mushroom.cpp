@@ -1,5 +1,5 @@
 #include "Mushroom.h"
-#include <iostream>
+#include "Map.h"
 
 Mushroom::Mushroom(Map* gameMap, sf::Vector2f pos) : map(gameMap), spawning(true)
 {
@@ -8,6 +8,7 @@ Mushroom::Mushroom(Map* gameMap, sf::Vector2f pos) : map(gameMap), spawning(true
 	position = pos;
 	velocity = sf::Vector2f(0, -50);
 	alive = true;
+	spriteHeight = 48;
 }
 
 Mushroom::~Mushroom()
@@ -18,7 +19,7 @@ void Mushroom::update(float deltaTime)
 {
 	if (spawning)
 	{
-		if (!map->isColliding(position, velocity * deltaTime))
+		if (!map->isColliding(position, velocity * deltaTime, spriteHeight))
 		{
 			spawning = false;
 			velocity.x = 100;
@@ -36,14 +37,14 @@ void Mushroom::update(float deltaTime)
 			return;
 		}
 
-		if (map->isColliding(position, sf::Vector2f(velocity.x * deltaTime, 0)))
+		if (map->isColliding(position, sf::Vector2f(velocity.x * deltaTime, 0), spriteHeight))
 		{
 			velocity.x = -velocity.x;
 		}
 
-		velocity.y += 800 * deltaTime;
+		velocity.y += GRAVITY * deltaTime;
 
-		if (map->isColliding(position, sf::Vector2f(0, velocity.y * deltaTime)))
+		if (map->isColliding(position, sf::Vector2f(0, velocity.y * deltaTime), spriteHeight))
 		{
 			velocity.y = 0.0f;
 		}

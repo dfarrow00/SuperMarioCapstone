@@ -1,5 +1,4 @@
 #include "MenuState.h"
-#include <iostream>
 
 MenuState::MenuState(StateManager* stateMgr) : State(stateMgr)
 {

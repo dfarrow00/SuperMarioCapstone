@@ -1,10 +1,10 @@
 #pragma once
 #include "StateManager.h"
-#include "Mario.h"
-#include "Mushroom.h"
-#include "Goomba.h"
-#include "Coin.h"
+#include "Map.h"
 #include "HUD.h"
+
+class Mario;
+class GameObject;
 
 class GameState : public State
 {
@@ -18,10 +18,14 @@ public:
 	void update(float deltaTime);
 	void draw(sf::RenderWindow* window);
 
+	void updateGameObjects(float deltaTime);
+	void updateGameView();
+	void updateTimer(float deltaTime);
 	void checkObjectCollisions();
 
 	void addMushroom(sf::Vector2f pos);
 	void addGoomba(sf::Vector2f pos);
+	void addKoopaTroopa(sf::Vector2f pos);
 	void addCoin(sf::Vector2f pos);
 	void addParticles(sf::Vector2f pos);
 	void addScore(int addedScore);

@@ -1,5 +1,10 @@
 #include "GameState.h"
+#include "Mario.h"
+#include "Mushroom.h"
+#include "Goomba.h"
+#include "Coin.h"
 #include "Particle.h"
+#include "KoopaTroopa.h"
 #include <iostream>
 
 GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stateMgr), window(win), map(this), hud(window)
@@ -11,6 +16,10 @@ GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stat
 	Mario* player = new Mario(&map);
 	mario = player;
 	gameObjects.push_back(player);
+
+	/*Testing KoopaTroopa for presentation*/
+	//KoopaTroopa* testingKoopa = new KoopaTroopa(&map, sf::Vector2f(500.0f, 550.0f));
+	//gameObjects.push_back(testingKoopa);
 	
 	map.loadMap(levelNumber);
 	mario->resetLives();
@@ -39,10 +48,7 @@ void GameState::deactivate()
 
 void GameState::update(float deltaTime)
 {
-	if (paused)
-	{
-		return;
-	}
+	if (paused) return;
 
 	if (!mario->isAlive())
 	{
@@ -61,6 +67,19 @@ void GameState::update(float deltaTime)
 		endGame();
 	}
 
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+	{
+		endGame();
+	}
+
+	updateGameObjects(deltaTime);
+	checkObjectCollisions();
+	updateGameView();
+	updateTimer(deltaTime);
+}
+
+void GameState::updateGameObjects(float deltaTime)
+{
 	for (int x = 0; x < gameObjects.size(); x++)
 	{
 		if (gameObjects[x]->isAlive() && gameObjects[x]->getDistance(mario) <= 768)
@@ -73,20 +92,19 @@ void GameState::update(float deltaTime)
 			gameObjects.erase(gameObjects.begin() + x);
 		}
 	}
+}
 
-	checkObjectCollisions();
-
+void GameState::updateGameView()
+{
 	if (mario->getPosition().x > view.getCenter().x)//Camera only follows mario when moving fowards, stays still when mario is moving backwards.
 	{
 		view.setCenter(mario->getPosition().x, window->getDefaultView().getCenter().y);
 		window->setView(view);
 	}
+}
 
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-	{
-		endGame();
-	}
-
+void GameState::updateTimer(float deltaTime)
+{
 	currentTimeInterval += deltaTime;
 	if (currentTimeInterval >= timerInterval)
 	{
@@ -110,79 +128,121 @@ void GameState::draw(sf::RenderWindow* window)
 
 void GameState::checkObjectCollisions()
 {
-	std::vector<GameObject*>::iterator itr;
-	for (itr = gameObjects.begin(); itr != gameObjects.end(); itr++)
+	for (auto itr = gameObjects.begin(); itr != gameObjects.end(); itr++)
 	{
 		GameObject* current = *itr;
-		std::vector<GameObject*>::iterator itr2;
-		for (itr2 = itr + 1; itr2 != gameObjects.end(); itr2++)
+		for (auto itr2 = itr + 1; itr2 != gameObjects.end(); itr2++)
 		{
 			GameObject* other = *itr2;
 			sf::FloatRect intersection;
 			if (current->isActive() && other->isActive() && current->getAABB().intersects(other->getAABB(), intersection))
 			{
-				if (Mario* newCurrent = dynamic_cast<Mario*>(current))
+				if (Mario* marioObject = dynamic_cast<Mario*>(current))
 				{
-					if (Mushroom* newOther = dynamic_cast<Mushroom*>(other))
+					if (Mushroom* mushroomObject = dynamic_cast<Mushroom*>(other))
 					{
-						other->hit();
-						newCurrent->powerUp();
+						mushroomObject->hit();
+						marioObject->powerUp();
 						addScore(200);
 					}
-					else if (Goomba* newOther = dynamic_cast<Goomba*>(other))
+					else if (Goomba* goombaObject = dynamic_cast<Goomba*>(other))
 					{
-						if (intersection.top == newOther->getAABB().top && intersection.width > intersection.height)
+						if (intersection.top == goombaObject->getAABB().top && intersection.width > intersection.height)
 						{
 							if (other->isActive())
 							{
-								newCurrent->setVelocityY(-300);
+								marioObject->setVelocityY(-300);
 								addScore(100);
 							}
 							other->hit();
 						}
-						else if (newOther->isActive() && !newCurrent->getInvinsible())
+						else if (goombaObject->isActive() && !marioObject->getInvinsible())
 						{
-							newCurrent->hit();
+							marioObject->hit();
 							hud.setLives(mario->getLives());
 						}
 					}
-				}
-
-				else if (Mushroom* newCurrent = dynamic_cast<Mushroom*>(current))
-				{
-					if (Mario* newOther = dynamic_cast<Mario*>(other))
+					else if (KoopaTroopa* koopaObject = dynamic_cast<KoopaTroopa*>(other))
 					{
-						newCurrent->hit();
-						newOther->powerUp();
-					}
-				}
-
-				else if (Goomba* newCurrent = dynamic_cast<Goomba*>(current))
-				{
-					if (Mario* newOther = dynamic_cast<Mario*>(other))
-					{
-						if (intersection.top == newCurrent->getAABB().top && intersection.width > intersection.height)
+						if (intersection.top == koopaObject->getAABB().top && intersection.width > intersection.height)
 						{
-							if (newCurrent->isActive())
+							if (koopaObject->getCurrentState() == KoopaState::Walking)
 							{
-								newOther->setVelocityY(-300);
+								marioObject->setVelocityY(-300);
+								addScore(100);
+								koopaObject->hit();
 							}
-							newCurrent->hit();
-							addScore(100);
+							else
+							{
+								marioObject->setVelocityY(-200);
+								koopaObject->kick(marioObject->getPosition().x < koopaObject->getPosition().x);
+							}
 						}
-						else if (newCurrent->isActive() && !newOther->getInvinsible())
+						else if (koopaObject->isActive() && !marioObject->getInvinsible())
 						{
-							newOther->hit();
-							hud.setLives(mario->getLives());
+							if (koopaObject->getCurrentState() == KoopaState::Shell && koopaObject->getVelocity().x == 0)
+							{
+								koopaObject->kick(marioObject->getPosition().x < koopaObject->getPosition().x);
+							}
+							else
+							{
+								marioObject->hit();
+								hud.setLives(mario->getLives());
+							}
 						}
 					}
+				}
 
-					else if (Goomba* newOther = dynamic_cast<Goomba*>(other))
+				else if (Goomba* goombaObject = dynamic_cast<Goomba*>(current))
+				{
+					if (Goomba* otherGoombaObject = dynamic_cast<Goomba*>(other))
 					{
-						if (newCurrent->isActive() && newOther->isActive())
+						if (goombaObject->isActive() && otherGoombaObject->isActive())
 						{
-							newCurrent->setVelocity(-newCurrent->getVelocity());
-							newOther->setVelocity(-newOther->getVelocity());
+							goombaObject->setVelocity(-goombaObject->getVelocity());
+							goombaObject->setFacingLeft(!goombaObject->getFacingLeft());
+							otherGoombaObject->setVelocity(-otherGoombaObject->getVelocity());
+							otherGoombaObject->setFacingLeft(!otherGoombaObject->getFacingLeft());
+						}
+					}
+					else if (KoopaTroopa* koopaObject = dynamic_cast<KoopaTroopa*>(other))
+					{
+						if (goombaObject->isActive() && koopaObject->isActive())
+						{
+							if (koopaObject->getCurrentState() != KoopaState::Shell)
+							{
+								goombaObject->setVelocity(-goombaObject->getVelocity());
+								goombaObject->setFacingLeft(!goombaObject->getFacingLeft());
+								koopaObject->setVelocity(-koopaObject->getVelocity());
+								koopaObject->setFacingLeft(!koopaObject->getFacingLeft());
+							}
+							else
+							{
+								goombaObject->hit();
+								addScore(100);
+							}
+						}
+					}
+				}
+
+				else if (KoopaTroopa* koopaObject = dynamic_cast<KoopaTroopa*>(current))
+				{
+					if (Enemy* enemyObject = dynamic_cast<Enemy*>(other))
+					{
+						if (koopaObject->isActive() && enemyObject->isActive())
+						{
+							if (koopaObject->getCurrentState() != KoopaState::Shell)
+							{
+								koopaObject->setVelocity(-koopaObject->getVelocity());
+								koopaObject->setFacingLeft(!koopaObject->getFacingLeft());
+								enemyObject->setVelocity(-enemyObject->getVelocity());
+								enemyObject->setFacingLeft(!enemyObject->getFacingLeft());
+							}
+							else
+							{
+								enemyObject->hit();
+								addScore(100);
+							}
 						}
 					}
 				}
@@ -201,6 +261,12 @@ void GameState::addGoomba(sf::Vector2f pos)
 {
 	Goomba* goomba = new Goomba(&map, pos);
 	gameObjects.push_back(goomba);
+}
+
+void GameState::addKoopaTroopa(sf::Vector2f pos)
+{
+	KoopaTroopa* koopaTroopa = new KoopaTroopa(&map, pos);
+	gameObjects.push_back(koopaTroopa);
 }
 
 void GameState::addCoin(sf::Vector2f pos)
