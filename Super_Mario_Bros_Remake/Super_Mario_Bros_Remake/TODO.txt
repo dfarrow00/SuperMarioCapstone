@@ -7,9 +7,6 @@ Features to add:
 - Prevent movement past left side of the screen.
 
 Known Bugs:
-
+- Star pickup can hit bottom on ? and activate them.
 
 Changelog:
-- Fixed gravity inconsistency with brick partciles.
-- Added Koopa Troopa enemy
-- Refactored some code for better readability and performance

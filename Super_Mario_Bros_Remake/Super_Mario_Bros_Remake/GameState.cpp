@@ -5,6 +5,7 @@
 #include "Coin.h"
 #include "Particle.h"
 #include "KoopaTroopa.h"
+#include "Star.h"
 #include <iostream>
 
 GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stateMgr), window(win), map(this), hud(window)
@@ -20,6 +21,9 @@ GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stat
 	/*Testing KoopaTroopa for presentation*/
 	//KoopaTroopa* testingKoopa = new KoopaTroopa(&map, sf::Vector2f(500.0f, 550.0f));
 	//gameObjects.push_back(testingKoopa);
+
+	//Star* testStar = new Star(&map, sf::Vector2f(500.0f, 500.0f));
+	//gameObjects.push_back(testStar);
 	
 	map.loadMap(levelNumber);
 	mario->resetLives();
@@ -139,6 +143,11 @@ void GameState::checkObjectCollisions()
 			{
 				if (Mario* marioObject = dynamic_cast<Mario*>(current))
 				{
+					if (marioObject->getStarPower())
+					{
+						other->hit();
+						break;
+					}
 					if (Mushroom* mushroomObject = dynamic_cast<Mushroom*>(other))
 					{
 						mushroomObject->hit();
@@ -190,6 +199,11 @@ void GameState::checkObjectCollisions()
 								hud.setLives(mario->getLives());
 							}
 						}
+					}
+					else if (Star* starObject = dynamic_cast<Star*>(other))
+					{
+						marioObject->starPowerUp();
+						starObject->hit();
 					}
 				}
 
@@ -276,6 +290,12 @@ void GameState::addCoin(sf::Vector2f pos)
 	coins++;
 	hud.setCoins(coins);
 	addScore(100);
+}
+
+void GameState::addStar(sf::Vector2f pos)
+{
+	Star* star = new Star(&map, pos);
+	gameObjects.push_back(star);
 }
 
 void GameState::addParticles(sf::Vector2f pos)

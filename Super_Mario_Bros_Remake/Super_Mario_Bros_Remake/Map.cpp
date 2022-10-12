@@ -68,6 +68,11 @@ void Map::draw(sf::RenderWindow* window, sf::View* view)
 					tiles[3]->setPosition(x * tileSize, y * tileSize);
 					window->draw(tiles[3]->sprite);
 				}
+				else if (tileNumber == 30)
+				{
+					tiles[2]->setPosition(x * tileSize, y * tileSize);
+					window->draw(tiles[2]->sprite);
+				}
 				else if (tileNumber >= 95 && tileNumber <= 98)
 				{
 					tiles[10]->setPosition(x * tileSize, y * tileSize);
@@ -202,6 +207,12 @@ bool Map::checkPoint(unsigned int tile, sf::Vector2f point, sf::Vector2f pos, in
 		{
 			sf::Vector2f mushroomPos((int)(point.x / tileSize) * tileSize, (int)(point.y / tileSize) * tileSize - 1);
 			game->addMushroom(sf::Vector2f(mushroomPos));
+			updateTile(point.x / tileSize, point.y / tileSize, 8);
+		}
+		else if (tile == 30 && pos.y > point.y)
+		{
+			sf::Vector2f starPos((int)(point.x / tileSize) * tileSize, (int)(point.y / tileSize) * tileSize - 1);
+			game->addStar(sf::Vector2f(starPos));
 			updateTile(point.x / tileSize, point.y / tileSize, 8);
 		}
 		else if (tile >= 95)

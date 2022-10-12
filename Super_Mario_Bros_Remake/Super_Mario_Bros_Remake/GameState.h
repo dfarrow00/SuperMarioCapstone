@@ -27,6 +27,7 @@ public:
 	void addGoomba(sf::Vector2f pos);
 	void addKoopaTroopa(sf::Vector2f pos);
 	void addCoin(sf::Vector2f pos);
+	void addStar(sf::Vector2f pos);
 	void addParticles(sf::Vector2f pos);
 	void addScore(int addedScore);
 

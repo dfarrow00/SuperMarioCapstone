@@ -23,6 +23,7 @@ public:
 
 	void hit();
 	void powerUp();
+	void starPowerUp();
 	void playLevelCompleteAnim();
 
 	void addVelocity(sf::Vector2f vel);
@@ -33,7 +34,7 @@ public:
 	int getLives();
 	bool getInvinsible();
 	bool getFinishReached();
-
+	bool getStarPower();
 private:
 	void handleInput(float deltaTime);
 	void checkCollisions(float deltaTime);
@@ -43,6 +44,7 @@ private:
 	void playDeathAnim();
 	void updateDeathAnim(float deltaTime);
 	void updateLevelCompleteAnim(float deltaTime);
+	void updateStarPower(const float deltaTime);
 
 	int lives = 3;
 
@@ -62,6 +64,13 @@ private:
 	float deathAnimTime = 3.0f;
 	float currentDeathAnimTime = 0.0f;
 
+	float starPowerTime = 7.0f;
+	float currentStarPowerTime = 0.0f;
+	float colorChangeTimer = 0.1f;
+	float currentColorChangeTime = 0.0f;
+	std::vector<sf::Color> starPowerColors = { sf::Color::Red, sf::Color::Green, sf::Color::Blue };
+	int currentColor = 0;
+
 	bool onGround;
 	bool isBig;
 	bool invinsible;
@@ -69,6 +78,7 @@ private:
 	bool playingLevelCompleteAnim = false;
 	bool playingDeathAnim = false;
 	bool finishReached = false;
+	bool starPower = false;
 
 	Animation idleAnim;
 	Animation runningAnim;

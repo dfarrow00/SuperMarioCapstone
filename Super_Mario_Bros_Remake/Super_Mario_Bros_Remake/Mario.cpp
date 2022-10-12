@@ -79,6 +79,10 @@ void Mario::update(float deltaTime)
 	{
 		handleInvincibility(deltaTime);
 	}
+	if (starPower)
+	{
+		updateStarPower(deltaTime);
+	}
 
 	position = position + (velocity * deltaTime);
 	sprite.setPosition(position);
@@ -287,6 +291,12 @@ void Mario::powerUp()
 	setBig(true);
 }
 
+void Mario::starPowerUp()
+{
+	powerUp();
+	starPower = true;
+}
+
 void Mario::addVelocity(sf::Vector2f vel)
 {
 	velocity += vel;
@@ -375,6 +385,11 @@ bool Mario::getFinishReached()
 	return finishReached;
 }
 
+bool Mario::getStarPower()
+{
+	return starPower;
+}
+
 void Mario::playDeathAnim()
 {
 	playingDeathAnim = true;
@@ -394,6 +409,27 @@ void Mario::updateDeathAnim(float deltaTime)
 		return;
 	}
 	velocity.y += GRAVITY * deltaTime;
+}
+
+void Mario::updateStarPower(const float deltaTime)
+{
+	currentStarPowerTime += deltaTime;
+	currentColorChangeTime += deltaTime;
+	if (currentStarPowerTime >= starPowerTime)
+	{
+		starPower = false;
+		currentStarPowerTime = 0.0f;
+	}
+	if (currentColorChangeTime >= colorChangeTimer)
+	{
+		currentColor++;
+		if (currentColor >= starPowerColors.size())
+		{
+			currentColor = 0;
+		}
+		currentColorChangeTime = 0.0f;
+	}
+	sprite.setColor(starPowerColors[currentColor]);
 }
 
 int Mario::getLives()
