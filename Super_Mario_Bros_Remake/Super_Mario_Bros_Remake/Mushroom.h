@@ -6,7 +6,7 @@ class Map;
 class Mushroom : public GameObject
 {
 public:
-	Mushroom(Map* gameMap, sf::Vector2f pos);
+	Mushroom(sf::Vector2f pos);
 	~Mushroom();
 
 	void update(float deltaTime);
@@ -15,6 +15,6 @@ public:
 	void hit();
 
 private:
-	Map* map;
+	sf::Vector2f targetSpawnPos;
 	bool spawning;
 };

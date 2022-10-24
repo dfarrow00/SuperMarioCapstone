@@ -11,8 +11,8 @@ enum class MarioState
 class Mario : public GameObject
 {
 public:
-	Mario(Map* gameMap);
-	Mario(Map* gameMap, sf::Vector2f& pos);
+	Mario();
+	Mario(sf::Vector2f& pos);
 	~Mario();
 
 	void setup();
@@ -24,7 +24,7 @@ public:
 	void hit();
 	void powerUp();
 	void starPowerUp();
-	void playLevelCompleteAnim();
+	void playLevelCompleteAnim(sf::Vector2f flagPolePos);
 
 	void addVelocity(sf::Vector2f vel);
 	void setVelocityY(float value);
@@ -37,7 +37,7 @@ public:
 	bool getStarPower();
 private:
 	void handleInput(float deltaTime);
-	void checkCollisions(float deltaTime);
+	void checkCollisionStates(float deltaTime);
 	void updateState(float deltaTime);
 	void handleInvincibility(float deltaTime);
 
@@ -71,7 +71,6 @@ private:
 	std::vector<sf::Color> starPowerColors = { sf::Color::Red, sf::Color::Green, sf::Color::Blue };
 	int currentColor = 0;
 
-	bool onGround;
 	bool isBig;
 	bool invinsible;
 	bool isVisible = true;

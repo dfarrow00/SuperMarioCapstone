@@ -7,7 +7,7 @@ class Map;
 class Goomba : public Enemy
 {
 public:
-	Goomba(Map* gameMap, sf::Vector2f pos);
+	Goomba(sf::Vector2f pos);
 	~Goomba();
 
 	void update(float deltaTime);

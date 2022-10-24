@@ -1,14 +1,16 @@
 #include "Mushroom.h"
 #include "Map.h"
 
-Mushroom::Mushroom(Map* gameMap, sf::Vector2f pos) : map(gameMap), spawning(true)
+Mushroom::Mushroom(sf::Vector2f pos) : spawning(true)
 {
 	texture.loadFromFile("Resources/Mushroom.png");
 	sprite.setTexture(texture);
 	position = pos;
+	targetSpawnPos = position + sf::Vector2f(0, -48);
 	velocity = sf::Vector2f(0, -50);
 	alive = true;
 	spriteHeight = 48;
+	checkCollisions = false;
 }
 
 Mushroom::~Mushroom()
@@ -19,9 +21,10 @@ void Mushroom::update(float deltaTime)
 {
 	if (spawning)
 	{
-		if (!map->isColliding(position, velocity * deltaTime, spriteHeight))
+		if (position.y <= targetSpawnPos.y)
 		{
 			spawning = false;
+			checkCollisions = true;
 			velocity.x = 100;
 			velocity.y = 0;
 			position.y -= 1;
@@ -37,16 +40,21 @@ void Mushroom::update(float deltaTime)
 			return;
 		}
 
-		if (map->isColliding(position, sf::Vector2f(velocity.x * deltaTime, 0), spriteHeight))
+		if (collidingX)
 		{
 			velocity.x = -velocity.x;
+			collidingX = false;
 		}
 
-		velocity.y += GRAVITY * deltaTime;
-
-		if (map->isColliding(position, sf::Vector2f(0, velocity.y * deltaTime), spriteHeight))
+		//Prob move to gameobject class
+		if (collidingY)
 		{
-			velocity.y = 0.0f;
+			velocity.y = 0;
+			collidingY = false;
+		}
+		else
+		{
+			velocity.y += GRAVITY * deltaTime;
 		}
 	}
 

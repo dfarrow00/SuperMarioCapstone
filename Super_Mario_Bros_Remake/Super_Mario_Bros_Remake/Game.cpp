@@ -7,6 +7,10 @@ Game::Game() : window(sf::VideoMode(768, 720), "Super Mario Bros Remake"), state
 
 	//window.setFramerateLimit(60);
 
+	sf::Image icon;
+	icon.loadFromFile("Resources/Mario.png");
+	window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+
 	view = window.getDefaultView();
 	window.setView(view);
 }

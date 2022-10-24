@@ -20,13 +20,24 @@ void Enemy::move(float deltaTime)
 		return;
 	}
 
-	if (position.x + velocity.x < 0.0f)
+	if (position.x + velocity.x < 0.0f || collidingX)
 	{
 		velocity.x = -velocity.x;
 		facingLeft = !facingLeft;
+		collidingX = false;
 	}
 
-	if (map->isColliding(position, sf::Vector2f(velocity.x * deltaTime, 0), spriteHeight))
+	if (collidingY)
+	{
+		velocity.y = 0;
+		collidingY = false;
+	}
+	else
+	{
+		velocity.y += GRAVITY * deltaTime;
+	}
+
+	/*if (map->isColliding(position, sf::Vector2f(velocity.x * deltaTime, 0), spriteHeight))
 	{
 		velocity.x = -velocity.x;
 		facingLeft = !facingLeft;
@@ -37,7 +48,7 @@ void Enemy::move(float deltaTime)
 	if (map->isColliding(position, sf::Vector2f(0, velocity.y * deltaTime), spriteHeight))
 	{
 		velocity.y = 0.0f;
-	}
+	}*/
 
 	position += velocity * deltaTime;
 

@@ -1,12 +1,13 @@
 #include "Star.h"
 #include "Map.h"
 
-Star::Star(Map* gameMap, sf::Vector2f pos) : anim("Resources/Star_Power_SpriteSheet.png", 0, 2, 0.2)
+Star::Star(sf::Vector2f pos) : anim("Resources/Star_Power_SpriteSheet.png", 0, 2, 0.2)
 {
-	map = gameMap;
 	position = pos;
+	targetSpawnPos = position + sf::Vector2f(0, -48);
 	spriteHeight = 48;
 	velocity.y = -50;
+	checkCollisions = false;
 	anim.reset();
 	sprite = anim.getCurrentSprite();
 }
@@ -19,12 +20,12 @@ void Star::update(const float deltaTime)
 {
 	if (spawning)
 	{
-		if (!map->isColliding(position, velocity * deltaTime, spriteHeight))
+		if (position.y <= targetSpawnPos.y)
 		{
 			spawning = false;
+			checkCollisions = true;
 			velocity.x = 300;
-			velocity.y = 0;
-			position.y -= 1;
+			velocity.y = -700;
 		}
 	}
 	else
@@ -40,17 +41,19 @@ void Star::update(const float deltaTime)
 			return;
 		}
 
-		if (position.x + velocity.x < 0.0f)
+		if (position.x + velocity.x * deltaTime < 0.0f)
 		{
 			velocity.x = -velocity.x;
 		}
 
-		if (map->isColliding(position, sf::Vector2f(velocity.x * deltaTime, 0), spriteHeight))
+		if (collidingX)
 		{
 			velocity.x = -velocity.x;
+			collidingX = false;
 		}
 
-		if (map->isColliding(position, sf::Vector2f(0, 1), spriteHeight))//Ground check
+
+		if (onGround)
 		{
 			velocity.y = -700.0f;
 		}
@@ -59,10 +62,8 @@ void Star::update(const float deltaTime)
 			velocity.y += GRAVITY * deltaTime;
 		}
 
-		if (map->isColliding(position, sf::Vector2f(0, velocity.y * deltaTime), spriteHeight))
-		{
-			velocity.y = 0.0f;
-		}
+		onGround = false;
+		collidingY = false;
 	}
 
 	position += velocity * deltaTime;

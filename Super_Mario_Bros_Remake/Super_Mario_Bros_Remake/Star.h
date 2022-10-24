@@ -6,7 +6,7 @@
 class Star : public GameObject
 {
 public:
-	Star(Map* gameMap, sf::Vector2f pos);
+	Star(sf::Vector2f pos);
 	~Star();
 
 	void update(const float deltaTime);
@@ -16,5 +16,6 @@ public:
 
 private:
 	bool spawning = true;
+	sf::Vector2f targetSpawnPos;
 	Animation anim;
 };

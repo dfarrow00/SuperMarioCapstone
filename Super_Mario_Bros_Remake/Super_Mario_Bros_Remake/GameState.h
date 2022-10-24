@@ -2,6 +2,7 @@
 #include "StateManager.h"
 #include "Map.h"
 #include "HUD.h"
+#include "CollisionHandler.h"
 
 class Mario;
 class GameObject;
@@ -31,7 +32,7 @@ public:
 	void addParticles(sf::Vector2f pos);
 	void addScore(int addedScore);
 
-	void levelComplete(int flagScore);
+	void levelComplete(int flagScore, sf::Vector2f flagPolePos);
 private:
 	void resetLevel();
 	void endGame();
@@ -51,6 +52,8 @@ private:
 	sf::RenderWindow* window;
 	sf::View view;
 	HUD hud;
+
+	CollisionHandler collisionHandler;
 
 	std::vector<GameObject*> gameObjects;
 };

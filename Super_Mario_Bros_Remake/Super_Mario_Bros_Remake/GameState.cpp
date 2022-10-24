@@ -8,22 +8,15 @@
 #include "Star.h"
 #include <iostream>
 
-GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stateMgr), window(win), map(this), hud(window)
+GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stateMgr), window(win), map(this), hud(window), collisionHandler(&map, this)
 {
 	isTransparent = false;
 	view = window->getDefaultView();
 	window->setView(view);
 
-	Mario* player = new Mario(&map);
+	Mario* player = new Mario();
 	mario = player;
 	gameObjects.push_back(player);
-
-	/*Testing KoopaTroopa for presentation*/
-	//KoopaTroopa* testingKoopa = new KoopaTroopa(&map, sf::Vector2f(500.0f, 550.0f));
-	//gameObjects.push_back(testingKoopa);
-
-	//Star* testStar = new Star(&map, sf::Vector2f(500.0f, 500.0f));
-	//gameObjects.push_back(testStar);
 	
 	map.loadMap(levelNumber);
 	mario->resetLives();
@@ -77,6 +70,8 @@ void GameState::update(float deltaTime)
 	}
 
 	updateGameObjects(deltaTime);
+	//map.handleCollisions(gameObjects, this);
+	collisionHandler.checkCollisions(gameObjects);
 	checkObjectCollisions();
 	updateGameView();
 	updateTimer(deltaTime);
@@ -267,19 +262,19 @@ void GameState::checkObjectCollisions()
 
 void GameState::addMushroom(sf::Vector2f pos)
 {
-	Mushroom* mushroom = new Mushroom(&map, pos);
+	Mushroom* mushroom = new Mushroom(pos);
 	gameObjects.push_back(mushroom);
 }
 
 void GameState::addGoomba(sf::Vector2f pos)
 {
-	Goomba* goomba = new Goomba(&map, pos);
+	Goomba* goomba = new Goomba(pos);
 	gameObjects.push_back(goomba);
 }
 
 void GameState::addKoopaTroopa(sf::Vector2f pos)
 {
-	KoopaTroopa* koopaTroopa = new KoopaTroopa(&map, pos);
+	KoopaTroopa* koopaTroopa = new KoopaTroopa(pos);
 	gameObjects.push_back(koopaTroopa);
 }
 
@@ -294,7 +289,7 @@ void GameState::addCoin(sf::Vector2f pos)
 
 void GameState::addStar(sf::Vector2f pos)
 {
-	Star* star = new Star(&map, pos);
+	Star* star = new Star(pos);
 	gameObjects.push_back(star);
 }
 
@@ -339,9 +334,9 @@ void GameState::endGame()
 	stateManager->changeState(StateType::Menu);
 }
 
-void GameState::levelComplete(int flagScore)
+void GameState::levelComplete(int flagScore, sf::Vector2f flagPolePos)
 {
 	score += flagScore;
 	hud.setScore(score);
-	mario->playLevelCompleteAnim();
+	mario->playLevelCompleteAnim(flagPolePos);
 }

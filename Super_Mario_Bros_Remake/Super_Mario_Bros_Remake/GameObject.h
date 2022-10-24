@@ -62,6 +62,12 @@ public:
 		velocity = vel;
 	}
 
+	void setPosition(float x, float y)
+	{
+		position = sf::Vector2f(x, y);
+		sprite.setPosition(position);
+	}
+
 	void setActive(bool act)
 	{
 		active = act;
@@ -77,11 +83,41 @@ public:
 		return std::abs(position.x - obj->getPosition().x);
 	}
 
+	void setCollidingX(bool val)
+	{
+		collidingX = val;
+	}
+
+	void setCollidingY(bool val)
+	{
+		collidingY = val;
+	}
+
+	void setOnGround(bool val)
+	{
+		onGround = val;
+	}
+
+	bool getCheckCollision()
+	{
+		return checkCollisions;
+	}
+
+	int getSpriteHeight()
+	{
+		return spriteHeight;
+	}
+
 protected:
 	bool alive = true;
 	bool active = true;
 	bool facingLeft = false;
 	bool isBig;
+	bool onGround = false;
+
+	bool checkCollisions = true;
+	bool collidingX = false;
+	bool collidingY = false;
 
 	float maxVelocity;
 	const float GRAVITY = 1600.0f;
@@ -89,8 +125,6 @@ protected:
 	int spriteHeight;
 
 	Animation* currentAnim;
-
-	Map* map;
 
 	sf::Vector2f position;
 	sf::Vector2f velocity;

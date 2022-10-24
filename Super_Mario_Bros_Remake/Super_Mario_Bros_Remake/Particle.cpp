@@ -15,6 +15,7 @@ Particle::Particle(std::string spriteSheetPath, sf::Vector2f pos, sf::Vector2f v
 		sprite.setOrigin({ sprite.getLocalBounds().width, 0 });
 		sprite.scale(-1, 1);
 	}
+	checkCollisions = false;
 }
 
 Particle::~Particle()

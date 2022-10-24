@@ -2,21 +2,19 @@
 #include "Map.h"
 #include <iostream>
 
-Mario::Mario(Map* gameMap) : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.2),
+Mario::Mario() : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.2),
 jumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1), flagGrabAnim("Resources/Mario_SpriteSheet.png", 3, 1), deathAnim("Resources/Mario_SpriteSheet.png", 4, 1), 
 bigIdleAnim("Resources/Big_Mario_SpriteSheet.png", 0, 1, 100.0f, 96), bigRunningAnim("Resources/Big_Mario_SpriteSheet.png", 1, 3, 0.2, 96), 
 bigJumpingAnim("Resources/Big_Mario_SpriteSheet.png", 2, 1, 100.0f, 96), bigFlagGrabAnim("Resources/Big_Mario_SpriteSheet.png", 3, 2, 0.2, 96)
 {
-	map = gameMap;
 	setup();
 }
 
-Mario::Mario(Map* gameMap, sf::Vector2f& pos) : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.2),
+Mario::Mario(sf::Vector2f& pos) : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.2),
 jumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1), flagGrabAnim("Resources/Mario_SpriteSheet.png", 3, 1), deathAnim("Resources/Mario_SpriteSheet.png", 4, 1),
 bigIdleAnim("Resources/Big_Mario_SpriteSheet.png", 0, 1, 100.0f, 96), bigRunningAnim("Resources/Big_Mario_SpriteSheet.png", 1, 3, 0.2, 96),
 bigJumpingAnim("Resources/Big_Mario_SpriteSheet.png", 2, 1, 100.0f, 96), bigFlagGrabAnim("Resources/Big_Mario_SpriteSheet.png", 3, 2, 0.2, 96)
 {
-	map = gameMap;
 	position = pos;
 	setup();
 }
@@ -39,7 +37,6 @@ void Mario::setup()
 	currentDeathAnimTime = 0.0f;
 	currentLevelCompleteTime = 0.0f;
 
-	onGround = false;
 	currentAnim = nullptr;
 	facingLeft = false;
 	alive = true;
@@ -49,6 +46,7 @@ void Mario::setup()
 	invinsible = false;
 	playingLevelCompleteAnim = false;
 	finishReached = false;
+	checkCollisions = true;
 }
 
 void Mario::reset()
@@ -69,8 +67,8 @@ void Mario::update(float deltaTime)
 	}
 	else
 	{
+		checkCollisionStates(deltaTime);
 		handleInput(deltaTime);
-		checkCollisions(deltaTime);
 	}
 
 	updateState(deltaTime);
@@ -84,8 +82,12 @@ void Mario::update(float deltaTime)
 		updateStarPower(deltaTime);
 	}
 
-	position = position + (velocity * deltaTime);
+	position += (velocity * deltaTime);
 	sprite.setPosition(position);
+
+	collidingX = false;
+	collidingY = false;
+	onGround = false;
 }
 
 void Mario::draw(sf::RenderWindow* window)
@@ -124,16 +126,23 @@ void Mario::handleInput(float deltaTime)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && onGround)
 	{
 		velocity.y = -jumpVelocity; //Not multiplied by dt as it is an impulse force and will be the same for all framerates
-		currentState = MarioState::Jumping;
 		jumpTime = 0.4f;
+		currentState = MarioState::Jumping;
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !onGround)
 	{
 		jumpTime -= deltaTime;
+		currentState = MarioState::Jumping;
 	}
 	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
 		jumpTime = 0.0f;
+	}
+
+	if (jumpTime <= 0.0f && !onGround)
+	{
+		velocity.y += GRAVITY * deltaTime;
+		currentState = MarioState::Jumping;
 	}
 
 	//Applying drag
@@ -153,15 +162,9 @@ void Mario::handleInput(float deltaTime)
 			velocity.x = 0.0f;
 		}
 	}
-
-	//If jump time limit reached, start pulling player downwards
-	if (jumpTime <= 0.0f)
-	{
-		velocity.y += GRAVITY * deltaTime;
-	}
 }
 
-void Mario::checkCollisions(float deltaTime)
+void Mario::checkCollisionStates(float deltaTime)
 {
 	if (position.x + (velocity.x * deltaTime) < 0 || position.y + (velocity.y * deltaTime) >= 670)//Out of bounds check.
 	{
@@ -171,24 +174,14 @@ void Mario::checkCollisions(float deltaTime)
 		return;
 	}
 
-	if (map->isColliding(position, sf::Vector2f(velocity.x * deltaTime, 0), spriteHeight))//Checking collision along the x axis
+	if (collidingX)
 	{
 		velocity.x = 0.0f;
 	}
 
-	if (map->isColliding(position, sf::Vector2f(0, velocity.y * deltaTime), spriteHeight))//Checking collision along the y axis. Causes mario to stop briefly before hitting floor on low fps. Needs fix
+	if (collidingY)
 	{
-		velocity.y = 0.0f;
-	}
-
-	if (map->isColliding(position, sf::Vector2f(0, 1), spriteHeight))//Ground check
-	{
-		onGround = true;
-	}
-	else
-	{
-		onGround = false;
-		currentState = MarioState::Jumping;
+		velocity.y = 1.0f;
 	}
 }
 
@@ -328,12 +321,12 @@ bool Mario::getInvinsible()
 	return invinsible;
 }
 
-void Mario::playLevelCompleteAnim()
+void Mario::playLevelCompleteAnim(sf::Vector2f flagPolePos)
 {
 	playingLevelCompleteAnim = true;
+	checkCollisions = false;
 	currentState = MarioState::Grabbing_Flag;
 
-	sf::Vector2f flagPolePos = map->getFlagPolePos();
 	position.x = flagPolePos.x;
 	if (facingLeft)
 	{

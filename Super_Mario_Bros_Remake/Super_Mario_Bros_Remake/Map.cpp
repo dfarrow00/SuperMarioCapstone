@@ -159,77 +159,17 @@ void Map::updateTile(int x, int y, int tile)
 	level[y][x] = tile;
 }
 
-bool Map::isColliding(sf::Vector2f pos, sf::Vector2f velocity, int spriteHeight)
+int Map::getTile(int x, int y)
 {
-	bool colliding = false;
-	std::vector<sf::Vector2f> points;
-
-	sf::Vector2f topLeft = pos + velocity; points.push_back(topLeft);
-	sf::Vector2f topRight = topLeft; topRight.x += tileSize; points.push_back(topRight);
-	sf::Vector2f bottomLeft = topLeft; bottomLeft.y += spriteHeight; points.push_back(bottomLeft);
-	sf::Vector2f bottomRight = topRight; bottomRight.y += spriteHeight; points.push_back(bottomRight);
-
-	if (spriteHeight >= 96)
-	{
-		sf::Vector2f middleLeft = topLeft; middleLeft.y += (spriteHeight / 2);
-		sf::Vector2f middleRight = middleLeft; middleRight.x += tileSize;
-		points.push_back(middleLeft);
-		points.push_back(middleRight);
-	}
-
-	for (sf::Vector2f point : points)
-	{
-		if (point.y < 0)
-		{
-			continue;
-		}
-		unsigned int tile = level[point.y / tileSize][point.x / tileSize];
-		if (checkPoint(tile, point, pos, spriteHeight))
-		{
-			colliding = true;
-		}
-	}
-	return colliding;
-}
-
-bool Map::checkPoint(unsigned int tile, sf::Vector2f point, sf::Vector2f pos, int spriteHeight)
-{
-	if (tile > 0)
-	{
-		if (tile == 3 && pos.y > point.y)
-		{
-			sf::Vector2f coinPos((int)(point.x / tileSize) * tileSize, (int)(point.y / tileSize) * tileSize - 1);
-			game->addCoin(sf::Vector2f(coinPos));
-			updateTile(point.x / tileSize, point.y / tileSize, 8);
-		}
-
-		else if (tile == 20 && pos.y > point.y)
-		{
-			sf::Vector2f mushroomPos((int)(point.x / tileSize) * tileSize, (int)(point.y / tileSize) * tileSize - 1);
-			game->addMushroom(sf::Vector2f(mushroomPos));
-			updateTile(point.x / tileSize, point.y / tileSize, 8);
-		}
-		else if (tile == 30 && pos.y > point.y)
-		{
-			sf::Vector2f starPos((int)(point.x / tileSize) * tileSize, (int)(point.y / tileSize) * tileSize - 1);
-			game->addStar(sf::Vector2f(starPos));
-			updateTile(point.x / tileSize, point.y / tileSize, 8);
-		}
-		else if (tile >= 95)
-		{
-			game->levelComplete(flagPoleScores[tile]);
-		}
-		else if (spriteHeight == 96 && tile == 2 && pos.y > point.y)
-		{
-			updateTile(point.x / tileSize, point.y / tileSize, 0);
-			game->addParticles(sf::Vector2f((int)(point.x / tileSize) * tileSize, ((int)point.y / tileSize) * tileSize));
-		}
-		return true;
-	}
-	return false;
+	return level[y / tileSize][x / tileSize];
 }
 
 sf::Vector2f Map::getFlagPolePos()
 {
 	return flagPolePos;
+}
+
+int Map::getFlagPoleScore(int tile)
+{
+	return flagPoleScores[tile];
 }
