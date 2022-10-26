@@ -27,7 +27,7 @@ void CollisionHandler::checkCollisions(std::vector<GameObject*>& gameObjects)
 			continue;
 		}
 		std::vector<sf::Vector2f> points;
-		int spriteHeight = object->getSprite().getGlobalBounds().height;
+		int spriteHeight = object->getSpriteHeight();
 		sf::Vector2f topLeft = object->getPosition();
 		sf::Vector2f topRight = topLeft + sf::Vector2f(TILESIZE, 0);
 		sf::Vector2f bottomLeft = topLeft + sf::Vector2f(0, spriteHeight);
@@ -92,13 +92,29 @@ void CollisionHandler::resolveCollisions()
 				}
 			}
 			float offsetX = (objAABB.left + (objAABB.width / 2)) - (col.tileAABB.left + (col.tileAABB.width / 2));
-			float offsetY = (objAABB.top + (objAABB.height / 2)) - (col.tileAABB.top + (col.tileAABB.height / 2));
+			float offsetY;
+			if (col.object->getSpriteHeight() > 48)
+			{
+				//Not yet tested for KoopaTroopa's height
+				if (objAABB.top < col.tileAABB.top)
+				{
+					offsetY = (objAABB.top + (objAABB.height / 2) + (objAABB.height / 4)) - (col.tileAABB.top + (col.tileAABB.height / 2));
+				}
+				else
+				{
+					offsetY = (objAABB.top + (objAABB.height / 2) - (objAABB.height / 4)) - (col.tileAABB.top + (col.tileAABB.height / 2));
+				}
+			}
+			else
+			{
+				offsetY = (objAABB.top + (objAABB.height / 2)) - (col.tileAABB.top + (col.tileAABB.height / 2));
+			}
 			float resolve = 0;
 			if (abs(offsetX) > abs(offsetY))
 			{
 				if (offsetX > 0)
 				{
-					resolve = ((col.tileAABB.left + TILESIZE) - objAABB.left);
+					resolve = ((col.tileAABB.left + col.tileAABB.width) - objAABB.left);
 				}
 				else
 				{
@@ -111,31 +127,34 @@ void CollisionHandler::resolveCollisions()
 			{
 				if (offsetY > 0)
 				{
-					resolve = ((col.tileAABB.top + TILESIZE) - objAABB.top);
+					resolve = ((col.tileAABB.top + col.tileAABB.height) - objAABB.top);
 					if (Mario* mario = dynamic_cast<Mario*>(col.object))
 					{
-						if (col.tile == 3)
+						if (mario->getVelocity().y < 0)
 						{
-							sf::Vector2f coinPos(col.tileAABB.left, col.tileAABB.top);
-							game->addCoin(coinPos);
-							map->updateTile(col.tileAABB.left / TILESIZE, col.tileAABB.top / TILESIZE, 8);
-						}
-						else if (col.tile == 20)
-						{
-							sf::Vector2f mushroomPos(col.tileAABB.left, col.tileAABB.top);
-							game->addMushroom(mushroomPos);
-							map->updateTile(col.tileAABB.left / TILESIZE, col.tileAABB.top / TILESIZE, 8);
-						}
-						else if (col.tile == 30)
-						{
-							sf::Vector2f starPos(col.tileAABB.left, col.tileAABB.top);
-							game->addStar(starPos);
-							map->updateTile(col.tileAABB.left / TILESIZE, col.tileAABB.top / TILESIZE, 8);
-						}
-						else if (col.tile == 2 && mario->getSpriteHeight() > 48)
-						{
-							map->updateTile(col.tileAABB.left / TILESIZE, col.tileAABB.top / TILESIZE, 0);
-							game->addParticles(sf::Vector2f(col.tileAABB.left, col.tileAABB.top));
+							if (col.tile == 3)
+							{
+								sf::Vector2f coinPos(col.tileAABB.left, col.tileAABB.top);
+								game->addCoin(coinPos);
+								map->updateTile(col.tileAABB.left / TILESIZE, col.tileAABB.top / TILESIZE, 8);
+							}
+							else if (col.tile == 20)
+							{
+								sf::Vector2f mushroomPos(col.tileAABB.left, col.tileAABB.top);
+								game->addMushroom(mushroomPos);
+								map->updateTile(col.tileAABB.left / TILESIZE, col.tileAABB.top / TILESIZE, 8);
+							}
+							else if (col.tile == 30)
+							{
+								sf::Vector2f starPos(col.tileAABB.left, col.tileAABB.top);
+								game->addStar(starPos);
+								map->updateTile(col.tileAABB.left / TILESIZE, col.tileAABB.top / TILESIZE, 8);
+							}
+							else if (col.tile == 2 && mario->getSpriteHeight() > 48)
+							{
+								map->updateTile(col.tileAABB.left / TILESIZE, col.tileAABB.top / TILESIZE, 0);
+								game->addParticles(sf::Vector2f(col.tileAABB.left, col.tileAABB.top));
+							}
 						}
 					}
 				}
