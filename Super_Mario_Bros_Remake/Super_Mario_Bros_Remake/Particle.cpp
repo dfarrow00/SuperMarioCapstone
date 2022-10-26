@@ -2,6 +2,7 @@
 
 Particle::Particle(std::string spriteSheetPath, sf::Vector2f pos, sf::Vector2f vel, bool isFacingLeft)
 {
+	objectType = ObjectType::Particle;
 	texture.loadFromFile(spriteSheetPath);
 	sprite.setTexture(texture);
 

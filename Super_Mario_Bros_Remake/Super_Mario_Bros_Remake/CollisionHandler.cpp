@@ -51,6 +51,11 @@ void CollisionHandler::checkMapCollisions(std::vector<GameObject*>& gameObjects)
 			{
 				continue;
 			}
+			else if (point.y >= 710)
+			{
+				object->hit();
+				break;
+			}
 			unsigned int tile = map->getTile(point.x, point.y);
 			if (tile == 0)
 			{

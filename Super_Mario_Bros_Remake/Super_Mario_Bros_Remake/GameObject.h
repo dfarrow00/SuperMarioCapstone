@@ -6,6 +6,11 @@
 class Map;
 class Animation;
 
+enum class ObjectType
+{
+	Mario, Coin, CoinBrick, Goomba, KoopaTroopa, Mushroom, Particle, Star
+};
+
 class GameObject
 {
 public:
@@ -108,6 +113,11 @@ public:
 		return spriteHeight;
 	}
 
+	ObjectType getObjectType()
+	{
+		return objectType;
+	}
+
 protected:
 	bool alive = true;
 	bool active = true;
@@ -131,4 +141,6 @@ protected:
 
 	sf::Texture texture;
 	sf::Sprite sprite;
+
+	ObjectType objectType;
 };

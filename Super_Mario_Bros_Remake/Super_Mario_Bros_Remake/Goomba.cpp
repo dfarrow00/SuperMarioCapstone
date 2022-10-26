@@ -4,6 +4,7 @@
 
 Goomba::Goomba(sf::Vector2f pos) : walkingAnim("Resources/Goomba_SpriteSheet.png", 0, 2, 0.3), deadAnim("Resources/Goomba_SpriteSheet.png", 1, 1, 0.1)
 {
+	objectType = ObjectType::Goomba;
 	position = pos;
 	currentAnim = &walkingAnim;
 	sprite = currentAnim->getCurrentSprite();

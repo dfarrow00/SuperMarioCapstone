@@ -3,6 +3,7 @@
 
 Mushroom::Mushroom(sf::Vector2f pos) : spawning(true)
 {
+	objectType = ObjectType::Mushroom;
 	texture.loadFromFile("Resources/Mushroom.png");
 	sprite.setTexture(texture);
 	position = pos;

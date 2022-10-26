@@ -3,6 +3,7 @@
 
 Star::Star(sf::Vector2f pos) : anim("Resources/Star_Power_SpriteSheet.png", 0, 2, 0.2)
 {
+	objectType = ObjectType::Star;
 	position = pos;
 	targetSpawnPos = position + sf::Vector2f(0, -48);
 	spriteHeight = 48;

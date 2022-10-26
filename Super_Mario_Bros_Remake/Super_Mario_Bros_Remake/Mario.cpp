@@ -25,6 +25,7 @@ Mario::~Mario()
 
 void Mario::setup()
 {
+	objectType = ObjectType::Mario;
 	currentState = MarioState::Idle;
 	currentAnim = &idleAnim;
 	sprite = currentAnim->getCurrentSprite();

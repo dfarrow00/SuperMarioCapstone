@@ -71,7 +71,6 @@ void GameState::update(float deltaTime)
 	}
 
 	updateGameObjects(deltaTime);
-	//map.handleCollisions(gameObjects, this);
 	collisionHandler.checkMapCollisions(gameObjects);
 	checkObjectCollisions();
 	updateGameView();
@@ -144,15 +143,15 @@ void GameState::checkObjectCollisions()
 						other->hit();
 						break;
 					}
-					if (Mushroom* mushroomObject = dynamic_cast<Mushroom*>(other))
+					if (other->getObjectType() == ObjectType::Mushroom)
 					{
-						mushroomObject->hit();
+						other->hit();
 						marioObject->powerUp();
 						addScore(200);
 					}
-					else if (Goomba* goombaObject = dynamic_cast<Goomba*>(other))
+					else if (other->getObjectType() == ObjectType::Goomba)
 					{
-						if (intersection.top == goombaObject->getAABB().top && intersection.width > intersection.height)
+						if (intersection.top == other->getAABB().top && intersection.width > intersection.height)
 						{
 							if (other->isActive())
 							{
@@ -161,7 +160,7 @@ void GameState::checkObjectCollisions()
 							}
 							other->hit();
 						}
-						else if (goombaObject->isActive() && !marioObject->getInvinsible())
+						else if (other->isActive() && !marioObject->getInvinsible())
 						{
 							marioObject->hit();
 							hud.setLives(mario->getLives());
@@ -196,47 +195,47 @@ void GameState::checkObjectCollisions()
 							}
 						}
 					}
-					else if (Star* starObject = dynamic_cast<Star*>(other))
+					else if (other->getObjectType() == ObjectType::Star)
 					{
 						marioObject->starPowerUp();
-						starObject->hit();
+						other->hit();
 					}
-					else if (CoinBrick* coinBrickObject = dynamic_cast<CoinBrick*>(other))
+					else if (other->getObjectType() == ObjectType::CoinBrick)
 					{
 						collisionHandler.resolveCollision(other, marioObject, intersection);
-						if (intersection.width > intersection.height && marioObject->getPosition().y > coinBrickObject->getPosition().y)
+						if (intersection.width > intersection.height && marioObject->getPosition().y > other->getPosition().y)
 						{
-							coinBrickObject->hit();
+							other->hit();
 						}
 					}
 				}
 
-				else if (Goomba* goombaObject = dynamic_cast<Goomba*>(current))
+				else if (current->getObjectType() == ObjectType::Goomba)
 				{
-					if (Goomba* otherGoombaObject = dynamic_cast<Goomba*>(other))
+					if (other->getObjectType() == ObjectType::Goomba)
 					{
-						if (goombaObject->isActive() && otherGoombaObject->isActive())
+						if (current->isActive() && other->isActive())
 						{
-							goombaObject->setVelocity(-goombaObject->getVelocity());
-							goombaObject->setFacingLeft(!goombaObject->getFacingLeft());
-							otherGoombaObject->setVelocity(-otherGoombaObject->getVelocity());
-							otherGoombaObject->setFacingLeft(!otherGoombaObject->getFacingLeft());
+							current->setVelocity(-current->getVelocity());
+							current->setFacingLeft(!current->getFacingLeft());
+							other->setVelocity(-other->getVelocity());
+							other->setFacingLeft(!other->getFacingLeft());
 						}
 					}
 					else if (KoopaTroopa* koopaObject = dynamic_cast<KoopaTroopa*>(other))
 					{
-						if (goombaObject->isActive() && koopaObject->isActive())
+						if (current->isActive() && koopaObject->isActive())
 						{
 							if (koopaObject->getCurrentState() != KoopaState::Shell)
 							{
-								goombaObject->setVelocity(-goombaObject->getVelocity());
-								goombaObject->setFacingLeft(!goombaObject->getFacingLeft());
+								current->setVelocity(-current->getVelocity());
+								current->setFacingLeft(!current->getFacingLeft());
 								koopaObject->setVelocity(-koopaObject->getVelocity());
 								koopaObject->setFacingLeft(!koopaObject->getFacingLeft());
 							}
 							else
 							{
-								goombaObject->hit();
+								current->hit();
 								addScore(100);
 							}
 						}
@@ -265,7 +264,7 @@ void GameState::checkObjectCollisions()
 					}
 				}
 
-				else if (CoinBrick* coinBrickObject = dynamic_cast<CoinBrick*>(current))
+				else if (current->getObjectType() == ObjectType::CoinBrick)
 				{
 					collisionHandler.resolveCollision(current, other, intersection);
 				}
@@ -329,6 +328,11 @@ void GameState::addScore(int addedScore)
 {
 	score += addedScore;
 	hud.setScore(score);
+}
+
+sf::View* GameState::getView()
+{
+	return &view;
 }
 
 void GameState::resetLevel()

@@ -3,6 +3,7 @@
 
 KoopaTroopa::KoopaTroopa(sf::Vector2f pos) : walkingAnim("Resources/Koopa_Troopa_Spritesheet.png", 0, 2, 0.2, 72), shellAnim("Resources/Koopa_Troopa_Spritesheet.png", 2, 1, 0.2, 48)
 {
+	objectType = ObjectType::KoopaTroopa;
 	position = pos;
 
 	currentState = KoopaState::Walking;

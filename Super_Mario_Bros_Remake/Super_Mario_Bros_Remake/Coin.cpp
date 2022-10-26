@@ -2,6 +2,7 @@
 
 Coin::Coin(sf::Vector2f pos) : anim("Resources/Coin_SpriteSheet.png", 0, 2, 0.1)
 {
+	objectType = ObjectType::Coin;
 	position = pos;
 	checkCollisions = false;
 	sprite = anim.getCurrentSprite();
