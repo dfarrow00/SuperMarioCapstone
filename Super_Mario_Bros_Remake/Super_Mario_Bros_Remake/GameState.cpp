@@ -6,6 +6,7 @@
 #include "Particle.h"
 #include "KoopaTroopa.h"
 #include "Star.h"
+#include "CoinBrick.h"
 #include <iostream>
 
 GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stateMgr), window(win), map(this), hud(window), collisionHandler(&map, this)
@@ -71,7 +72,7 @@ void GameState::update(float deltaTime)
 
 	updateGameObjects(deltaTime);
 	//map.handleCollisions(gameObjects, this);
-	collisionHandler.checkCollisions(gameObjects);
+	collisionHandler.checkMapCollisions(gameObjects);
 	checkObjectCollisions();
 	updateGameView();
 	updateTimer(deltaTime);
@@ -200,6 +201,14 @@ void GameState::checkObjectCollisions()
 						marioObject->starPowerUp();
 						starObject->hit();
 					}
+					else if (CoinBrick* coinBrickObject = dynamic_cast<CoinBrick*>(other))
+					{
+						collisionHandler.resolveCollision(other, marioObject, intersection);
+						if (intersection.width > intersection.height && marioObject->getPosition().y > coinBrickObject->getPosition().y)
+						{
+							coinBrickObject->hit();
+						}
+					}
 				}
 
 				else if (Goomba* goombaObject = dynamic_cast<Goomba*>(current))
@@ -255,6 +264,11 @@ void GameState::checkObjectCollisions()
 						}
 					}
 				}
+
+				else if (CoinBrick* coinBrickObject = dynamic_cast<CoinBrick*>(current))
+				{
+					collisionHandler.resolveCollision(current, other, intersection);
+				}
 			}
 		}
 	}
@@ -303,6 +317,12 @@ void GameState::addParticles(sf::Vector2f pos)
 	gameObjects.push_back(particle2);
 	gameObjects.push_back(particle3);
 	gameObjects.push_back(particle4);
+}
+
+void GameState::addCoinBrick(sf::Vector2f pos)
+{
+	CoinBrick* coinBrick = new CoinBrick(pos, this);
+	gameObjects.push_back(coinBrick);
 }
 
 void GameState::addScore(int addedScore)

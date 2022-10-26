@@ -18,7 +18,7 @@ CollisionHandler::~CollisionHandler()
 {
 }
 
-void CollisionHandler::checkCollisions(std::vector<GameObject*>& gameObjects)
+void CollisionHandler::checkMapCollisions(std::vector<GameObject*>& gameObjects)
 {
 	for (GameObject* object : gameObjects)
 	{
@@ -171,3 +171,32 @@ void CollisionHandler::resolveCollisions()
 	}
 }
 /*Code reference ends here*/
+
+void CollisionHandler::resolveCollision(GameObject* obj1, GameObject* obj2, sf::FloatRect intersection)
+{
+	if (intersection.width > intersection.height)
+	{
+		if (obj2->getPosition().y > obj1->getPosition().y)
+		{
+			obj2->setPosition(obj2->getPosition().x, obj2->getPosition().y + intersection.height);
+		}
+		else
+		{
+			obj2->setPosition(obj2->getPosition().x, obj2->getPosition().y - intersection.height);
+			obj2->setOnGround(true);
+		}
+		obj2->setCollidingY(true);
+	}
+	else
+	{
+		if (obj2->getPosition().x > obj1->getPosition().x)
+		{
+			obj2->setPosition(obj2->getPosition().x + intersection.width, obj2->getPosition().y);
+		}
+		else
+		{
+			obj2->setPosition(obj2->getPosition().x - intersection.width, obj2->getPosition().y);
+		}
+		obj2->setCollidingX(true);
+	}
+}

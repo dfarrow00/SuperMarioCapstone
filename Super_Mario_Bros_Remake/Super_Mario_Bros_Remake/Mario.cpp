@@ -96,11 +96,6 @@ void Mario::draw(sf::RenderWindow* window)
 	{
 		window->draw(sprite);
 	}
-	/*sf::RectangleShape rect;
-	rect.setPosition(position.x, position.y);
-	rect.setSize(sf::Vector2f(48, 48));
-	rect.setFillColor(sf::Color::Red);
-	window->draw(rect);*/
 }
 
 void Mario::handleInput(float deltaTime)

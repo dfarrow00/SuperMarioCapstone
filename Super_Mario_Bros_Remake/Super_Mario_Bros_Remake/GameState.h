@@ -30,6 +30,7 @@ public:
 	void addCoin(sf::Vector2f pos);
 	void addStar(sf::Vector2f pos);
 	void addParticles(sf::Vector2f pos);
+	void addCoinBrick(sf::Vector2f pos);
 	void addScore(int addedScore);
 
 	void levelComplete(int flagScore, sf::Vector2f flagPolePos);

@@ -128,6 +128,11 @@ void Map::loadMap(int mapNumber)
 				{
 					flagPolePos = sf::Vector2f(x * tileSize, level.size() + 1 * tileSize);
 				}
+				else if (number == 31)
+				{
+					number = 0;
+					game->addCoinBrick(sf::Vector2f(x * tileSize, level.size() * tileSize + 1));
+				}
 				row.push_back(number);
 				number = 0;
 			}

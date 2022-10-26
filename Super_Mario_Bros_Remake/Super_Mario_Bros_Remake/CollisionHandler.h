@@ -28,7 +28,8 @@ public:
 	CollisionHandler(Map* gameMap, GameState* gameState);
 	~CollisionHandler();
 
-	void checkCollisions(std::vector<GameObject*>& gameObjects);
+	void checkMapCollisions(std::vector<GameObject*>& gameObjects);
+	void resolveCollision(GameObject* obj1, GameObject* obj2, sf::FloatRect intersection);
 	
 private:
 	void resolveCollisions();
