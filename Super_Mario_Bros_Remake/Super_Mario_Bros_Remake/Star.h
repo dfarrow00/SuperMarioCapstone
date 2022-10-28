@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "GameObject.h"
 #include "Animation.h"
 
@@ -18,4 +19,7 @@ private:
 	bool spawning = true;
 	sf::Vector2f targetSpawnPos;
 	Animation anim;
+
+	sf::SoundBuffer spawnSoundBuffer;
+	sf::Sound spawnSound;
 };

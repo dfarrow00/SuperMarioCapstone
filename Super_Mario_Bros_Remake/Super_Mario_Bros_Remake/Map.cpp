@@ -7,7 +7,7 @@
 Map::Map(GameState* gameState) : game(gameState)
 {
 	tileSize = 48;
-	tileSheet.loadFromFile("Resources/Tile_Sheet.png");
+	tileSheet.loadFromFile("Resources/Sprites/Tile_Sheet.png");
 	int tileCount = 1;
 	for (int y = 0; y < tileSize * 4; y += tileSize)
 	{
@@ -102,7 +102,7 @@ void Map::loadMap(int mapNumber)
 {
 	level.clear();
 	std::ifstream file;
-	std::string fileName("Resources/Level");
+	std::string fileName("Resources/Maps/Level");
 	fileName.append(std::to_string(mapNumber));
 	fileName.append(".txt");
 	file.open(fileName);

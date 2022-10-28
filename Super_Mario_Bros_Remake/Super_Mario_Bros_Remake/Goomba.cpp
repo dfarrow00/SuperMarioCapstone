@@ -2,7 +2,7 @@
 #include "Map.h"
 #include <iostream>
 
-Goomba::Goomba(sf::Vector2f pos) : walkingAnim("Resources/Goomba_SpriteSheet.png", 0, 2, 0.3), deadAnim("Resources/Goomba_SpriteSheet.png", 1, 1, 0.1)
+Goomba::Goomba(sf::Vector2f pos) : walkingAnim("Resources/Sprites/Goomba_SpriteSheet.png", 0, 2, 0.3), deadAnim("Resources/Sprites/Goomba_SpriteSheet.png", 1, 1, 0.1)
 {
 	objectType = ObjectType::Goomba;
 	position = pos;
@@ -46,6 +46,7 @@ void Goomba::draw(sf::RenderWindow* window)
 
 void Goomba::hit()
 {
+	Enemy::hit();
 	currentAnim = &deadAnim;
 	sprite = currentAnim->getCurrentSprite();
 	sprite.setPosition(position);

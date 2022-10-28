@@ -4,14 +4,17 @@
 Mushroom::Mushroom(sf::Vector2f pos) : spawning(true)
 {
 	objectType = ObjectType::Mushroom;
-	texture.loadFromFile("Resources/Mushroom.png");
+	texture.loadFromFile("Resources/Sprites/Mushroom.png");
 	sprite.setTexture(texture);
 	position = pos;
 	targetSpawnPos = position + sf::Vector2f(0, -48);
-	velocity = sf::Vector2f(0, -50);
+	velocity = sf::Vector2f(0, -65);
 	alive = true;
 	spriteHeight = 48;
 	checkCollisions = false;
+	spawnSoundBuffer.loadFromFile("Resources/Audio/Powerup_Spawn.wav");
+	spawnSound.setBuffer(spawnSoundBuffer);
+	spawnSound.play();
 }
 
 Mushroom::~Mushroom()

@@ -3,11 +3,11 @@
 MenuState::MenuState(StateManager* stateMgr) : State(stateMgr)
 {
 	isTransparent = true;
-	titleTexture.loadFromFile("Resources/SMB-Title.png");
+	titleTexture.loadFromFile("Resources/Sprites/SMB-Title.png");
 	titleSprite.setTexture(titleTexture);
 	titleSprite.setScale(0.75, 0.75);
 
-	menuFont.loadFromFile("Resources/PressStart2P-Regular.ttf");
+	menuFont.loadFromFile("Resources/Fonts/PressStart2P-Regular.ttf");
 	menuTitle.setFont(menuFont);
 	menuText.setFont(menuFont);
 	menuTitle.setString("Remake");

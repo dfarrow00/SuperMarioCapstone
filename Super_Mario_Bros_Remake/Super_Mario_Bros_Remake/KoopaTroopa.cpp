@@ -1,7 +1,7 @@
 #include "KoopaTroopa.h"
 #include "Map.h"
 
-KoopaTroopa::KoopaTroopa(sf::Vector2f pos) : walkingAnim("Resources/Koopa_Troopa_Spritesheet.png", 0, 2, 0.2, 72), shellAnim("Resources/Koopa_Troopa_Spritesheet.png", 2, 1, 0.2, 48)
+KoopaTroopa::KoopaTroopa(sf::Vector2f pos) : walkingAnim("Resources/Sprites/Koopa_Troopa_Spritesheet.png", 0, 2, 0.2, 72), shellAnim("Resources/Sprites/Koopa_Troopa_Spritesheet.png", 2, 1, 0.2, 48)
 {
 	objectType = ObjectType::KoopaTroopa;
 	position = pos;
@@ -64,6 +64,7 @@ void KoopaTroopa::draw(sf::RenderWindow* window)
 
 void KoopaTroopa::hit()
 {
+	Enemy::hit();
 	currentState = KoopaState::Shell;
 	isBig = false;
 	spriteHeight = 48;

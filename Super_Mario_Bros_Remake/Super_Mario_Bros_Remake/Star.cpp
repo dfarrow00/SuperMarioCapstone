@@ -1,16 +1,19 @@
 #include "Star.h"
 #include "Map.h"
 
-Star::Star(sf::Vector2f pos) : anim("Resources/Star_Power_SpriteSheet.png", 0, 2, 0.2)
+Star::Star(sf::Vector2f pos) : anim("Resources/Sprites/Star_Power_SpriteSheet.png", 0, 2, 0.2)
 {
 	objectType = ObjectType::Star;
 	position = pos;
 	targetSpawnPos = position + sf::Vector2f(0, -48);
 	spriteHeight = 48;
-	velocity.y = -50;
+	velocity.y = -65;
 	checkCollisions = false;
 	anim.reset();
 	sprite = anim.getCurrentSprite();
+	spawnSoundBuffer.loadFromFile("Resources/Audio/Powerup_Spawn.wav");
+	spawnSound.setBuffer(spawnSoundBuffer);
+	spawnSound.play();
 }
 
 Star::~Star()

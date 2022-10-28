@@ -3,6 +3,7 @@
 #include "Map.h"
 #include "HUD.h"
 #include "CollisionHandler.h"
+#include <SFML/Audio.hpp>
 
 class Mario;
 class GameObject;
@@ -37,12 +38,14 @@ public:
 
 	void levelComplete(int flagScore, sf::Vector2f flagPolePos);
 private:
+	void loadSounds();
 	void resetLevel();
 	void endGame();
 
 	int timer = 400;
 	float timerInterval = 0.4;
 	float currentTimeInterval = 0.0f;
+	float marioStarPowerTime;
 
 	int score = 0;
 	int coins = 0;
@@ -55,6 +58,12 @@ private:
 	sf::RenderWindow* window;
 	sf::View view;
 	HUD hud;
+
+	sf::Music music;
+	sf::SoundBuffer brickBreakSoundBuffer;
+	sf::Sound brickBreakSound;
+
+	sf::Clock starPowerTimer;
 
 	CollisionHandler collisionHandler;
 

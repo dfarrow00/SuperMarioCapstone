@@ -2,7 +2,7 @@
 
 HUD::HUD(sf::RenderWindow* window) : window(window)
 {
-	font.loadFromFile("Resources/PressStart2P-Regular.ttf");
+	font.loadFromFile("Resources/Fonts/PressStart2P-Regular.ttf");
 
 	scoreLabelText.setString("SCORE");
 	scoreValueText.setString(std::to_string(score));

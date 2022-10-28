@@ -2,25 +2,44 @@
 #include "Map.h"
 #include <iostream>
 
-Mario::Mario() : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.2),
-jumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1), flagGrabAnim("Resources/Mario_SpriteSheet.png", 3, 1), deathAnim("Resources/Mario_SpriteSheet.png", 4, 1), 
-bigIdleAnim("Resources/Big_Mario_SpriteSheet.png", 0, 1, 100.0f, 96), bigRunningAnim("Resources/Big_Mario_SpriteSheet.png", 1, 3, 0.2, 96), 
-bigJumpingAnim("Resources/Big_Mario_SpriteSheet.png", 2, 1, 100.0f, 96), bigFlagGrabAnim("Resources/Big_Mario_SpriteSheet.png", 3, 2, 0.2, 96)
+Mario::Mario() : GameObject(), idleAnim("Resources/Sprites/Mario_SpriteSheet.png", 0, 1), runningAnim("Resources/Sprites/Mario_SpriteSheet.png", 1, 3, 0.2),
+jumpingAnim("Resources/Sprites/Mario_SpriteSheet.png", 2, 1), flagGrabAnim("Resources/Sprites/Mario_SpriteSheet.png", 3, 1), deathAnim("Resources/Sprites/Mario_SpriteSheet.png", 4, 1), 
+bigIdleAnim("Resources/Sprites/Big_Mario_SpriteSheet.png", 0, 1, 100.0f, 96), bigRunningAnim("Resources/Sprites/Big_Mario_SpriteSheet.png", 1, 3, 0.2, 96), 
+bigJumpingAnim("Resources/Sprites/Big_Mario_SpriteSheet.png", 2, 1, 100.0f, 96), bigFlagGrabAnim("Resources/Sprites/Big_Mario_SpriteSheet.png", 3, 2, 0.2, 96)
 {
+	loadSounds();
 	setup();
 }
 
-Mario::Mario(sf::Vector2f& pos) : GameObject(), idleAnim("Resources/Mario_SpriteSheet.png", 0, 1), runningAnim("Resources/Mario_SpriteSheet.png", 1, 3, 0.2),
-jumpingAnim("Resources/Mario_SpriteSheet.png", 2, 1), flagGrabAnim("Resources/Mario_SpriteSheet.png", 3, 1), deathAnim("Resources/Mario_SpriteSheet.png", 4, 1),
-bigIdleAnim("Resources/Big_Mario_SpriteSheet.png", 0, 1, 100.0f, 96), bigRunningAnim("Resources/Big_Mario_SpriteSheet.png", 1, 3, 0.2, 96),
-bigJumpingAnim("Resources/Big_Mario_SpriteSheet.png", 2, 1, 100.0f, 96), bigFlagGrabAnim("Resources/Big_Mario_SpriteSheet.png", 3, 2, 0.2, 96)
+Mario::Mario(sf::Vector2f& pos) : GameObject(), idleAnim("Resources/Sprites/Mario_SpriteSheet.png", 0, 1), runningAnim("Resources/Sprites/Mario_SpriteSheet.png", 1, 3, 0.2),
+jumpingAnim("Resources/Sprites/Mario_SpriteSheet.png", 2, 1), flagGrabAnim("Resources/Sprites/Mario_SpriteSheet.png", 3, 1), deathAnim("Resources/Sprites/Mario_SpriteSheet.png", 4, 1),
+bigIdleAnim("Resources/Sprites/Big_Mario_SpriteSheet.png", 0, 1, 100.0f, 96), bigRunningAnim("Resources/Sprites/Big_Mario_SpriteSheet.png", 1, 3, 0.2, 96),
+bigJumpingAnim("Resources/Sprites/Big_Mario_SpriteSheet.png", 2, 1, 100.0f, 96), bigFlagGrabAnim("Resources/Sprites/Big_Mario_SpriteSheet.png", 3, 2, 0.2, 96)
 {
+	loadSounds();
 	position = pos;
 	setup();
 }
 
 Mario::~Mario()
 {
+}
+
+void Mario::loadSounds()
+{
+	jumpSoundBuffer.loadFromFile("Resources/Audio/Mario_Jump.wav");
+	jumpSound.setBuffer(jumpSoundBuffer);
+	deathSoundBuffer.loadFromFile("Resources/Audio/Mario_Death.wav");
+	deathSound.setBuffer(deathSoundBuffer);
+	flagSoundBuffer.loadFromFile("Resources/Audio/Flag_Pole.wav");
+	flagSound.setBuffer(flagSoundBuffer);
+	marioHitSoundBuffer.loadFromFile("Resources/Audio/Mario_Hit.wav");
+	marioHitSound.setBuffer(marioHitSoundBuffer);
+	marioPowerUpSoundBuffer.loadFromFile("Resources/Audio/Mario_Power_Up.wav");
+	marioPowerUpSound.setBuffer(marioPowerUpSoundBuffer);
+	marioStarPowerSoundBuffer.loadFromFile("Resources/Audio/Mario_Star_Power.wav");
+	marioStarPowerSound.setBuffer(marioStarPowerSoundBuffer);
+	marioStarPowerSound.setLoop(true);
 }
 
 void Mario::setup()
@@ -37,6 +56,7 @@ void Mario::setup()
 	maxVelocity = 400.0f;
 	currentDeathAnimTime = 0.0f;
 	currentLevelCompleteTime = 0.0f;
+	furthestXPosition = 0.0f;
 
 	currentAnim = nullptr;
 	facingLeft = false;
@@ -66,6 +86,11 @@ void Mario::update(float deltaTime)
 	{
 		updateDeathAnim(deltaTime);
 	}
+	else if (playingPowerUpAnim)
+	{
+		updatePowerUpAnim();
+		handleInput(deltaTime);
+	}
 	else
 	{
 		checkCollisionStates(deltaTime);
@@ -85,6 +110,11 @@ void Mario::update(float deltaTime)
 
 	position += (velocity * deltaTime);
 	sprite.setPosition(position);
+
+	if (position.x > furthestXPosition)
+	{
+		furthestXPosition = position.x;
+	}
 
 	collidingX = false;
 	collidingY = false;
@@ -129,6 +159,7 @@ void Mario::handleInput(float deltaTime)
 		velocity.y = -jumpVelocity; //Not multiplied by dt as it is an impulse force and will be the same for all framerates
 		jumpTime = 0.4f;
 		currentState = MarioState::Jumping;
+		jumpSound.play();
 	}
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !onGround)
 	{
@@ -167,12 +198,9 @@ void Mario::handleInput(float deltaTime)
 
 void Mario::checkCollisionStates(float deltaTime)
 {
-	if (position.x + (velocity.x * deltaTime) < 0 || position.y + (velocity.y * deltaTime) >= 670)//Out of bounds check.
+	if ((position.x < furthestXPosition - 384 && velocity.x < 0) || position.x <= 0.0f)
 	{
-		velocity.x = 0.0f;
-		velocity.y = 0.0f;
-		alive = false;
-		return;
+		collidingX = true;
 	}
 
 	if (collidingX)
@@ -272,6 +300,7 @@ void Mario::hit()
 	{
 		setBig(false);
 		invinsible = true;
+		marioHitSound.play();
 	}
 	else
 	{
@@ -282,13 +311,17 @@ void Mario::hit()
 
 void Mario::powerUp()
 {
-	setBig(true);
+	if (!isBig)
+	{
+		playPowerUpAnim();
+	}
 }
 
 void Mario::starPowerUp()
 {
-	powerUp();
+	setBig(true);
 	starPower = true;
+	marioStarPowerSound.play();
 }
 
 void Mario::addVelocity(sf::Vector2f vel)
@@ -324,6 +357,8 @@ bool Mario::getInvinsible()
 
 void Mario::playLevelCompleteAnim(sf::Vector2f flagPolePos)
 {
+	flagSound.play();
+
 	playingLevelCompleteAnim = true;
 	checkCollisions = false;
 	currentState = MarioState::Grabbing_Flag;
@@ -350,7 +385,7 @@ void Mario::playLevelCompleteAnim(sf::Vector2f flagPolePos)
 	{
 		position.y = 480;
 	}
-	velocity = sf::Vector2f(0, 200);
+	velocity = sf::Vector2f(0, 300);
 }
 
 void Mario::updateLevelCompleteAnim(float deltaTime)
@@ -386,6 +421,7 @@ bool Mario::getStarPower()
 
 void Mario::playDeathAnim()
 {
+	deathSound.play();
 	playingDeathAnim = true;
 	active = false;
 	currentState = MarioState::Dead;
@@ -405,6 +441,29 @@ void Mario::updateDeathAnim(float deltaTime)
 	velocity.y += GRAVITY * deltaTime;
 }
 
+void Mario::playPowerUpAnim()
+{
+	playingPowerUpAnim = true;
+	setBig(true);
+	marioPowerUpSound.play();
+	powerUpAnimTimeClock.restart();
+	powerUpAnimRateClock.restart();
+}
+
+void Mario::updatePowerUpAnim()
+{
+	if (powerUpAnimRateClock.getElapsedTime().asSeconds() >= powerUpAnimRate)
+	{
+		setBig(!isBig);
+		powerUpAnimRateClock.restart();
+	}
+	if (powerUpAnimTimeClock.getElapsedTime().asSeconds() >= powerUpAnimTime)
+	{
+		playingPowerUpAnim = false;
+		setBig(true);
+	}
+}
+
 void Mario::updateStarPower(const float deltaTime)
 {
 	currentStarPowerTime += deltaTime;
@@ -413,6 +472,7 @@ void Mario::updateStarPower(const float deltaTime)
 	{
 		starPower = false;
 		currentStarPowerTime = 0.0f;
+		marioStarPowerSound.stop();
 	}
 	if (currentColorChangeTime >= colorChangeTimer)
 	{
@@ -434,4 +494,8 @@ int Mario::getLives()
 void Mario::resetLives()
 {
 	lives = 3;
+}
+float Mario::getStarPowerTime()
+{
+	return starPowerTime;
 }

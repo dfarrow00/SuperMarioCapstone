@@ -1,7 +1,8 @@
 #pragma once
-#include <SFML/Graphics.hpp>
 #include "GameObject.h"
 #include "Animation.h"
+#include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 
 enum class MarioState
 {
@@ -32,16 +33,21 @@ public:
 	void resetLives();
 
 	int getLives();
+	float getStarPowerTime();
 	bool getInvinsible();
 	bool getFinishReached();
 	bool getStarPower();
 private:
+	void loadSounds();
+
 	void handleInput(float deltaTime);
 	void checkCollisionStates(float deltaTime);
 	void updateState(float deltaTime);
 	void handleInvincibility(float deltaTime);
 
 	void playDeathAnim();
+	void playPowerUpAnim();
+	void updatePowerUpAnim();
 	void updateDeathAnim(float deltaTime);
 	void updateLevelCompleteAnim(float deltaTime);
 	void updateStarPower(const float deltaTime);
@@ -52,6 +58,7 @@ private:
 	float jumpVelocity = 400.0f;
 	float speed = 800.0f;
 	float drag = 400.0f;
+	float furthestXPosition = 0.0f;
 
 	float invinsibilityTime = 2.0f;
 	float currentInvTime = 0.0f;
@@ -61,8 +68,13 @@ private:
 	float levelCompleteDelay = 1.0f;
 	float currentLevelCompleteTime = 0.0f;
 
-	float deathAnimTime = 3.0f;
+	float deathAnimTime = 3.5f;
 	float currentDeathAnimTime = 0.0f;
+
+	float powerUpAnimTime = 1.0f;
+	float powerUpAnimRate = 0.1f;
+	sf::Clock powerUpAnimTimeClock;
+	sf::Clock powerUpAnimRateClock;
 
 	float starPowerTime = 7.0f;
 	float currentStarPowerTime = 0.0f;
@@ -76,6 +88,7 @@ private:
 	bool isVisible = true;
 	bool playingLevelCompleteAnim = false;
 	bool playingDeathAnim = false;
+	bool playingPowerUpAnim = false;
 	bool finishReached = false;
 	bool starPower = false;
 
@@ -91,4 +104,17 @@ private:
 	Animation bigFlagGrabAnim;
 
 	MarioState currentState;
+
+	sf::SoundBuffer jumpSoundBuffer;
+	sf::Sound jumpSound;
+	sf::SoundBuffer deathSoundBuffer;
+	sf::Sound deathSound;
+	sf::SoundBuffer flagSoundBuffer;
+	sf::Sound flagSound;
+	sf::SoundBuffer marioHitSoundBuffer;
+	sf::Sound marioHitSound;
+	sf::SoundBuffer marioPowerUpSoundBuffer;
+	sf::Sound marioPowerUpSound;
+	sf::SoundBuffer marioStarPowerSoundBuffer;
+	sf::Sound marioStarPowerSound;
 };

@@ -23,6 +23,10 @@ GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stat
 	mario->resetLives();
 	hud.setLives(mario->getLives());
 	hud.setLevel(1);
+
+	marioStarPowerTime = mario->getStarPowerTime();
+
+	loadSounds();
 }
 
 GameState::~GameState()
@@ -37,16 +41,34 @@ GameState::~GameState()
 void GameState::activate()
 {
 	hud.activate();
+	music.play();
 }
 
 void GameState::deactivate()
 {
 	hud.deactivate();
+	music.stop();
+}
+
+void GameState::loadSounds()
+{
+	music.openFromFile("Resources/Audio/Mario_Soundtrack.wav");
+	music.setLoop(true);
+	brickBreakSoundBuffer.loadFromFile("Resources/Audio/Brick_Break.wav");
+	brickBreakSound.setBuffer(brickBreakSoundBuffer);
 }
 
 void GameState::update(float deltaTime)
 {
 	if (paused) return;
+
+	if (music.getStatus() == sf::Music::Status::Paused)
+	{
+		if (starPowerTimer.getElapsedTime().asSeconds() >= marioStarPowerTime)
+		{
+			music.play();
+		}
+	}
 
 	if (!mario->isAlive())
 	{
@@ -140,6 +162,18 @@ void GameState::checkObjectCollisions()
 				{
 					if (marioObject->getStarPower())
 					{
+						if (other->getObjectType() == ObjectType::KoopaTroopa)
+						{
+							KoopaTroopa* koopaObject = dynamic_cast<KoopaTroopa*>(other);
+							if (koopaObject->getCurrentState() == KoopaState::Walking)
+							{
+								other->hit();
+							}
+							else
+							{
+								koopaObject->kick(marioObject->getPosition().x < koopaObject->getPosition().x);
+							}
+						}
 						other->hit();
 						break;
 					}
@@ -162,6 +196,10 @@ void GameState::checkObjectCollisions()
 						}
 						else if (other->isActive() && !marioObject->getInvinsible())
 						{
+							if (marioObject->getSpriteHeight() == 48)
+							{
+								music.stop();
+							}
 							marioObject->hit();
 							hud.setLives(mario->getLives());
 						}
@@ -190,6 +228,10 @@ void GameState::checkObjectCollisions()
 							}
 							else
 							{
+								if (marioObject->getSpriteHeight() == 48)
+								{
+									music.stop();
+								}
 								marioObject->hit();
 								hud.setLives(mario->getLives());
 							}
@@ -198,6 +240,8 @@ void GameState::checkObjectCollisions()
 					else if (other->getObjectType() == ObjectType::Star)
 					{
 						marioObject->starPowerUp();
+						music.pause();
+						starPowerTimer.restart();
 						other->hit();
 					}
 					else if (other->getObjectType() == ObjectType::CoinBrick)
@@ -308,14 +352,15 @@ void GameState::addStar(sf::Vector2f pos)
 
 void GameState::addParticles(sf::Vector2f pos)
 {
-	Particle* particle1 = new Particle("Resources/Brick_Particle.png", sf::Vector2f(pos.x, pos.y + 10), sf::Vector2f(-100, -300), true);
-	Particle* particle2 = new Particle("Resources/Brick_Particle.png", sf::Vector2f(pos.x, pos.y + 10), sf::Vector2f(100, -300), false);
-	Particle* particle3 = new Particle("Resources/Brick_Particle.png", sf::Vector2f(pos.x, pos.y - 10), sf::Vector2f(-100, -300), true);
-	Particle* particle4 = new Particle("Resources/Brick_Particle.png", sf::Vector2f(pos.x, pos.y - 10), sf::Vector2f(100, -300), false);
+	Particle* particle1 = new Particle("Resources/Sprites/Brick_Particle.png", sf::Vector2f(pos.x, pos.y + 10), sf::Vector2f(-100, -300), true);
+	Particle* particle2 = new Particle("Resources/Sprites/Brick_Particle.png", sf::Vector2f(pos.x, pos.y + 10), sf::Vector2f(100, -300), false);
+	Particle* particle3 = new Particle("Resources/Sprites/Brick_Particle.png", sf::Vector2f(pos.x, pos.y - 10), sf::Vector2f(-100, -300), true);
+	Particle* particle4 = new Particle("Resources/Sprites/Brick_Particle.png", sf::Vector2f(pos.x, pos.y - 10), sf::Vector2f(100, -300), false);
 	gameObjects.push_back(particle1);
 	gameObjects.push_back(particle2);
 	gameObjects.push_back(particle3);
 	gameObjects.push_back(particle4);
+	brickBreakSound.play();
 }
 
 void GameState::addCoinBrick(sf::Vector2f pos)
@@ -337,6 +382,9 @@ sf::View* GameState::getView()
 
 void GameState::resetLevel()
 {
+	music.stop();
+	music.setPlayingOffset(sf::Time::Zero);
+	music.play();
 	gameObjects.clear();
 	mario->reset();
 	gameObjects.push_back(mario);
@@ -360,6 +408,7 @@ void GameState::endGame()
 
 void GameState::levelComplete(int flagScore, sf::Vector2f flagPolePos)
 {
+	music.stop();
 	score += flagScore;
 	hud.setScore(score);
 	mario->playLevelCompleteAnim(flagPolePos);

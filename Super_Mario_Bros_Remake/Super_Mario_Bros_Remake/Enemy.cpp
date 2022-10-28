@@ -4,6 +4,8 @@
 
 Enemy::Enemy()
 {
+	hitSoundBuffer.loadFromFile("Resources/Audio/Enemy_Hit.wav");
+	hitSound.setBuffer(hitSoundBuffer);
 }
 
 Enemy::~Enemy()
@@ -37,19 +39,6 @@ void Enemy::move(float deltaTime)
 		velocity.y += GRAVITY * deltaTime;
 	}
 
-	/*if (map->isColliding(position, sf::Vector2f(velocity.x * deltaTime, 0), spriteHeight))
-	{
-		velocity.x = -velocity.x;
-		facingLeft = !facingLeft;
-	}
-
-	velocity.y += GRAVITY * deltaTime;
-
-	if (map->isColliding(position, sf::Vector2f(0, velocity.y * deltaTime), spriteHeight))
-	{
-		velocity.y = 0.0f;
-	}*/
-
 	position += velocity * deltaTime;
 
 	currentAnim->update(deltaTime);
@@ -61,4 +50,9 @@ void Enemy::move(float deltaTime)
 		sprite.setOrigin({ sprite.getLocalBounds().width, 0 });
 		sprite.scale(-1, 1);
 	}
+}
+
+void Enemy::hit()
+{
+	hitSound.play();
 }

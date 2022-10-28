@@ -5,7 +5,7 @@ CoinBrick::CoinBrick(sf::Vector2f pos, GameState* gameState) : game(gameState)
 {
 	objectType = ObjectType::CoinBrick;
 	position = pos;
-	texture.loadFromFile("Resources/Tile_Sheet.png", sf::IntRect(48, 0, 48, 48));
+	texture.loadFromFile("Resources/Sprites/Tile_Sheet.png", sf::IntRect(48, 0, 48, 48));
 	sprite.setTexture(texture);
 	sprite.setPosition(position);
 	checkCollisions = false;
@@ -41,7 +41,7 @@ void CoinBrick::hit()
 	else if (activated)
 	{
 		game->addCoin(position);
-		texture.loadFromFile("Resources/Tile_Sheet.png", sf::IntRect(48, 96, 48, 48));
+		texture.loadFromFile("Resources/Sprites/Tile_Sheet.png", sf::IntRect(48, 96, 48, 48));
 		sprite.setTexture(texture);
 		activated = false;
 	}

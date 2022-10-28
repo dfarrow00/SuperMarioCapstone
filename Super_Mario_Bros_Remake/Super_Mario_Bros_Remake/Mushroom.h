@@ -1,5 +1,6 @@
 #pragma once
 #include "GameObject.h"
+#include <SFML/Audio.hpp>
 
 class Map;
 
@@ -17,4 +18,7 @@ public:
 private:
 	sf::Vector2f targetSpawnPos;
 	bool spawning;
+
+	sf::SoundBuffer spawnSoundBuffer;
+	sf::Sound spawnSound;
 };

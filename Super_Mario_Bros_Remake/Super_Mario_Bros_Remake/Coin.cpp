@@ -1,11 +1,14 @@
 #include "Coin.h"
 
-Coin::Coin(sf::Vector2f pos) : anim("Resources/Coin_SpriteSheet.png", 0, 2, 0.1)
+Coin::Coin(sf::Vector2f pos) : anim("Resources/Sprites/Coin_SpriteSheet.png", 0, 2, 0.1)
 {
 	objectType = ObjectType::Coin;
 	position = pos;
 	checkCollisions = false;
 	sprite = anim.getCurrentSprite();
+	soundBuffer.loadFromFile("Resources/Audio/Coin_Pickup.wav");
+	sound.setBuffer(soundBuffer);
+	sound.play();
 }
 
 Coin::~Coin()
@@ -15,7 +18,7 @@ Coin::~Coin()
 void Coin::update(float deltaTime)
 {
 	lifetime -= deltaTime;
-	if (lifetime <= 0.0f)
+	if (lifetime <= 0.0f && sound.getStatus() == sf::Sound::Status::Stopped)
 	{
 		alive = false;
 		return;
@@ -30,7 +33,10 @@ void Coin::update(float deltaTime)
 
 void Coin::draw(sf::RenderWindow* window)
 {
-	window->draw(sprite);
+	if (lifetime > 0)
+	{
+		window->draw(sprite);
+	}
 }
 
 void Coin::hit()
