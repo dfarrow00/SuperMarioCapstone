@@ -25,4 +25,6 @@ Goomba 6192 570
 Goomba 6240 570
 Goomba 6288 570
 Goomba 6336 570
+Goomba 8450 570
+Goomba 8520 570
 Koopa 5700 545

@@ -54,6 +54,10 @@ void CollisionHandler::checkMapCollisions(std::vector<GameObject*>& gameObjects)
 			else if (point.y >= 710)
 			{
 				object->hit();
+				if (object->getObjectType() == ObjectType::Mario)
+				{
+					game->stopMusic();
+				}
 				break;
 			}
 			unsigned int tile = map->getTile(point.x, point.y);

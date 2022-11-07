@@ -76,11 +76,11 @@ void KoopaTroopa::kick(bool direction)
 	{
 		if (direction)
 		{
-			velocity.x = 550.0f;
+			velocity.x = 700.0f;
 		}
 		else
 		{
-			velocity.x = -550.0f;
+			velocity.x = -700.0f;
 		}
 	}
 	else

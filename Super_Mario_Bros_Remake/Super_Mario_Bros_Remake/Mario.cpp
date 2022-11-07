@@ -279,6 +279,12 @@ void Mario::updateState(float deltaTime)
 
 void Mario::handleInvincibility(float deltaTime)
 {
+	if (playingDeathAnim)
+	{
+		isVisible = true;
+		currentInvTime = 0.0f;
+		return;
+	}
 	currentInvTime += deltaTime;
 	flashingTimer += deltaTime;
 	if (flashingTimer >= flashingRate)
@@ -421,6 +427,10 @@ bool Mario::getStarPower()
 
 void Mario::playDeathAnim()
 {
+	if (marioHitSound.getStatus() == sf::Sound::Status::Playing)
+	{
+		marioHitSound.stop();
+	}
 	deathSound.play();
 	playingDeathAnim = true;
 	active = false;

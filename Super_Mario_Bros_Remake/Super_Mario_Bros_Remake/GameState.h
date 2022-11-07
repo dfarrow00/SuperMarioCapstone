@@ -34,6 +34,8 @@ public:
 	void addCoinBrick(sf::Vector2f pos);
 	void addScore(int addedScore);
 
+	void stopMusic();
+
 	sf::View* getView();
 
 	void levelComplete(int flagScore, sf::Vector2f flagPolePos);

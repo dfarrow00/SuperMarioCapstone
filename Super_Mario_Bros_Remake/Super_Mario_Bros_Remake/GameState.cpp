@@ -7,6 +7,7 @@
 #include "KoopaTroopa.h"
 #include "Star.h"
 #include "CoinBrick.h"
+#include "CoinPickup.h"
 #include <iostream>
 
 GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stateMgr), window(win), map(this), hud(window), collisionHandler(&map, this)
@@ -18,6 +19,9 @@ GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stat
 	Mario* player = new Mario();
 	mario = player;
 	gameObjects.push_back(player);
+
+	CoinPickup* testCoin = new CoinPickup(sf::Vector2f(450, 575.5));
+	gameObjects.push_back(testCoin);
 	
 	map.loadMap(levelNumber);
 	mario->resetLives();
@@ -83,7 +87,6 @@ void GameState::update(float deltaTime)
 	}
 	else if (mario->getFinishReached())
 	{
-		//next level
 		endGame();
 	}
 
@@ -131,6 +134,10 @@ void GameState::updateTimer(float deltaTime)
 	{
 		timer--;
 		currentTimeInterval = 0.0f;
+		if (timer < 0)
+		{
+			endGame();
+		}
 	}
 	hud.update(timer);
 }
@@ -181,7 +188,7 @@ void GameState::checkObjectCollisions()
 					{
 						other->hit();
 						marioObject->powerUp();
-						addScore(200);
+						addScore(1000);
 					}
 					else if (other->getObjectType() == ObjectType::Goomba)
 					{
@@ -243,6 +250,7 @@ void GameState::checkObjectCollisions()
 						music.pause();
 						starPowerTimer.restart();
 						other->hit();
+						addScore(1000);
 					}
 					else if (other->getObjectType() == ObjectType::CoinBrick)
 					{
@@ -251,6 +259,13 @@ void GameState::checkObjectCollisions()
 						{
 							other->hit();
 						}
+					}
+					else if (other->getObjectType() == ObjectType::CoinPickup)
+					{
+						other->hit();
+						coins++;
+						hud.setCoins(coins);
+						addScore(100);
 					}
 				}
 
@@ -361,6 +376,7 @@ void GameState::addParticles(sf::Vector2f pos)
 	gameObjects.push_back(particle3);
 	gameObjects.push_back(particle4);
 	brickBreakSound.play();
+	addScore(50);
 }
 
 void GameState::addCoinBrick(sf::Vector2f pos)
@@ -409,7 +425,13 @@ void GameState::endGame()
 void GameState::levelComplete(int flagScore, sf::Vector2f flagPolePos)
 {
 	music.stop();
-	score += flagScore;
+	addScore(flagScore);
+	addScore(timer * 50);
 	hud.setScore(score);
 	mario->playLevelCompleteAnim(flagPolePos);
+}
+
+void GameState::stopMusic()
+{
+	music.stop();
 }
