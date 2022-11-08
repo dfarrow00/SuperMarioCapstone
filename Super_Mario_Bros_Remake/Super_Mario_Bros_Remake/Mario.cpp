@@ -40,6 +40,8 @@ void Mario::loadSounds()
 	marioStarPowerSoundBuffer.loadFromFile("Resources/Audio/Mario_Star_Power.wav");
 	marioStarPowerSound.setBuffer(marioStarPowerSoundBuffer);
 	marioStarPowerSound.setLoop(true);
+	marioPipeSoundBuffer.loadFromFile("Resources/Audio/Mario_Pipe.wav");
+	marioPipeSound.setBuffer(marioPipeSoundBuffer);
 }
 
 void Mario::setup()
@@ -90,6 +92,10 @@ void Mario::update(float deltaTime)
 	{
 		updatePowerUpAnim();
 		handleInput(deltaTime);
+	}
+	else if (playingPipeAnim)
+	{
+		updatePipeAnimation();
 	}
 	else
 	{
@@ -356,6 +362,11 @@ void Mario::setBig(bool value)
 	}
 }
 
+void Mario::setFurthestXPos(float value)
+{
+	furthestXPosition = value;
+}
+
 bool Mario::getInvinsible()
 {
 	return invinsible;
@@ -415,6 +426,38 @@ void Mario::updateLevelCompleteAnim(float deltaTime)
 	}
 }
 
+void Mario::playPipeAnimation(bool isGoingDown)
+{
+	if (isGoingDown)
+	{
+		if (isBig)
+		{
+			velocity = sf::Vector2f(0, 96);
+		}
+		else
+		{
+			velocity = sf::Vector2f(0, 48);
+		}
+	}
+	else
+	{
+		velocity = sf::Vector2f(48, 0);
+	}
+	checkCollisions = false;
+	playingPipeAnim = true;
+	pipeAnimTimer.restart();
+	marioPipeSound.play();
+}
+
+void Mario::updatePipeAnimation()
+{
+	if (pipeAnimTimer.getElapsedTime().asSeconds() > pipeAnimTime)
+	{
+		playingPipeAnim = false;
+		checkCollisions = true;
+	}
+}
+
 bool Mario::getFinishReached()
 {
 	return finishReached;
@@ -423,6 +466,11 @@ bool Mario::getFinishReached()
 bool Mario::getStarPower()
 {
 	return starPower;
+}
+
+bool Mario::getPlayingPipeAnim()
+{
+	return playingPipeAnim;
 }
 
 void Mario::playDeathAnim()
@@ -508,4 +556,9 @@ void Mario::resetLives()
 float Mario::getStarPowerTime()
 {
 	return starPowerTime;
+}
+
+float Mario::getPipeAnimTime()
+{
+	return pipeAnimTime;
 }

@@ -21,6 +21,10 @@ public:
 	void update(float deltaTime);
 	void draw(sf::RenderWindow* window);
 
+	void setSkyColor(sf::Color color);
+	sf::Color getSkyColor();
+
 private:
 	std::vector<std::pair<StateType, State*>> states;
+	sf::Color skyColor;
 };

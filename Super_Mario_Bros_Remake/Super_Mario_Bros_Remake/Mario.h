@@ -26,17 +26,21 @@ public:
 	void powerUp();
 	void starPowerUp();
 	void playLevelCompleteAnim(sf::Vector2f flagPolePos);
+	void playPipeAnimation(bool isGoingDown);
 
 	void addVelocity(sf::Vector2f vel);
 	void setVelocityY(float value);
 	void setBig(bool value);
+	void setFurthestXPos(float value);
 	void resetLives();
 
 	int getLives();
 	float getStarPowerTime();
+	float getPipeAnimTime();
 	bool getInvinsible();
 	bool getFinishReached();
 	bool getStarPower();
+	bool getPlayingPipeAnim();
 private:
 	void loadSounds();
 
@@ -51,6 +55,7 @@ private:
 	void updateDeathAnim(float deltaTime);
 	void updateLevelCompleteAnim(float deltaTime);
 	void updateStarPower(const float deltaTime);
+	void updatePipeAnimation();
 
 	int lives = 3;
 
@@ -75,6 +80,9 @@ private:
 	float powerUpAnimRate = 0.1f;
 	sf::Clock powerUpAnimTimeClock;
 	sf::Clock powerUpAnimRateClock;
+	
+	float pipeAnimTime = 1.0f;
+	sf::Clock pipeAnimTimer;
 
 	float starPowerTime = 7.0f;
 	float currentStarPowerTime = 0.0f;
@@ -89,6 +97,7 @@ private:
 	bool playingLevelCompleteAnim = false;
 	bool playingDeathAnim = false;
 	bool playingPowerUpAnim = false;
+	bool playingPipeAnim = false;
 	bool finishReached = false;
 	bool starPower = false;
 
@@ -117,4 +126,6 @@ private:
 	sf::Sound marioPowerUpSound;
 	sf::SoundBuffer marioStarPowerSoundBuffer;
 	sf::Sound marioStarPowerSound;
+	sf::SoundBuffer marioPipeSoundBuffer;
+	sf::Sound marioPipeSound;
 };

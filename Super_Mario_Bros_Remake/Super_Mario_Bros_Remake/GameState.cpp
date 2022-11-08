@@ -15,13 +15,11 @@ GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stat
 	isTransparent = false;
 	view = window->getDefaultView();
 	window->setView(view);
+	stateManager->setSkyColor(sf::Color::Cyan);
 
 	Mario* player = new Mario();
 	mario = player;
 	gameObjects.push_back(player);
-
-	CoinPickup* testCoin = new CoinPickup(sf::Vector2f(450, 575.5));
-	gameObjects.push_back(testCoin);
 	
 	map.loadMap(levelNumber);
 	mario->resetLives();
@@ -29,6 +27,7 @@ GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stat
 	hud.setLevel(1);
 
 	marioStarPowerTime = mario->getStarPowerTime();
+	marioPipeAnimTime = mario->getPipeAnimTime();
 
 	loadSounds();
 }
@@ -72,6 +71,11 @@ void GameState::update(float deltaTime)
 		{
 			music.play();
 		}
+	}
+
+	if (mario->getPlayingPipeAnim() && pipeAnimTimer.getElapsedTime().asSeconds() > marioPipeAnimTime)
+	{
+		loadLevel(levelToLoad);
 	}
 
 	if (!mario->isAlive())
@@ -149,8 +153,16 @@ void GameState::draw(sf::RenderWindow* window)
 	{
 		gameObjects[x]->draw(window);
 	}
-	map.draw(window, &view);
-	mario->draw(window);
+	if (mario->getPlayingPipeAnim())
+	{
+		mario->draw(window);
+		map.draw(window, &view);
+	}
+	else
+	{
+		map.draw(window, &view);
+		mario->draw(window);
+	}
 	hud.draw(window);
 }
 
@@ -332,6 +344,34 @@ void GameState::checkObjectCollisions()
 	}
 }
 
+void GameState::enterPipe(int levelNumber, bool isGoingDown)
+{
+	mario->playPipeAnimation(isGoingDown);
+	pipeAnimTimer.restart();
+	levelToLoad = levelNumber;
+}
+
+void GameState::loadLevel(int levelNumber)
+{
+	gameObjects.clear();
+	gameObjects.push_back(mario);
+	if (levelNumber > 100)
+	{
+		mario->setPosition(96.0f, 100.0f);
+		mario->setFurthestXPos(0);
+		stateManager->setSkyColor(sf::Color::Black);
+	}
+	else
+	{
+		mario->setPosition(7894.0f, 479.0f);
+		mario->setFurthestXPos(mario->getPosition().x - (view.getSize().x / 2));
+		stateManager->setSkyColor(sf::Color::Cyan);
+	}
+	view.setCenter(mario->getPosition().x, window->getDefaultView().getCenter().y);
+	window->setView(view);
+	map.loadMap(levelNumber);
+}
+
 void GameState::addMushroom(sf::Vector2f pos)
 {
 	Mushroom* mushroom = new Mushroom(pos);
@@ -357,6 +397,12 @@ void GameState::addCoin(sf::Vector2f pos)
 	coins++;
 	hud.setCoins(coins);
 	addScore(100);
+}
+
+void GameState::addCoinPickup(sf::Vector2f pos)
+{
+	CoinPickup* coin = new CoinPickup(pos);
+	gameObjects.push_back(coin);
 }
 
 void GameState::addStar(sf::Vector2f pos)
@@ -404,6 +450,7 @@ void GameState::resetLevel()
 	gameObjects.clear();
 	mario->reset();
 	gameObjects.push_back(mario);
+	stateManager->setSkyColor(sf::Color::Cyan);
 	map.loadMap(1);
 	timer = 400;
 	coins = 0;

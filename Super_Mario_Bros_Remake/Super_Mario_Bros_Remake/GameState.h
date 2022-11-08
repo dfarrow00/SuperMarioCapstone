@@ -25,10 +25,14 @@ public:
 	void updateTimer(float deltaTime);
 	void checkObjectCollisions();
 
+	void enterPipe(int levelNumber, bool isGoingDown);
+	void loadLevel(int levelNumber);
+
 	void addMushroom(sf::Vector2f pos);
 	void addGoomba(sf::Vector2f pos);
 	void addKoopaTroopa(sf::Vector2f pos);
 	void addCoin(sf::Vector2f pos);
+	void addCoinPickup(sf::Vector2f pos);
 	void addStar(sf::Vector2f pos);
 	void addParticles(sf::Vector2f pos);
 	void addCoinBrick(sf::Vector2f pos);
@@ -48,10 +52,12 @@ private:
 	float timerInterval = 0.4;
 	float currentTimeInterval = 0.0f;
 	float marioStarPowerTime;
+	float marioPipeAnimTime;
 
 	int score = 0;
 	int coins = 0;
 	int levelNumber = 1;
+	int levelToLoad;
 
 	bool paused = false;
 
@@ -66,6 +72,7 @@ private:
 	sf::Sound brickBreakSound;
 
 	sf::Clock starPowerTimer;
+	sf::Clock pipeAnimTimer;
 
 	CollisionHandler collisionHandler;
 

@@ -46,3 +46,13 @@ void StateManager::draw(sf::RenderWindow* window)
 	}
 	states.back().second->draw(window);
 }
+
+void StateManager::setSkyColor(sf::Color color)
+{
+	skyColor = color;
+}
+
+sf::Color StateManager::getSkyColor()
+{
+	return skyColor;
+}

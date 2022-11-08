@@ -1,6 +1,6 @@
 #include "CoinPickup.h"
 
-CoinPickup::CoinPickup(sf::Vector2f pos) : anim("Resources/Sprites/Coin_Pickup_Spritesheet.png", 0, 3, 0.2)
+CoinPickup::CoinPickup(sf::Vector2f pos) : anim("Resources/Sprites/Coin_Pickup_Spritesheet.png", 0, 3, 0.3)
 {
 	objectType = ObjectType::CoinPickup;
 	position = pos;

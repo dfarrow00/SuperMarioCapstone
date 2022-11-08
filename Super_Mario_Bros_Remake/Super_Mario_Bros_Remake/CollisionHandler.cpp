@@ -98,6 +98,7 @@ void CollisionHandler::resolveCollisions()
 				if (Mario* mario = dynamic_cast<Mario*>(col.object))
 				{
 					game->levelComplete(map->getFlagPoleScore(col.tile), map->getFlagPolePos());
+					break;
 				}
 			}
 			float offsetX = (objAABB.left + (objAABB.width / 2)) - (col.tileAABB.left + (col.tileAABB.width / 2));
@@ -128,6 +129,13 @@ void CollisionHandler::resolveCollisions()
 				else
 				{
 					resolve = -((objAABB.left + objAABB.width) - col.tileAABB.left);
+					if (col.object->getObjectType() == ObjectType::Mario)
+					{
+						if ((col.tile == 14 || col.tile == 15) && sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+						{
+							game->enterPipe(1, false);
+						}
+					}
 				}
 				col.object->setPosition(col.object->getPosition().x + resolve, col.object->getPosition().y);
 				col.object->setCollidingX(true);
@@ -171,6 +179,14 @@ void CollisionHandler::resolveCollisions()
 				{
 					resolve = -((objAABB.top + objAABB.height) - col.tileAABB.top);
 					col.object->setOnGround(true);
+					if (col.object->getObjectType() == ObjectType::Mario)
+					{
+						if ((col.tile == 40 || col.tile == 41) && sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+						{
+							game->enterPipe(101, true);
+						}
+					}
+					
 				}
 				col.object->setPosition(col.object->getPosition().x, col.object->getPosition().y + resolve);
 				col.object->setCollidingY(true);

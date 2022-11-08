@@ -9,7 +9,7 @@ Map::Map(GameState* gameState) : game(gameState)
 	tileSize = 48;
 	tileSheet.loadFromFile("Resources/Sprites/Tile_Sheet.png");
 	int tileCount = 1;
-	for (int y = 0; y < tileSize * 4; y += tileSize)
+	for (int y = 0; y < tileSize * 6; y += tileSize)
 	{
 		for (int x = 0; x < tileSize * 3; x += tileSize)
 		{
@@ -72,6 +72,16 @@ void Map::draw(sf::RenderWindow* window, sf::View* view)
 				{
 					tiles[2]->setPosition(x * tileSize, y * tileSize);
 					window->draw(tiles[2]->sprite);
+				}
+				else if (tileNumber == 40)
+				{
+					tiles[6]->setPosition(x * tileSize, y * tileSize);
+					window->draw(tiles[6]->sprite);
+				}
+				else if (tileNumber == 41)
+				{
+					tiles[7]->setPosition(x * tileSize, y * tileSize);
+					window->draw(tiles[7]->sprite);
 				}
 				else if (tileNumber >= 95 && tileNumber <= 98)
 				{
@@ -153,6 +163,10 @@ void Map::loadMap(int mapNumber)
 			else if (entity == "Koopa")
 			{
 				game->addKoopaTroopa(sf::Vector2f(x, y));
+			}
+			else if (entity == "Coin")
+			{
+				game->addCoinPickup(sf::Vector2f(x, y));
 			}
 		}
 	}
