@@ -10,7 +10,7 @@ public:
 	Mushroom(sf::Vector2f pos);
 	~Mushroom();
 
-	void update(float deltaTime);
+	void update(const float deltaTime);
 	void draw(sf::RenderWindow* window);
 
 	void hit();

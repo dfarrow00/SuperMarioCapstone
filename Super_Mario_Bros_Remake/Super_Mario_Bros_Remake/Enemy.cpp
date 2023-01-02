@@ -12,7 +12,7 @@ Enemy::~Enemy()
 {
 }
 
-void Enemy::move(float deltaTime)
+void Enemy::move(const float deltaTime)
 {
 	if (position.y + (velocity.y * deltaTime) >= 670)
 	{

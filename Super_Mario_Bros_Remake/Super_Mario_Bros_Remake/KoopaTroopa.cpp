@@ -23,7 +23,7 @@ KoopaTroopa::~KoopaTroopa()
 {
 }
 
-void KoopaTroopa::update(float deltaTime)
+void KoopaTroopa::update(const float deltaTime)
 {
 	if (currentState == KoopaState::Shell && currentAnim != &shellAnim)
 	{

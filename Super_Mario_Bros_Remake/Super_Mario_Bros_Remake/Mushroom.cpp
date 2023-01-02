@@ -21,7 +21,7 @@ Mushroom::~Mushroom()
 {
 }
 
-void Mushroom::update(float deltaTime)
+void Mushroom::update(const float deltaTime)
 {
 	if (spawning)
 	{

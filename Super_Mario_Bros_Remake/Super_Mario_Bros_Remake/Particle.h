@@ -9,7 +9,7 @@ public:
 	Particle(std::string spriteSheetPath, sf::Vector2f pos, sf::Vector2f vel, bool isFacingLeft);
 	~Particle();
 
-	void update(float deltaTime);
+	void update(const float deltaTime);
 	void draw(sf::RenderWindow* window);
 
 	void hit();

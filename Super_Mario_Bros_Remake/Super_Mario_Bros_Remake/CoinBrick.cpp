@@ -31,16 +31,16 @@ void CoinBrick::hit()
 	{
 		clock.restart();
 		timerStarted = true;
-		game->addCoin(position);
+		game->addCoinEffect(position);
 		activated = true;
 	}
 	else if (clock.getElapsedTime().asSeconds() < 3.5)
 	{
-		game->addCoin(position);
+		game->addCoinEffect(position);
 	}
 	else if (activated)
 	{
-		game->addCoin(position);
+		game->addCoinEffect(position);
 		texture.loadFromFile("Resources/Sprites/Tile_Sheet.png", sf::IntRect(48, 96, 48, 48));
 		sprite.setTexture(texture);
 		activated = false;

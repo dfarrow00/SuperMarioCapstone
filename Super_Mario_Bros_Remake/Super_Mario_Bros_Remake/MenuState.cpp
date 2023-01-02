@@ -37,7 +37,7 @@ void MenuState::deactivate()
 {
 }
 
-void MenuState::update(float deltaTime)
+void MenuState::update(const float deltaTime)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
 	{

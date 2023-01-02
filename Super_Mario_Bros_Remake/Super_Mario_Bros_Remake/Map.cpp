@@ -36,7 +36,7 @@ Map::~Map()
 	tiles.clear();
 }
 
-void Map::update(float deltaTime)
+void Map::update(const float deltaTime)
 {
 
 }

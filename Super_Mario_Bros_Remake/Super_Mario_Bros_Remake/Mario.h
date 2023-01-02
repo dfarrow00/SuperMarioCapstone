@@ -19,7 +19,7 @@ public:
 	void setup();
 	void reset();
 
-	void update(float deltaTime);
+	void update(const float deltaTime);
 	void draw(sf::RenderWindow* window);
 
 	void hit();
@@ -28,7 +28,6 @@ public:
 	void playLevelCompleteAnim(sf::Vector2f flagPolePos);
 	void playPipeAnimation(bool isGoingDown);
 
-	void addVelocity(sf::Vector2f vel);
 	void setVelocityY(float value);
 	void setBig(bool value);
 	void setFurthestXPos(float value);
@@ -44,16 +43,16 @@ public:
 private:
 	void loadSounds();
 
-	void handleInput(float deltaTime);
-	void checkCollisionStates(float deltaTime);
-	void updateState(float deltaTime);
-	void handleInvincibility(float deltaTime);
+	void handleInput(const float deltaTime);
+	void checkCollisionStates(const float deltaTime);
+	void updateState(const float deltaTime);
+	void updateInvincibility(const float deltaTime);
 
 	void playDeathAnim();
 	void playPowerUpAnim();
 	void updatePowerUpAnim();
-	void updateDeathAnim(float deltaTime);
-	void updateLevelCompleteAnim(float deltaTime);
+	void updateDeathAnim(const float deltaTime);
+	void updateLevelCompleteAnim(const float deltaTime);
 	void updateStarPower(const float deltaTime);
 	void updatePipeAnimation();
 

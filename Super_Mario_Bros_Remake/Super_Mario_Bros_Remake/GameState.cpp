@@ -61,11 +61,11 @@ void GameState::loadSounds()
 	brickBreakSound.setBuffer(brickBreakSoundBuffer);
 }
 
-void GameState::update(float deltaTime)
+void GameState::update(const float deltaTime)
 {
 	if (paused) return;
 
-	if (music.getStatus() == sf::Music::Status::Paused)
+	if (music.getStatus() == sf::Music::Status::Paused)//TODO: Should probably change to checking mario state instead of music state.
 	{
 		if (starPowerTimer.getElapsedTime().asSeconds() >= marioStarPowerTime)
 		{
@@ -101,12 +101,12 @@ void GameState::update(float deltaTime)
 
 	updateGameObjects(deltaTime);
 	collisionHandler.checkMapCollisions(gameObjects);
-	checkObjectCollisions();
+	collisionHandler.checkObjectCollisions(gameObjects);
 	updateGameView();
 	updateTimer(deltaTime);
 }
 
-void GameState::updateGameObjects(float deltaTime)
+void GameState::updateGameObjects(const float deltaTime)
 {
 	for (int x = 0; x < gameObjects.size(); x++)
 	{
@@ -131,7 +131,7 @@ void GameState::updateGameView()
 	}
 }
 
-void GameState::updateTimer(float deltaTime)
+void GameState::updateTimer(const float deltaTime)
 {
 	currentTimeInterval += deltaTime;
 	if (currentTimeInterval >= timerInterval)
@@ -166,184 +166,6 @@ void GameState::draw(sf::RenderWindow* window)
 	hud.draw(window);
 }
 
-void GameState::checkObjectCollisions()
-{
-	for (auto itr = gameObjects.begin(); itr != gameObjects.end(); itr++)
-	{
-		GameObject* current = *itr;
-		for (auto itr2 = itr + 1; itr2 != gameObjects.end(); itr2++)
-		{
-			GameObject* other = *itr2;
-			sf::FloatRect intersection;
-			if (current->isActive() && other->isActive() && current->getAABB().intersects(other->getAABB(), intersection))
-			{
-				if (Mario* marioObject = dynamic_cast<Mario*>(current))
-				{
-					if (marioObject->getStarPower())
-					{
-						if (other->getObjectType() == ObjectType::KoopaTroopa)
-						{
-							KoopaTroopa* koopaObject = dynamic_cast<KoopaTroopa*>(other);
-							if (koopaObject->getCurrentState() == KoopaState::Walking)
-							{
-								other->hit();
-							}
-							else
-							{
-								koopaObject->kick(marioObject->getPosition().x < koopaObject->getPosition().x);
-							}
-						}
-						other->hit();
-						break;
-					}
-					if (other->getObjectType() == ObjectType::Mushroom)
-					{
-						other->hit();
-						marioObject->powerUp();
-						addScore(1000);
-					}
-					else if (other->getObjectType() == ObjectType::Goomba)
-					{
-						if (intersection.top == other->getAABB().top && intersection.width > intersection.height)
-						{
-							if (other->isActive())
-							{
-								marioObject->setVelocityY(-300);
-								addScore(100);
-							}
-							other->hit();
-						}
-						else if (other->isActive() && !marioObject->getInvinsible())
-						{
-							if (marioObject->getSpriteHeight() == 48)
-							{
-								music.stop();
-							}
-							marioObject->hit();
-							hud.setLives(mario->getLives());
-						}
-					}
-					else if (KoopaTroopa* koopaObject = dynamic_cast<KoopaTroopa*>(other))
-					{
-						if (intersection.top == koopaObject->getAABB().top && intersection.width > intersection.height)
-						{
-							if (koopaObject->getCurrentState() == KoopaState::Walking)
-							{
-								marioObject->setVelocityY(-300);
-								addScore(100);
-								koopaObject->hit();
-							}
-							else
-							{
-								marioObject->setVelocityY(-200);
-								koopaObject->kick(marioObject->getPosition().x < koopaObject->getPosition().x);
-							}
-						}
-						else if (koopaObject->isActive() && !marioObject->getInvinsible())
-						{
-							if (koopaObject->getCurrentState() == KoopaState::Shell && koopaObject->getVelocity().x == 0)
-							{
-								koopaObject->kick(marioObject->getPosition().x < koopaObject->getPosition().x);
-							}
-							else
-							{
-								if (marioObject->getSpriteHeight() == 48)
-								{
-									music.stop();
-								}
-								marioObject->hit();
-								hud.setLives(mario->getLives());
-							}
-						}
-					}
-					else if (other->getObjectType() == ObjectType::Star)
-					{
-						marioObject->starPowerUp();
-						music.pause();
-						starPowerTimer.restart();
-						other->hit();
-						addScore(1000);
-					}
-					else if (other->getObjectType() == ObjectType::CoinBrick)
-					{
-						collisionHandler.resolveCollision(other, marioObject, intersection);
-						if (intersection.width > intersection.height && marioObject->getPosition().y > other->getPosition().y)
-						{
-							other->hit();
-						}
-					}
-					else if (other->getObjectType() == ObjectType::CoinPickup)
-					{
-						other->hit();
-						coins++;
-						hud.setCoins(coins);
-						addScore(100);
-					}
-				}
-
-				else if (current->getObjectType() == ObjectType::Goomba)
-				{
-					if (other->getObjectType() == ObjectType::Goomba)
-					{
-						if (current->isActive() && other->isActive())
-						{
-							current->setVelocity(-current->getVelocity());
-							current->setFacingLeft(!current->getFacingLeft());
-							other->setVelocity(-other->getVelocity());
-							other->setFacingLeft(!other->getFacingLeft());
-						}
-					}
-					else if (KoopaTroopa* koopaObject = dynamic_cast<KoopaTroopa*>(other))
-					{
-						if (current->isActive() && koopaObject->isActive())
-						{
-							if (koopaObject->getCurrentState() != KoopaState::Shell)
-							{
-								current->setVelocity(-current->getVelocity());
-								current->setFacingLeft(!current->getFacingLeft());
-								koopaObject->setVelocity(-koopaObject->getVelocity());
-								koopaObject->setFacingLeft(!koopaObject->getFacingLeft());
-							}
-							else
-							{
-								current->hit();
-								addScore(100);
-							}
-						}
-					}
-				}
-
-				else if (KoopaTroopa* koopaObject = dynamic_cast<KoopaTroopa*>(current))
-				{
-					if (Enemy* enemyObject = dynamic_cast<Enemy*>(other))
-					{
-						if (koopaObject->isActive() && enemyObject->isActive())
-						{
-							if (koopaObject->getCurrentState() != KoopaState::Shell)
-							{
-								koopaObject->setVelocity(-koopaObject->getVelocity());
-								koopaObject->setFacingLeft(!koopaObject->getFacingLeft());
-								enemyObject->setVelocity(-enemyObject->getVelocity());
-								enemyObject->setFacingLeft(!enemyObject->getFacingLeft());
-							}
-							else
-							{
-								enemyObject->hit();
-								addScore(100);
-							}
-						}
-					}
-				}
-
-				else if (current->getObjectType() == ObjectType::CoinBrick)
-				{
-					collisionHandler.resolveCollision(current, other, intersection);
-				}
-			}
-		}
-	}
-}
-
 void GameState::enterPipe(int levelNumber, bool isGoingDown)
 {
 	mario->playPipeAnimation(isGoingDown);
@@ -355,6 +177,7 @@ void GameState::loadLevel(int levelNumber)
 {
 	gameObjects.clear();
 	gameObjects.push_back(mario);
+	//If level is a secret coin room...
 	if (levelNumber > 100)
 	{
 		mario->setPosition(96.0f, 100.0f);
@@ -390,7 +213,7 @@ void GameState::addKoopaTroopa(sf::Vector2f pos)
 	gameObjects.push_back(koopaTroopa);
 }
 
-void GameState::addCoin(sf::Vector2f pos)
+void GameState::addCoinEffect(sf::Vector2f pos)
 {
 	Coin* coin = new Coin(pos);
 	gameObjects.push_back(coin);
@@ -437,9 +260,25 @@ void GameState::addScore(int addedScore)
 	hud.setScore(score);
 }
 
+void GameState::addCoins(int amount)
+{
+	coins += amount;
+	hud.setCoins(coins);
+}
+
 sf::View* GameState::getView()
 {
 	return &view;
+}
+
+HUD* GameState::getHUD()
+{
+	return &hud;
+}
+
+sf::Clock* GameState::getStarPowerTimer()
+{
+	return &starPowerTimer;
 }
 
 void GameState::resetLevel()
@@ -481,4 +320,9 @@ void GameState::levelComplete(int flagScore, sf::Vector2f flagPolePos)
 void GameState::stopMusic()
 {
 	music.stop();
+}
+
+void GameState::pauseMusic()
+{
+	music.pause();
 }

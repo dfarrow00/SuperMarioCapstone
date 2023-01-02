@@ -36,7 +36,7 @@ public:
 	Map(GameState* gameState);
 	~Map();
 
-	void update(float deltaTime);
+	void update(const float deltaTime);
 	void draw(sf::RenderWindow* window, sf::View* view);
 
 	void loadMap(int mapNumber);

@@ -13,7 +13,7 @@ CoinPickup::~CoinPickup()
 {
 }
 
-void CoinPickup::update(float deltaTime)
+void CoinPickup::update(const float deltaTime)
 {
 	if (!active && coinSound.getStatus() != sf::Sound::Status::Playing)
 	{

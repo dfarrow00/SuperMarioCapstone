@@ -9,7 +9,7 @@ public:
 
 	void reset();
 
-	void update(float deltaTime);
+	void update(const float deltaTime);
 
 	sf::Sprite getCurrentSprite();
 

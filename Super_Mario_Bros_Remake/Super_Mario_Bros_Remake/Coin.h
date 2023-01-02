@@ -9,7 +9,7 @@ public:
 	Coin(sf::Vector2f pos);
 	~Coin();
 
-	void update(float deltaTime);
+	void update(const float deltaTime);
 	void draw(sf::RenderWindow* window);
 
 	void hit();

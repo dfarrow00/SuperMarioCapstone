@@ -77,7 +77,7 @@ void Mario::reset()
 	setup();
 }
 
-void Mario::update(float deltaTime)
+void Mario::update(const float deltaTime)
 {
 	currentState = MarioState::Idle;
 	if (playingLevelCompleteAnim)
@@ -107,7 +107,7 @@ void Mario::update(float deltaTime)
 
 	if (invinsible)
 	{
-		handleInvincibility(deltaTime);
+		updateInvincibility(deltaTime);
 	}
 	if (starPower)
 	{
@@ -135,7 +135,7 @@ void Mario::draw(sf::RenderWindow* window)
 	}
 }
 
-void Mario::handleInput(float deltaTime)
+void Mario::handleInput(const float deltaTime)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
@@ -202,7 +202,7 @@ void Mario::handleInput(float deltaTime)
 	}
 }
 
-void Mario::checkCollisionStates(float deltaTime)
+void Mario::checkCollisionStates(const float deltaTime)
 {
 	if ((position.x < furthestXPosition - 384 && velocity.x < 0) || position.x <= 0.0f)
 	{
@@ -220,7 +220,7 @@ void Mario::checkCollisionStates(float deltaTime)
 	}
 }
 
-void Mario::updateState(float deltaTime)
+void Mario::updateState(const float deltaTime)
 {
 	if (!isBig)
 	{
@@ -283,7 +283,7 @@ void Mario::updateState(float deltaTime)
 	}
 }
 
-void Mario::handleInvincibility(float deltaTime)
+void Mario::updateInvincibility(const float deltaTime)
 {
 	if (playingDeathAnim)
 	{
@@ -334,11 +334,6 @@ void Mario::starPowerUp()
 	setBig(true);
 	starPower = true;
 	marioStarPowerSound.play();
-}
-
-void Mario::addVelocity(sf::Vector2f vel)
-{
-	velocity += vel;
 }
 
 void Mario::setVelocityY(float value)
@@ -405,7 +400,7 @@ void Mario::playLevelCompleteAnim(sf::Vector2f flagPolePos)
 	velocity = sf::Vector2f(0, 300);
 }
 
-void Mario::updateLevelCompleteAnim(float deltaTime)
+void Mario::updateLevelCompleteAnim(const float deltaTime)
 {
 	if (velocity.x == 0)
 	{
@@ -486,7 +481,7 @@ void Mario::playDeathAnim()
 	velocity = sf::Vector2f(0, -750);
 }
 
-void Mario::updateDeathAnim(float deltaTime)
+void Mario::updateDeathAnim(const float deltaTime)
 {
 	currentState = MarioState::Dead;
 	currentDeathAnimTime += deltaTime;

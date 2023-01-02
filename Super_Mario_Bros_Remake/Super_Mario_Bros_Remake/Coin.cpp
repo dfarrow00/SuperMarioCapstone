@@ -15,7 +15,7 @@ Coin::~Coin()
 {
 }
 
-void Coin::update(float deltaTime)
+void Coin::update(const float deltaTime)
 {
 	lifetime -= deltaTime;
 	if (lifetime <= 0.0f && sound.getStatus() == sf::Sound::Status::Stopped)

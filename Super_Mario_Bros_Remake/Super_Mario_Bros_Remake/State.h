@@ -12,7 +12,7 @@ public:
 	virtual void activate() = 0;
 	virtual void deactivate() = 0;
 
-	virtual void update(float deltaTime) = 0;
+	virtual void update(const float deltaTime) = 0;
 	virtual void draw(sf::RenderWindow* window) = 0;
 
 	bool transparent()

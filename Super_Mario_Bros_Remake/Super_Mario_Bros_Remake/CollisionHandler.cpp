@@ -2,6 +2,7 @@
 #include "Map.h"
 #include "GameObject.h"
 #include "Mario.h"
+#include "KoopaTroopa.h"
 #include "GameState.h"
 
 bool sortCollisions(const Collision& col1, const Collision& col2)
@@ -95,7 +96,7 @@ void CollisionHandler::resolveCollisions()
 			}
 			if (col.tile >= 95)
 			{
-				if (Mario* mario = dynamic_cast<Mario*>(col.object))
+				if (col.object->getObjectType() == ObjectType::Mario)
 				{
 					game->levelComplete(map->getFlagPoleScore(col.tile), map->getFlagPolePos());
 					break;
@@ -152,7 +153,7 @@ void CollisionHandler::resolveCollisions()
 							if (col.tile == 3)
 							{
 								sf::Vector2f coinPos(col.tileAABB.left, col.tileAABB.top);
-								game->addCoin(coinPos);
+								game->addCoinEffect(coinPos);
 								map->updateTile(col.tileAABB.left / TILESIZE, col.tileAABB.top / TILESIZE, 8);
 							}
 							else if (col.tile == 20)
@@ -223,5 +224,182 @@ void CollisionHandler::resolveCollision(GameObject* obj1, GameObject* obj2, sf::
 			obj2->setPosition(obj2->getPosition().x - intersection.width, obj2->getPosition().y);
 		}
 		obj2->setCollidingX(true);
+	}
+}
+
+void CollisionHandler::checkObjectCollisions(std::vector<GameObject*>& gameObjects)
+{
+	for (auto itr = gameObjects.begin(); itr != gameObjects.end(); itr++)
+	{
+		GameObject* current = *itr;
+		for (auto itr2 = itr + 1; itr2 != gameObjects.end(); itr2++)
+		{
+			GameObject* other = *itr2;
+			sf::FloatRect intersection;
+			if (current->isActive() && other->isActive() && current->getAABB().intersects(other->getAABB(), intersection))
+			{
+				if (Mario* marioObject = dynamic_cast<Mario*>(current))
+				{
+					if (marioObject->getStarPower())
+					{
+						if (other->getObjectType() == ObjectType::KoopaTroopa)
+						{
+							KoopaTroopa* koopaObject = dynamic_cast<KoopaTroopa*>(other);
+							if (koopaObject->getCurrentState() == KoopaState::Walking)
+							{
+								other->hit();
+							}
+							else
+							{
+								koopaObject->kick(marioObject->getPosition().x < koopaObject->getPosition().x);
+							}
+						}
+						other->hit();
+						break;
+					}
+					if (other->getObjectType() == ObjectType::Mushroom)
+					{
+						other->hit();
+						marioObject->powerUp();
+						game->addScore(1000);
+					}
+					else if (other->getObjectType() == ObjectType::Goomba)
+					{
+						if (intersection.top == other->getAABB().top && intersection.width > intersection.height)
+						{
+							if (other->isActive())
+							{
+								marioObject->setVelocityY(-300);
+								game->addScore(100);
+							}
+							other->hit();
+						}
+						else if (other->isActive() && !marioObject->getInvinsible())
+						{
+							if (marioObject->getSpriteHeight() == 48)
+							{
+								game->stopMusic();
+							}
+							marioObject->hit();
+							game->getHUD()->setLives(marioObject->getLives());
+						}
+					}
+					else if (KoopaTroopa* koopaObject = dynamic_cast<KoopaTroopa*>(other))
+					{
+						if (intersection.top == koopaObject->getAABB().top && intersection.width > intersection.height)
+						{
+							if (koopaObject->getCurrentState() == KoopaState::Walking)
+							{
+								marioObject->setVelocityY(-300);
+								game->addScore(100);
+								koopaObject->hit();
+							}
+							else
+							{
+								marioObject->setVelocityY(-200);
+								koopaObject->kick(marioObject->getPosition().x < koopaObject->getPosition().x);
+							}
+						}
+						else if (koopaObject->isActive() && !marioObject->getInvinsible())
+						{
+							if (koopaObject->getCurrentState() == KoopaState::Shell && koopaObject->getVelocity().x == 0)
+							{
+								koopaObject->kick(marioObject->getPosition().x < koopaObject->getPosition().x);
+							}
+							else
+							{
+								if (marioObject->getSpriteHeight() == 48)
+								{
+									game->stopMusic();
+								}
+								marioObject->hit();
+								game->getHUD()->setLives(marioObject->getLives());
+							}
+						}
+					}
+					else if (other->getObjectType() == ObjectType::Star)
+					{
+						marioObject->starPowerUp();
+						game->pauseMusic();
+						game->getStarPowerTimer()->restart();
+						other->hit();
+						game->addScore(1000);
+					}
+					else if (other->getObjectType() == ObjectType::CoinBrick)
+					{
+						resolveCollision(other, marioObject, intersection);
+						if (intersection.width > intersection.height && marioObject->getPosition().y > other->getPosition().y)
+						{
+							other->hit();
+						}
+					}
+					else if (other->getObjectType() == ObjectType::CoinPickup)
+					{
+						other->hit();
+						game->addCoins(1);
+						game->addScore(100);
+					}
+				}
+
+				else if (current->getObjectType() == ObjectType::Goomba)
+				{
+					if (other->getObjectType() == ObjectType::Goomba)
+					{
+						if (current->isActive() && other->isActive())
+						{
+							current->setVelocity(-current->getVelocity());
+							current->setFacingLeft(!current->getFacingLeft());
+							other->setVelocity(-other->getVelocity());
+							other->setFacingLeft(!other->getFacingLeft());
+						}
+					}
+					else if (KoopaTroopa* koopaObject = dynamic_cast<KoopaTroopa*>(other))
+					{
+						if (current->isActive() && koopaObject->isActive())
+						{
+							if (koopaObject->getCurrentState() != KoopaState::Shell)
+							{
+								current->setVelocity(-current->getVelocity());
+								current->setFacingLeft(!current->getFacingLeft());
+								koopaObject->setVelocity(-koopaObject->getVelocity());
+								koopaObject->setFacingLeft(!koopaObject->getFacingLeft());
+							}
+							else
+							{
+								current->hit();
+								game->addScore(100);
+							}
+						}
+					}
+				}
+
+				else if (KoopaTroopa* koopaObject = dynamic_cast<KoopaTroopa*>(current))
+				{
+					if (Enemy* enemyObject = dynamic_cast<Enemy*>(other))
+					{
+						if (koopaObject->isActive() && enemyObject->isActive())
+						{
+							if (koopaObject->getCurrentState() != KoopaState::Shell)
+							{
+								koopaObject->setVelocity(-koopaObject->getVelocity());
+								koopaObject->setFacingLeft(!koopaObject->getFacingLeft());
+								enemyObject->setVelocity(-enemyObject->getVelocity());
+								enemyObject->setFacingLeft(!enemyObject->getFacingLeft());
+							}
+							else
+							{
+								enemyObject->hit();
+								game->addScore(100);
+							}
+						}
+					}
+				}
+
+				else if (current->getObjectType() == ObjectType::CoinBrick)
+				{
+					resolveCollision(current, other, intersection);
+				}
+			}
+		}
 	}
 }

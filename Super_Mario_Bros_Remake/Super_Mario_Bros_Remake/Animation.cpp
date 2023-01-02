@@ -26,7 +26,7 @@ void Animation::reset()
 	currentFrame = 0;
 }
 
-void Animation::update(float deltaTime)
+void Animation::update(const float deltaTime)
 {
 	elapsedTime += deltaTime;
 	if (elapsedTime >= animationSpeed)

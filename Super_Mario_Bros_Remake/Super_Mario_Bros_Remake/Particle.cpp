@@ -23,7 +23,7 @@ Particle::~Particle()
 {
 }
 
-void Particle::update(float deltaTime)
+void Particle::update(const float deltaTime)
 {
 	currentLifetime += deltaTime;
 	if (currentLifetime >= maxLifetime)

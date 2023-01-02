@@ -18,7 +18,7 @@ public:
 
 	void changeState(StateType state);
 
-	void update(float deltaTime);
+	void update(const float deltaTime);
 	void draw(sf::RenderWindow* window);
 
 	void setSkyColor(sf::Color color);

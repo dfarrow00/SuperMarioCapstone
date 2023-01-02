@@ -33,7 +33,7 @@ void StateManager::changeState(StateType state)
 	}
 }
 
-void StateManager::update(float deltaTime)
+void StateManager::update(const float deltaTime)
 {
 	states.back().second->update(deltaTime);
 }

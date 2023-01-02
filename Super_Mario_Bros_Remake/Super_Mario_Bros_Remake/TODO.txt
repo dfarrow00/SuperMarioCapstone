@@ -1,12 +1,12 @@
 Improvements:
-- Look into arena allocation for game objects
-- Make deltaTime parameters const
 - Possibly move input handing to GameState instead of mario class
-
-Features to add:
-- Prevent movement past left side of the screen.
+- Try to find more efficient method for animation timers and end of level animation finish detection.
+- Possibly add static class for commonly used constant values like gravity.
+- Rework game object collisions to cut down code length using more general type checks where possible.
 
 Known Bugs:
 - Star pickup can hit bottom on ? and activate them.
 
 Changelog:
+- All deltaTime parameters changed to const.
+- Moved gameObject collision checking into CollisionHandler class.

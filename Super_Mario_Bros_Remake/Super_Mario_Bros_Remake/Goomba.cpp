@@ -20,7 +20,7 @@ Goomba::~Goomba()
 {
 }
 
-void Goomba::update(float deltaTime)
+void Goomba::update(const float deltaTime)
 {
 	if (currentAnim == &deadAnim)
 	{

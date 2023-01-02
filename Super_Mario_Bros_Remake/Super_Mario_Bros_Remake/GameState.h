@@ -17,13 +17,12 @@ public:
 	void activate();
 	void deactivate();
 
-	void update(float deltaTime);
+	void update(const float deltaTime);
 	void draw(sf::RenderWindow* window);
 
-	void updateGameObjects(float deltaTime);
+	void updateGameObjects(const float deltaTime);
 	void updateGameView();
-	void updateTimer(float deltaTime);
-	void checkObjectCollisions();
+	void updateTimer(const float deltaTime);
 
 	void enterPipe(int levelNumber, bool isGoingDown);
 	void loadLevel(int levelNumber);
@@ -31,16 +30,20 @@ public:
 	void addMushroom(sf::Vector2f pos);
 	void addGoomba(sf::Vector2f pos);
 	void addKoopaTroopa(sf::Vector2f pos);
-	void addCoin(sf::Vector2f pos);
+	void addCoinEffect(sf::Vector2f pos);
 	void addCoinPickup(sf::Vector2f pos);
 	void addStar(sf::Vector2f pos);
 	void addParticles(sf::Vector2f pos);
 	void addCoinBrick(sf::Vector2f pos);
 	void addScore(int addedScore);
+	void addCoins(int amount);
 
 	void stopMusic();
+	void pauseMusic();
 
 	sf::View* getView();
+	HUD* getHUD();
+	sf::Clock* getStarPowerTimer();
 
 	void levelComplete(int flagScore, sf::Vector2f flagPolePos);
 private:
