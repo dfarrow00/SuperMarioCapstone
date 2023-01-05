@@ -13,23 +13,19 @@
 GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stateMgr), window(win), map(this), hud(window), collisionHandler(&map, this)
 {
 	isTransparent = false;
-	view = window->getDefaultView();
-	window->setView(view);
-	stateManager->setSkyColor(sf::Color::Cyan);
 
 	Mario* player = new Mario();
 	mario = player;
 	gameObjects.push_back(player);
 	
-	map.loadMap(levelNumber);
+	loadSounds();
+	loadLevel(levelNumber);
+	stopMusic();
 	mario->resetLives();
 	hud.setLives(mario->getLives());
-	hud.setLevel(1);
 
 	marioStarPowerTime = mario->getStarPowerTime();
 	marioPipeAnimTime = mario->getPipeAnimTime();
-
-	loadSounds();
 }
 
 GameState::~GameState()
@@ -44,19 +40,21 @@ GameState::~GameState()
 void GameState::activate()
 {
 	hud.activate();
-	music.play();
+	playMusic();
 }
 
 void GameState::deactivate()
 {
 	hud.deactivate();
-	music.stop();
+	stopMusic();
 }
 
 void GameState::loadSounds()
 {
-	music.openFromFile("Resources/Audio/Mario_Soundtrack.wav");
-	music.setLoop(true);
+	overgroundMusic.openFromFile("Resources/Audio/Mario_Soundtrack.wav");
+	overgroundMusic.setLoop(true);
+	undergroundMusic.openFromFile("Resources/Audio/Mario_Underground_Music.wav");
+	undergroundMusic.setLoop(true);
 	brickBreakSoundBuffer.loadFromFile("Resources/Audio/Brick_Break.wav");
 	brickBreakSound.setBuffer(brickBreakSoundBuffer);
 }
@@ -65,12 +63,9 @@ void GameState::update(const float deltaTime)
 {
 	if (paused) return;
 
-	if (music.getStatus() == sf::Music::Status::Paused)//TODO: Should probably change to checking mario state instead of music state.
+	if (mario->getStarPower() && starPowerTimer.getElapsedTime().asSeconds() >= marioStarPowerTime)
 	{
-		if (starPowerTimer.getElapsedTime().asSeconds() >= marioStarPowerTime)
-		{
-			music.play();
-		}
+		playMusic();
 	}
 
 	if (mario->getPlayingPipeAnim() && pipeAnimTimer.getElapsedTime().asSeconds() > marioPipeAnimTime)
@@ -82,6 +77,7 @@ void GameState::update(const float deltaTime)
 	{
 		if (mario->getLives() > 0)
 		{
+			respawning = true;
 			resetLevel();
 		}
 		else
@@ -91,7 +87,7 @@ void GameState::update(const float deltaTime)
 	}
 	else if (mario->getFinishReached())
 	{
-		endGame();
+		loadLevel(levelToLoad);
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
@@ -173,26 +169,36 @@ void GameState::enterPipe(int levelNumber, bool isGoingDown)
 	levelToLoad = levelNumber;
 }
 
-void GameState::loadLevel(int levelNumber)
+void GameState::loadLevel(int newLevelNumber)
 {
+	stopMusic();
 	gameObjects.clear();
 	gameObjects.push_back(mario);
+	int prevLevelNumber = levelNumber;
+	levelNumber = newLevelNumber;
+	map.loadMap(levelNumber);
+	mario->reset();
 	//If level is a secret coin room...
 	if (levelNumber > 100)
 	{
 		mario->setPosition(96.0f, 100.0f);
-		mario->setFurthestXPos(0);
-		stateManager->setSkyColor(sf::Color::Black);
+		mario->setFurthestXPos(mario->getPosition().x - (view.getSize().x / 2));
+	}
+	else if (prevLevelNumber > 100 && levelNumber < 100 && respawning == false)
+	{
+		//TODO
+		mario->setPosition(map.getPipeExitPos().x, map.getPipeExitPos().y);
+		mario->setFurthestXPos(mario->getPosition().x - (view.getSize().x / 2));
+		hud.setLevel(levelNumber);
 	}
 	else
 	{
-		mario->setPosition(7894.0f, 479.0f);
-		mario->setFurthestXPos(mario->getPosition().x - (view.getSize().x / 2));
-		stateManager->setSkyColor(sf::Color::Cyan);
+		hud.setLevel(levelNumber);
+		respawning = false;
 	}
-	view.setCenter(mario->getPosition().x, window->getDefaultView().getCenter().y);
+	view = window->getDefaultView();
 	window->setView(view);
-	map.loadMap(levelNumber);
+	playMusic();
 }
 
 void GameState::addMushroom(sf::Vector2f pos)
@@ -266,6 +272,18 @@ void GameState::addCoins(int amount)
 	hud.setCoins(coins);
 }
 
+void GameState::clearGameObjects()
+{
+	for (int x = 0; x < gameObjects.size(); x++)
+	{
+		if (gameObjects[x]->getObjectType() != ObjectType::Mario)
+		{
+			delete gameObjects[x];
+			gameObjects.erase(gameObjects.begin() + x);
+		}
+	}
+}
+
 sf::View* GameState::getView()
 {
 	return &view;
@@ -281,16 +299,30 @@ sf::Clock* GameState::getStarPowerTimer()
 	return &starPowerTimer;
 }
 
+int GameState::getLevelNumber()
+{
+	return levelNumber;
+}
+
 void GameState::resetLevel()
 {
-	music.stop();
-	music.setPlayingOffset(sf::Time::Zero);
-	music.play();
-	gameObjects.clear();
-	mario->reset();
-	gameObjects.push_back(mario);
-	stateManager->setSkyColor(sf::Color::Cyan);
-	map.loadMap(1);
+	stopMusic();
+	overgroundMusic.setPlayingOffset(sf::Time::Zero);
+	undergroundMusic.setPlayingOffset(sf::Time::Zero);
+	if (levelNumber > 100)
+	{
+		int returnLevelNumber = levelNumber;
+		while (returnLevelNumber >= 10)
+		{
+			returnLevelNumber /= 10;
+		}
+		loadLevel(returnLevelNumber);
+	}
+	else
+	{
+		loadLevel(levelNumber);
+	}
+	playMusic();
 	timer = 400;
 	coins = 0;
 	score = 0;
@@ -310,19 +342,51 @@ void GameState::endGame()
 
 void GameState::levelComplete(int flagScore, sf::Vector2f flagPolePos)
 {
-	music.stop();
+	stopMusic();
 	addScore(flagScore);
 	addScore(timer * 50);
 	hud.setScore(score);
 	mario->playLevelCompleteAnim(flagPolePos);
+	levelToLoad = levelNumber + 1;
+}
+
+void GameState::playMusic()
+{
+	if (levelNumber < 100)
+	{
+		overgroundMusic.play();
+	}
+	else
+	{
+		undergroundMusic.play();
+	}
 }
 
 void GameState::stopMusic()
 {
-	music.stop();
+	if (overgroundMusic.getStatus() == sf::Music::Playing)
+	{
+		overgroundMusic.stop();
+	}
+	else
+	{
+		undergroundMusic.stop();
+	}
 }
 
 void GameState::pauseMusic()
 {
-	music.pause();
+	if (overgroundMusic.getStatus() == sf::Music::Playing)
+	{
+		overgroundMusic.pause();
+	}
+	else
+	{
+		undergroundMusic.pause();
+	}
+}
+
+void GameState::setSkyColor(sf::Color color)
+{
+	stateManager->setSkyColor(color);
 }

@@ -47,6 +47,7 @@ public:
 
 	Level getCurrentLevel();
 	sf::Vector2f getFlagPolePos();
+	sf::Vector2f getPipeExitPos();
 
 private:
 	GameState* game;
@@ -55,7 +56,9 @@ private:
 	sf::Texture tileSheet;
 	std::unordered_map<unsigned int, Tile*> tiles;
 	std::unordered_map<unsigned int, unsigned int> flagPoleScores;
+	std::unordered_map<unsigned int, sf::Color> skyColors;
 	sf::Vector2f flagPolePos;
+	sf::Vector2f pipeExitPos;
 
 	unsigned int tileSize;
 };

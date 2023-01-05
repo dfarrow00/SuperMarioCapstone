@@ -9,9 +9,9 @@ Map::Map(GameState* gameState) : game(gameState)
 	tileSize = 48;
 	tileSheet.loadFromFile("Resources/Sprites/Tile_Sheet.png");
 	int tileCount = 1;
-	for (int y = 0; y < tileSize * 6; y += tileSize)
+	for (int y = 0; y < tileSize * 4; y += tileSize)
 	{
-		for (int x = 0; x < tileSize * 3; x += tileSize)
+		for (int x = 0; x < tileSize * 5; x += tileSize)
 		{
 			sf::Sprite sprite(tileSheet, sf::IntRect(x, y, tileSize, tileSize));
 			Tile* tile = new Tile(sprite);
@@ -25,6 +25,9 @@ Map::Map(GameState* gameState) : game(gameState)
 	flagPoleScores.emplace(97, 800);
 	flagPoleScores.emplace(98, 2000);
 	flagPoleScores.emplace(99, 4000);
+
+	skyColors.emplace(0, sf::Color::Black);
+	skyColors.emplace(1, sf::Color::Cyan);
 }
 
 Map::~Map()
@@ -68,10 +71,18 @@ void Map::draw(sf::RenderWindow* window, sf::View* view)
 					tiles[3]->setPosition(x * tileSize, y * tileSize);
 					window->draw(tiles[3]->sprite);
 				}
-				else if (tileNumber == 30)
+				else if (tileNumber == 30 || tileNumber == 32)
 				{
-					tiles[2]->setPosition(x * tileSize, y * tileSize);
-					window->draw(tiles[2]->sprite);
+					if (game->getLevelNumber() == 1)
+					{
+						tiles[2]->setPosition(x * tileSize, y * tileSize);
+						window->draw(tiles[2]->sprite);
+					}
+					else
+					{
+						tiles[13]->setPosition(x * tileSize, y * tileSize);
+						window->draw(tiles[13]->sprite);
+					}
 				}
 				else if (tileNumber == 40)
 				{
@@ -138,15 +149,25 @@ void Map::loadMap(int mapNumber)
 				{
 					flagPolePos = sf::Vector2f(x * tileSize, level.size() + 1 * tileSize);
 				}
+				else if (number == 42)
+				{
+					pipeExitPos = sf::Vector2f(x * tileSize, level.size() * tileSize);
+					number = 0;
+				}
 				else if (number == 31)
 				{
 					number = 0;
-					game->addCoinBrick(sf::Vector2f(x * tileSize, level.size() * tileSize + 1));
+					game->addCoinBrick(sf::Vector2f(x * tileSize, level.size() * tileSize));
 				}
 				row.push_back(number);
 				number = 0;
 			}
 			level.push_back(row);
+		}
+		else if (line.substr(0, line.find_first_of(' ')) == "Sky")
+		{
+			int skyNumber = line.at(4) - '0'; //Because all char encodings for digits are all in order from 48 to 57, the int value for any digit is itself - '0' (48 char code).
+			game->setSkyColor(skyColors[skyNumber]);
 		}
 		else
 		{
@@ -186,6 +207,11 @@ int Map::getTile(int x, int y)
 sf::Vector2f Map::getFlagPolePos()
 {
 	return flagPolePos;
+}
+
+sf::Vector2f Map::getPipeExitPos()
+{
+	return pipeExitPos;
 }
 
 int Map::getFlagPoleScore(int tile)

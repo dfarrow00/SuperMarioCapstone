@@ -38,12 +38,19 @@ public:
 	void addScore(int addedScore);
 	void addCoins(int amount);
 
+	void clearGameObjects();
+
+	//Add play music function which plays which music is needed for current level.
+	void playMusic();
 	void stopMusic();
 	void pauseMusic();
+
+	void setSkyColor(sf::Color color);
 
 	sf::View* getView();
 	HUD* getHUD();
 	sf::Clock* getStarPowerTimer();
+	int getLevelNumber();
 
 	void levelComplete(int flagScore, sf::Vector2f flagPolePos);
 private:
@@ -59,10 +66,11 @@ private:
 
 	int score = 0;
 	int coins = 0;
-	int levelNumber = 1;
+	int levelNumber = 2;
 	int levelToLoad;
 
 	bool paused = false;
+	bool respawning = false;
 
 	Mario* mario;
 	Map map;
@@ -70,7 +78,8 @@ private:
 	sf::View view;
 	HUD hud;
 
-	sf::Music music;
+	sf::Music overgroundMusic;
+	sf::Music undergroundMusic;
 	sf::SoundBuffer brickBreakSoundBuffer;
 	sf::Sound brickBreakSound;
 

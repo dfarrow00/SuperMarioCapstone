@@ -134,7 +134,21 @@ void CollisionHandler::resolveCollisions()
 					{
 						if ((col.tile == 14 || col.tile == 15) && sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 						{
-							game->enterPipe(1, false);
+							if (game->getLevelNumber() > 100)
+							{
+								int returnLevelNumber = game->getLevelNumber();
+								while (returnLevelNumber >= 10)
+								{
+									returnLevelNumber /= 10;
+								}
+								game->enterPipe(returnLevelNumber, false);
+							}
+							else
+							{
+								//NOTE Duplicated code from below.
+								int levelToLoad = (game->getLevelNumber() * 100) + 1;
+								game->enterPipe(levelToLoad, false);
+							}
 						}
 					}
 				}
@@ -156,7 +170,7 @@ void CollisionHandler::resolveCollisions()
 								game->addCoinEffect(coinPos);
 								map->updateTile(col.tileAABB.left / TILESIZE, col.tileAABB.top / TILESIZE, 8);
 							}
-							else if (col.tile == 20)
+							else if (col.tile == 20 || col.tile == 32)
 							{
 								sf::Vector2f mushroomPos(col.tileAABB.left, col.tileAABB.top);
 								game->addMushroom(mushroomPos);
@@ -168,7 +182,7 @@ void CollisionHandler::resolveCollisions()
 								game->addStar(starPos);
 								map->updateTile(col.tileAABB.left / TILESIZE, col.tileAABB.top / TILESIZE, 8);
 							}
-							else if (col.tile == 2 && mario->getSpriteHeight() > 48)
+							else if ((col.tile == 2 || col.tile == 13) && mario->getSpriteHeight() > 48)
 							{
 								map->updateTile(col.tileAABB.left / TILESIZE, col.tileAABB.top / TILESIZE, 0);
 								game->addParticles(sf::Vector2f(col.tileAABB.left, col.tileAABB.top));
@@ -184,7 +198,8 @@ void CollisionHandler::resolveCollisions()
 					{
 						if ((col.tile == 40 || col.tile == 41) && sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 						{
-							game->enterPipe(101, true);
+							int levelToLoad = (game->getLevelNumber() * 100) + 1;
+							game->enterPipe(levelToLoad, true);
 						}
 					}
 					
