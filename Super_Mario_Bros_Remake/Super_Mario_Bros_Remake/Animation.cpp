@@ -1,4 +1,5 @@
 #include "Animation.h"
+#include <iostream>
 
 Animation::Animation(std::string filePath, int rowNumber, int frames, float animSpeed, int spriteHeight) : animationSpeed(animSpeed)
 {

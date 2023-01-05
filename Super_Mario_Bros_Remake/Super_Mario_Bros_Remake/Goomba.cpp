@@ -2,7 +2,7 @@
 #include "Map.h"
 #include <iostream>
 
-Goomba::Goomba(sf::Vector2f pos) : walkingAnim("Resources/Sprites/Goomba_SpriteSheet.png", 0, 2, 0.3), deadAnim("Resources/Sprites/Goomba_SpriteSheet.png", 1, 1, 0.1)
+Goomba::Goomba(sf::Vector2f pos, bool underground) : walkingAnim((underground ? "Resources/Sprites/Blue_Goomba_SpriteSheet.png" : "Resources/Sprites/Goomba_SpriteSheet.png"), 0, 2, 0.3), deadAnim((underground ? "Resources/Sprites/Blue_Goomba_SpriteSheet.png" : "Resources/Sprites/Goomba_SpriteSheet.png"), 1, 1, 0.1)
 {
 	objectType = ObjectType::Goomba;
 	position = pos;
@@ -18,6 +18,7 @@ Goomba::Goomba(sf::Vector2f pos) : walkingAnim("Resources/Sprites/Goomba_SpriteS
 
 Goomba::~Goomba()
 {
+	
 }
 
 void Goomba::update(const float deltaTime)

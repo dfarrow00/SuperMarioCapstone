@@ -104,16 +104,23 @@ void GameState::update(const float deltaTime)
 
 void GameState::updateGameObjects(const float deltaTime)
 {
-	for (int x = 0; x < gameObjects.size(); x++)
+	std::vector<GameObject*>::iterator itr = gameObjects.begin();
+	while (itr != gameObjects.end())
 	{
-		if (gameObjects[x]->isAlive() && gameObjects[x]->getDistance(mario) <= 768)
+		GameObject* object = *itr;
+		if (object->isAlive() && object->getDistance(mario) <= 768)
 		{
-			gameObjects[x]->update(deltaTime);
+			object->update(deltaTime);
+			itr++;
 		}
-		else if (!gameObjects[x]->isAlive())
+		else if (!object->isAlive())
 		{
-			delete gameObjects[x];
-			gameObjects.erase(gameObjects.begin() + x);
+			delete object;
+			itr = gameObjects.erase(itr);
+		}
+		else
+		{
+			itr++;
 		}
 	}
 }
@@ -172,8 +179,7 @@ void GameState::enterPipe(int levelNumber, bool isGoingDown)
 void GameState::loadLevel(int newLevelNumber)
 {
 	stopMusic();
-	gameObjects.clear();
-	gameObjects.push_back(mario);
+	clearGameObjects();
 	int prevLevelNumber = levelNumber;
 	levelNumber = newLevelNumber;
 	map.loadMap(levelNumber);
@@ -209,7 +215,7 @@ void GameState::addMushroom(sf::Vector2f pos)
 
 void GameState::addGoomba(sf::Vector2f pos)
 {
-	Goomba* goomba = new Goomba(pos);
+	Goomba* goomba = new Goomba(pos, (levelNumber > 100));
 	gameObjects.push_back(goomba);
 }
 
@@ -279,9 +285,10 @@ void GameState::clearGameObjects()
 		if (gameObjects[x]->getObjectType() != ObjectType::Mario)
 		{
 			delete gameObjects[x];
-			gameObjects.erase(gameObjects.begin() + x);
 		}
 	}
+	gameObjects.clear();
+	gameObjects.push_back(mario);
 }
 
 sf::View* GameState::getView()

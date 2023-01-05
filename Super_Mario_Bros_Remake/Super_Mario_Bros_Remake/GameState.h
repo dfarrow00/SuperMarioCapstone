@@ -66,7 +66,7 @@ private:
 
 	int score = 0;
 	int coins = 0;
-	int levelNumber = 2;
+	int levelNumber = 1;
 	int levelToLoad;
 
 	bool paused = false;
