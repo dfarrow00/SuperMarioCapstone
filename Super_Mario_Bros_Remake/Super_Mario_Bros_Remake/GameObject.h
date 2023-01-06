@@ -80,7 +80,7 @@ public:
 
 	void setFacingLeft(const bool val)
 	{
-		isBig = val;
+		facingLeft = val;
 	}
 
 	float getDistance(GameObject* obj)

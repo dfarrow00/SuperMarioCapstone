@@ -3,12 +3,12 @@
 PiranhaPlant::PiranhaPlant(sf::Vector2f pos) : movementAnimation("Resources/Sprites/Blue_Piranha_SpriteSheet.png", 0, 2, 0.2, 72)
 {
 	objectType = ObjectType::PiranhaPlant;
-	position = pos;
+	spriteHeight = 72;
+	position = (pos + sf::Vector2f(0, spriteHeight));
 	currentAnim = &movementAnimation;
 	sprite = currentAnim->getCurrentSprite();
 	sprite.setPosition(position);
 	velocity = sf::Vector2f(0, 50);
-	spriteHeight = 72;
 	checkCollisions = false;
 	targetPos = pos + sf::Vector2f(0, spriteHeight * 2);
 }
@@ -42,7 +42,7 @@ void PiranhaPlant::draw(sf::RenderWindow* window)
 
 void PiranhaPlant::hit()
 {
-
+	
 }
 
 void PiranhaPlant::activate()

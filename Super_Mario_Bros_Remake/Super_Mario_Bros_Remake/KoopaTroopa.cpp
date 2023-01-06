@@ -65,9 +65,16 @@ void KoopaTroopa::draw(sf::RenderWindow* window)
 void KoopaTroopa::hit()
 {
 	Enemy::hit();
-	currentState = KoopaState::Shell;
-	isBig = false;
-	spriteHeight = 48;
+	if (currentState == KoopaState::Shell)
+	{
+		alive = false;
+	}
+	else
+	{
+		currentState = KoopaState::Shell;
+		isBig = false;
+		spriteHeight = 48;
+	}
 }
 
 void KoopaTroopa::kick(bool direction)

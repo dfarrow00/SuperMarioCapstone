@@ -366,7 +366,7 @@ void CollisionHandler::checkObjectCollisions(std::vector<GameObject*>& gameObjec
 						game->addCoins(1);
 						game->addScore(100);
 					}
-					else if (other->getObjectType() == ObjectType::PiranhaPlant)
+					else if (other->getObjectType() == ObjectType::PiranhaPlant && !marioObject->getPlayingPipeAnim())
 					{
 						marioObject->hit();
 						game->stopMusic();

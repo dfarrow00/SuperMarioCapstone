@@ -10,3 +10,6 @@ Known Bugs:
 - Star pickup can hit bottom on ? and activate them.
 
 Changelog:
+- Fixed bug where mario could die instantly entering and leaving pipes with a Piranha plant inside.
+- Fixed Koopa Troopa sprite not changing direction when colliding with enemy.
+- Fixed Koopa Troopa enemy not dying when falling out of map.
