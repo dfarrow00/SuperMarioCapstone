@@ -8,6 +8,7 @@
 #include "Star.h"
 #include "CoinBrick.h"
 #include "CoinPickup.h"
+#include "PiranhaPlant.h"
 #include <iostream>
 
 GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stateMgr), window(win), map(this), hud(window), collisionHandler(&map, this)
@@ -223,6 +224,12 @@ void GameState::addKoopaTroopa(sf::Vector2f pos)
 {
 	KoopaTroopa* koopaTroopa = new KoopaTroopa(pos);
 	gameObjects.push_back(koopaTroopa);
+}
+
+void GameState::addPiranhaPlant(sf::Vector2f pos)
+{
+	PiranhaPlant* piranha = new	PiranhaPlant(pos);
+	gameObjects.push_back(piranha);
 }
 
 void GameState::addCoinEffect(sf::Vector2f pos)

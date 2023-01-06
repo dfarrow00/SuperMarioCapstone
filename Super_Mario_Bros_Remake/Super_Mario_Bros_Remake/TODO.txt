@@ -10,4 +10,3 @@ Known Bugs:
 - Star pickup can hit bottom on ? and activate them.
 
 Changelog:
-- Added underground music for level 2 and coin room.

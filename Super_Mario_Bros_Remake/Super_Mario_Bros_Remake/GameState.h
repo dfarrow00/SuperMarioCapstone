@@ -30,6 +30,7 @@ public:
 	void addMushroom(sf::Vector2f pos);
 	void addGoomba(sf::Vector2f pos);
 	void addKoopaTroopa(sf::Vector2f pos);
+	void addPiranhaPlant(sf::Vector2f pos);
 	void addCoinEffect(sf::Vector2f pos);
 	void addCoinPickup(sf::Vector2f pos);
 	void addStar(sf::Vector2f pos);
@@ -66,7 +67,7 @@ private:
 
 	int score = 0;
 	int coins = 0;
-	int levelNumber = 1;
+	int levelNumber = 201;
 	int levelToLoad;
 
 	bool paused = false;

@@ -189,6 +189,10 @@ void Map::loadMap(int mapNumber)
 			{
 				game->addCoinPickup(sf::Vector2f(x, y));
 			}
+			else if (entity == "Piranha")
+			{
+				game->addPiranhaPlant(sf::Vector2f(x, y));
+			}
 		}
 	}
 	file.close();

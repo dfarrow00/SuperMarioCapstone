@@ -48,3 +48,6 @@ Coin 4128 240
 Coin 4176 240
 Coin 4224 240
 Coin 4272 240
+Piranha 4968 410
+Piranha 5256 362
+Piranha 5544 458
