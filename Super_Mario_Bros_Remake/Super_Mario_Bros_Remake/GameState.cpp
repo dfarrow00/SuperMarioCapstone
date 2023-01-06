@@ -185,12 +185,12 @@ void GameState::loadLevel(int newLevelNumber)
 	map.loadMap(levelNumber);
 	mario->reset();
 	//If level is a secret coin room...
-	if (levelNumber > 100)
+	if (levelNumber > 100 && prevLevelNumber < levelNumber)
 	{
 		mario->setPosition(96.0f, 100.0f);
 		mario->setFurthestXPos(mario->getPosition().x - (view.getSize().x / 2));
 	}
-	else if (prevLevelNumber > 100 && levelNumber < 100 && respawning == false)
+	else if (prevLevelNumber > 100 && levelNumber < prevLevelNumber && respawning == false)
 	{
 		//TODO
 		mario->setPosition(map.getPipeExitPos().x, map.getPipeExitPos().y);

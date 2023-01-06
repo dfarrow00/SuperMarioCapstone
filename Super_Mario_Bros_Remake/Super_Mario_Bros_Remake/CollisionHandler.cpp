@@ -134,14 +134,19 @@ void CollisionHandler::resolveCollisions()
 					{
 						if ((col.tile == 14 || col.tile == 15) && sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
 						{
-							if (game->getLevelNumber() > 100)
+							int currentLevel = game->getLevelNumber();
+							if (currentLevel > 100 && currentLevel % 10 == 1)
 							{
-								int returnLevelNumber = game->getLevelNumber();
+								int returnLevelNumber = currentLevel;
 								while (returnLevelNumber >= 10)
 								{
 									returnLevelNumber /= 10;
 								}
 								game->enterPipe(returnLevelNumber, false);
+							}
+							else if (currentLevel > 100 && currentLevel % 10 > 1)
+							{
+								game->enterPipe(currentLevel - 1, false);
 							}
 							else
 							{
@@ -198,8 +203,15 @@ void CollisionHandler::resolveCollisions()
 					{
 						if ((col.tile == 40 || col.tile == 41) && sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
 						{
-							int levelToLoad = (game->getLevelNumber() * 100) + 1;
-							game->enterPipe(levelToLoad, true);
+							if (game->getLevelNumber() < 100)
+							{
+								int levelToLoad = (game->getLevelNumber() * 100) + 1;
+								game->enterPipe(levelToLoad, true);
+							}
+							else
+							{
+								game->enterPipe(game->getLevelNumber() + 1, true);
+							}
 						}
 					}
 					
