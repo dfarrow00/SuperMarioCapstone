@@ -29,10 +29,10 @@ void CollisionHandler::checkMapCollisions(std::vector<GameObject*>& gameObjects)
 		}
 		std::vector<sf::Vector2f> points;
 		int spriteHeight = object->getSpriteHeight();
-		sf::Vector2f topLeft = object->getPosition();
-		sf::Vector2f topRight = topLeft + sf::Vector2f(TILESIZE, 0);
+		sf::Vector2f topLeft = object->getPosition() + sf::Vector2f(3, 0);
+		sf::Vector2f topRight = topLeft + sf::Vector2f(TILESIZE - 3, 0);
 		sf::Vector2f bottomLeft = topLeft + sf::Vector2f(0, spriteHeight);
-		sf::Vector2f bottomRight = bottomLeft + sf::Vector2f(TILESIZE, 0);
+		sf::Vector2f bottomRight = bottomLeft + sf::Vector2f(TILESIZE - 3, 0);
 		points.push_back(topLeft);
 		points.push_back(topRight);
 		points.push_back(bottomLeft);
@@ -41,7 +41,7 @@ void CollisionHandler::checkMapCollisions(std::vector<GameObject*>& gameObjects)
 		if (spriteHeight >= 96)
 		{
 			sf::Vector2f middleLeft = topLeft + sf::Vector2f(0, spriteHeight / 2);
-			sf::Vector2f middleRight = middleLeft + sf::Vector2f(TILESIZE, 0);
+			sf::Vector2f middleRight = middleLeft + sf::Vector2f(TILESIZE - 3, 0);
 			points.push_back(middleLeft);
 			points.push_back(middleRight);
 		}

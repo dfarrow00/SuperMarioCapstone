@@ -5,7 +5,7 @@
 class PiranhaPlant : public Enemy
 {
 public:
-	PiranhaPlant(sf::Vector2f pos);
+	PiranhaPlant(sf::Vector2f pos, bool underground);
 	~PiranhaPlant();
 
 	void update(const float deltaTime);

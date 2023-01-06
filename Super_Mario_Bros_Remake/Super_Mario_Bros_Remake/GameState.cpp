@@ -184,28 +184,25 @@ void GameState::loadLevel(int newLevelNumber)
 	int prevLevelNumber = levelNumber;
 	levelNumber = newLevelNumber;
 	map.loadMap(levelNumber);
+
 	mario->reset();
-	//If level is a secret coin room...
-	if (levelNumber > 100 && prevLevelNumber < levelNumber)
+	if (levelNumber < prevLevelNumber && !respawning)
 	{
-		mario->setPosition(96.0f, 100.0f);
-		mario->setFurthestXPos(mario->getPosition().x - (view.getSize().x / 2));
-	}
-	else if (prevLevelNumber > 100 && levelNumber < prevLevelNumber && respawning == false)
-	{
-		//TODO
-		mario->setPosition(map.getPipeExitPos().x, map.getPipeExitPos().y);
-		mario->setFurthestXPos(mario->getPosition().x - (view.getSize().x / 2));
-		hud.setLevel(levelNumber);
+		sf::Vector2f returnPos = map.getPipeExitPos();
+		mario->setPosition(returnPos.x, returnPos.y);
 	}
 	else
 	{
-		hud.setLevel(levelNumber);
-		respawning = false;
+		sf::Vector2f spawnPos = map.getSpawnPos();
+		mario->setPosition(spawnPos.x, spawnPos.y);
 	}
+	mario->setFurthestXPos(mario->getPosition().x - (view.getSize().x / 2));
+
 	view = window->getDefaultView();
 	window->setView(view);
+	hud.setLevel(levelNumber);
 	playMusic();
+	respawning = false;
 }
 
 void GameState::addMushroom(sf::Vector2f pos)
@@ -228,7 +225,7 @@ void GameState::addKoopaTroopa(sf::Vector2f pos)
 
 void GameState::addPiranhaPlant(sf::Vector2f pos)
 {
-	PiranhaPlant* piranha = new	PiranhaPlant(pos);
+	PiranhaPlant* piranha = new	PiranhaPlant(pos, (levelNumber > 100));
 	gameObjects.push_back(piranha);
 }
 

@@ -1,6 +1,6 @@
 #include "PiranhaPlant.h"
 
-PiranhaPlant::PiranhaPlant(sf::Vector2f pos) : movementAnimation("Resources/Sprites/Blue_Piranha_SpriteSheet.png", 0, 2, 0.2, 72)
+PiranhaPlant::PiranhaPlant(sf::Vector2f pos, bool underground) : movementAnimation((underground ? "Resources/Sprites/Blue_Piranha_SpriteSheet.png" : "Resources/Sprites/Piranha_SpriteSheet.png"), 0, 2, 0.2, 72)
 {
 	objectType = ObjectType::PiranhaPlant;
 	spriteHeight = 72;

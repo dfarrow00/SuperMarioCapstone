@@ -3,13 +3,11 @@ Improvements:
 - Try to find more efficient method for animation timers and end of level animation finish detection.
 - Possibly add static class for commonly used constant values like gravity.
 - Rework game object collisions to cut down code length using more general type checks where possible.
-- Store mario spawn point in level txt file
-- Make mario sprite slightly less than one tile wide so he can fall down one tile wide gaps
 
 Known Bugs:
 - Star pickup can hit bottom on ? and activate them.
 
 Changelog:
-- Fixed bug where mario could die instantly entering and leaving pipes with a Piranha plant inside.
-- Fixed Koopa Troopa sprite not changing direction when colliding with enemy.
-- Fixed Koopa Troopa enemy not dying when falling out of map.
+- (Done)Make mario sprite slightly less than one tile wide so he can fall down one tile wide gaps
+- (Done)Store mario spawn point in level txt file
+- Added overground style sprite sheet for piranha

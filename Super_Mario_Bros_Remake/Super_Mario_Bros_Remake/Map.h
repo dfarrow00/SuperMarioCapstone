@@ -46,6 +46,7 @@ public:
 	int getFlagPoleScore(int tile);
 
 	Level getCurrentLevel();
+	sf::Vector2f getSpawnPos();
 	sf::Vector2f getFlagPolePos();
 	sf::Vector2f getPipeExitPos();
 
@@ -57,6 +58,7 @@ private:
 	std::unordered_map<unsigned int, Tile*> tiles;
 	std::unordered_map<unsigned int, unsigned int> flagPoleScores;
 	std::unordered_map<unsigned int, sf::Color> skyColors;
+	sf::Vector2f spawnPos;
 	sf::Vector2f flagPolePos;
 	sf::Vector2f pipeExitPos;
 

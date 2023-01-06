@@ -193,6 +193,10 @@ void Map::loadMap(int mapNumber)
 			{
 				game->addPiranhaPlant(sf::Vector2f(x, y));
 			}
+			else if (entity == "Spawn")
+			{
+				spawnPos = sf::Vector2f(x, y);
+			}
 		}
 	}
 	file.close();
@@ -206,6 +210,11 @@ void Map::updateTile(int x, int y, int tile)
 int Map::getTile(int x, int y)
 {
 	return level[y / tileSize][x / tileSize];
+}
+
+sf::Vector2f Map::getSpawnPos()
+{
+	return spawnPos;
 }
 
 sf::Vector2f Map::getFlagPolePos()
