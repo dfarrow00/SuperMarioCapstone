@@ -32,6 +32,10 @@ Goomba 4896 576
 Goomba 5424 576
 Goomba 6480 432
 Goomba 6576 384
+Platform 6720 624 0
+Platform 6720 240 0
+Platform 7488 624 1
+Platform 7488 240 1
 Coin 1920 384
 Coin 1968 240
 Coin 2016 240

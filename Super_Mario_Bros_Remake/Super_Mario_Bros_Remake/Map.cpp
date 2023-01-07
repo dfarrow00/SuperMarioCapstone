@@ -193,6 +193,12 @@ void Map::loadMap(int mapNumber)
 			{
 				game->addPiranhaPlant(sf::Vector2f(x, y));
 			}
+			else if (entity == "Platform")
+			{
+				int direction;
+				stream >> direction;
+				game->addPlatform(sf::Vector2f(x, y), direction);
+			}
 			else if (entity == "Spawn")
 			{
 				spawnPos = sf::Vector2f(x, y);

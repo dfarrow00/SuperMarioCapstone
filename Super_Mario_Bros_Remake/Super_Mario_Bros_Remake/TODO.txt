@@ -8,6 +8,3 @@ Known Bugs:
 - Star pickup can hit bottom on ? and activate them.
 
 Changelog:
-- (Done)Make mario sprite slightly less than one tile wide so he can fall down one tile wide gaps
-- (Done)Store mario spawn point in level txt file
-- Added overground style sprite sheet for piranha

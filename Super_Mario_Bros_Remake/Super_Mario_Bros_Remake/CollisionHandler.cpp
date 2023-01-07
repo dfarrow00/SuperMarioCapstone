@@ -352,7 +352,7 @@ void CollisionHandler::checkObjectCollisions(std::vector<GameObject*>& gameObjec
 						other->hit();
 						game->addScore(1000);
 					}
-					else if (other->getObjectType() == ObjectType::CoinBrick)
+					else if (other->getObjectType() == ObjectType::CoinBrick || other->getObjectType() == ObjectType::Platform)
 					{
 						resolveCollision(other, marioObject, intersection);
 						if (intersection.width > intersection.height && marioObject->getPosition().y > other->getPosition().y)
@@ -427,7 +427,7 @@ void CollisionHandler::checkObjectCollisions(std::vector<GameObject*>& gameObjec
 					}
 				}
 
-				else if (current->getObjectType() == ObjectType::CoinBrick)
+				else if (current->getObjectType() == ObjectType::CoinBrick || current->getObjectType() == ObjectType::Platform)
 				{
 					resolveCollision(current, other, intersection);
 				}

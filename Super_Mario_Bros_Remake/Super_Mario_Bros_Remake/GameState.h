@@ -31,6 +31,7 @@ public:
 	void addGoomba(sf::Vector2f pos);
 	void addKoopaTroopa(sf::Vector2f pos);
 	void addPiranhaPlant(sf::Vector2f pos);
+	void addPlatform(sf::Vector2f pos, int direction);
 	void addCoinEffect(sf::Vector2f pos);
 	void addCoinPickup(sf::Vector2f pos);
 	void addStar(sf::Vector2f pos);

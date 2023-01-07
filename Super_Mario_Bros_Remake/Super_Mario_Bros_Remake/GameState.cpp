@@ -9,6 +9,7 @@
 #include "CoinBrick.h"
 #include "CoinPickup.h"
 #include "PiranhaPlant.h"
+#include "Platform.h"
 #include <iostream>
 
 GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stateMgr), window(win), map(this), hud(window), collisionHandler(&map, this)
@@ -200,7 +201,10 @@ void GameState::loadLevel(int newLevelNumber)
 
 	view = window->getDefaultView();
 	window->setView(view);
-	hud.setLevel(levelNumber);
+	if (levelNumber < 100)
+	{
+		hud.setLevel(levelNumber);
+	}
 	playMusic();
 	respawning = false;
 }
@@ -227,6 +231,12 @@ void GameState::addPiranhaPlant(sf::Vector2f pos)
 {
 	PiranhaPlant* piranha = new	PiranhaPlant(pos, (levelNumber > 100));
 	gameObjects.push_back(piranha);
+}
+
+void GameState::addPlatform(sf::Vector2f pos, int direction)
+{
+	Platform* platform = new Platform(pos, (direction == 1 ? true : false));
+	gameObjects.push_back(platform);
 }
 
 void GameState::addCoinEffect(sf::Vector2f pos)
