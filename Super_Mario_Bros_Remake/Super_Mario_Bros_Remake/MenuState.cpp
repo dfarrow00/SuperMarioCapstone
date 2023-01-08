@@ -1,4 +1,5 @@
 #include "MenuState.h"
+#include <iostream>
 
 MenuState::MenuState(StateManager* stateMgr) : State(stateMgr)
 {
@@ -31,6 +32,7 @@ MenuState::~MenuState()
 
 void MenuState::activate()
 {
+	stateManager->setSkyColor(sf::Color::Cyan);
 }
 
 void MenuState::deactivate()

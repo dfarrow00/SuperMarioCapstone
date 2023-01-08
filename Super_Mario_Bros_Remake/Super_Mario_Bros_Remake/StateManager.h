@@ -2,12 +2,10 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include "State.h"
-#include "MenuState.h"
-#include "GameState.h"
 
 enum class StateType
 {
-	Menu, Game, Paused
+	Intro, Menu, Game, Paused
 };
 
 class StateManager
@@ -17,6 +15,7 @@ public:
 	~StateManager();
 
 	void changeState(StateType state);
+	void deleteState(StateType state);
 
 	void update(const float deltaTime);
 	void draw(sf::RenderWindow* window);
