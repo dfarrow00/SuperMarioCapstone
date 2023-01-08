@@ -34,6 +34,7 @@ Goomba 6480 432
 Goomba 6576 384
 Platform 6720 624 0
 Platform 6720 240 0
+RedKoopa 7008 576
 Platform 7488 624 1
 Platform 7488 240 1
 Coin 1920 384

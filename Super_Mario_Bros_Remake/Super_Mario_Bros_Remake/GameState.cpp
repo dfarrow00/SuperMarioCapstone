@@ -221,9 +221,9 @@ void GameState::addGoomba(sf::Vector2f pos)
 	gameObjects.push_back(goomba);
 }
 
-void GameState::addKoopaTroopa(sf::Vector2f pos)
+void GameState::addKoopaTroopa(sf::Vector2f pos, bool red)
 {
-	KoopaTroopa* koopaTroopa = new KoopaTroopa(pos);
+	KoopaTroopa* koopaTroopa = new KoopaTroopa(pos, red);
 	gameObjects.push_back(koopaTroopa);
 }
 

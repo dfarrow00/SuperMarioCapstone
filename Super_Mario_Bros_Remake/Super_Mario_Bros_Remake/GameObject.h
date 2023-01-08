@@ -8,7 +8,7 @@ class Animation;
 
 enum class ObjectType
 {
-	Mario, Coin, CoinBrick, Goomba, KoopaTroopa, Mushroom, Particle, Star, CoinPickup, PiranhaPlant, Platform
+	Mario, Coin, CoinBrick, Goomba, KoopaTroopa, RedKoopaTroopa, Mushroom, Particle, Star, CoinPickup, PiranhaPlant, Platform
 };
 
 class GameObject

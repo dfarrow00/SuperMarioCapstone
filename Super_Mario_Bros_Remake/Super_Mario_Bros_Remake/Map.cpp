@@ -183,7 +183,11 @@ void Map::loadMap(int mapNumber)
 			}
 			else if (entity == "Koopa")
 			{
-				game->addKoopaTroopa(sf::Vector2f(x, y));
+				game->addKoopaTroopa(sf::Vector2f(x, y), false);
+			}
+			else if (entity == "RedKoopa")
+			{
+				game->addKoopaTroopa(sf::Vector2f(x, y), true);
 			}
 			else if (entity == "Coin")
 			{

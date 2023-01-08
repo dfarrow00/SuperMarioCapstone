@@ -64,6 +64,14 @@ void CollisionHandler::checkMapCollisions(std::vector<GameObject*>& gameObjects)
 			unsigned int tile = map->getTile(point.x, point.y);
 			if (tile == 0)
 			{
+				if (object->getObjectType() == ObjectType::RedKoopaTroopa)
+				{
+					KoopaTroopa* koopa = dynamic_cast<KoopaTroopa*>(object);
+					if (koopa->getCurrentState() == KoopaState::Walking && (point == bottomLeft || point == bottomRight))
+					{
+						object->setCollidingX(true);
+					}
+				}
 				continue;
 			}
 			/*R.Pupius, SFML game development by example : Create and develop exciting games from start to finish using SFML.Birmingham, UK : Packt Publishing, 2015.
@@ -269,7 +277,7 @@ void CollisionHandler::checkObjectCollisions(std::vector<GameObject*>& gameObjec
 				{
 					if (marioObject->getStarPower())
 					{
-						if (other->getObjectType() == ObjectType::KoopaTroopa)
+						if (other->getObjectType() == ObjectType::KoopaTroopa || other->getObjectType() == ObjectType::RedKoopaTroopa)
 						{
 							KoopaTroopa* koopaObject = dynamic_cast<KoopaTroopa*>(other);
 							if (koopaObject->getCurrentState() == KoopaState::Walking)

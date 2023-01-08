@@ -29,7 +29,7 @@ public:
 
 	void addMushroom(sf::Vector2f pos);
 	void addGoomba(sf::Vector2f pos);
-	void addKoopaTroopa(sf::Vector2f pos);
+	void addKoopaTroopa(sf::Vector2f pos, bool red);
 	void addPiranhaPlant(sf::Vector2f pos);
 	void addPlatform(sf::Vector2f pos, int direction);
 	void addCoinEffect(sf::Vector2f pos);

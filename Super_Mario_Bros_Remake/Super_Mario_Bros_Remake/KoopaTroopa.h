@@ -13,7 +13,7 @@ class Map;
 class KoopaTroopa : public Enemy
 {
 public:
-	KoopaTroopa(sf::Vector2f pos);
+	KoopaTroopa(sf::Vector2f pos, bool red);
 	~KoopaTroopa();
 
 	void update(const float deltaTime);
