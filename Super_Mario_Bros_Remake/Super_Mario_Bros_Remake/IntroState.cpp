@@ -29,7 +29,7 @@ IntroState::~IntroState()
 void IntroState::activate()
 {
 	timePassed = 0.0f;
-	stateManager->setSkyColor(sf::Color::Black);
+	stateManager->setBackgroundColor(sf::Color::Black);
 }
 
 void IntroState::deactivate()
@@ -52,8 +52,7 @@ void IntroState::update(const float deltaTime)
 
 	if (timePassed >= fadeOutEndTime)
 	{
-		stateManager->changeState(StateType::Menu);
-		stateManager->deleteState(StateType::Intro);
+		close();
 	}
 }
 
@@ -61,4 +60,10 @@ void IntroState::draw(sf::RenderWindow* window)
 {
 	window->draw(introTitle);
 	window->draw(introName);
+}
+
+void IntroState::close()
+{
+	stateManager->changeState(StateType::Menu);
+	stateManager->deleteState(StateType::Intro);
 }

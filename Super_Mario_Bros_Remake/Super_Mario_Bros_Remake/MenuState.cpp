@@ -7,23 +7,32 @@ MenuState::MenuState(StateManager* stateMgr) : State(stateMgr)
 	titleTexture.loadFromFile("Resources/Sprites/SMB-Title.png");
 	titleSprite.setTexture(titleTexture);
 	titleSprite.setScale(0.75, 0.75);
+	titleSprite.setOrigin(titleSprite.getLocalBounds().width / 2, titleSprite.getLocalBounds().height / 2);
+	titleSprite.setPosition(384, 200);
 
 	menuFont.loadFromFile("Resources/Fonts/PressStart2P-Regular.ttf");
-	menuTitle.setFont(menuFont);
-	menuText.setFont(menuFont);
-	menuTitle.setString("Remake");
-	menuText.setString("Press Enter to Start");
-	menuTitle.setOutlineColor(sf::Color::Black);
-	menuTitle.setOutlineThickness(2);
-	menuText.setOutlineColor(sf::Color::Black);
-	menuText.setOutlineThickness(2);
 
-	titleSprite.setOrigin(titleSprite.getLocalBounds().width / 2, titleSprite.getLocalBounds().height / 2);
-	menuTitle.setOrigin(menuTitle.getLocalBounds().width / 2, menuTitle.getLocalBounds().height / 2);
-	menuText.setOrigin(menuText.getLocalBounds().width / 2, menuText.getLocalBounds().height / 2);
-	titleSprite.setPosition(384, 200);
-	menuTitle.setPosition(384, 350);
-	menuText.setPosition(384, 500);
+	for (int x = 0; x < 2; x++)
+	{
+		menuItems[x].setFont(menuFont);
+		menuItems[x].setOutlineColor(sf::Color::Black);
+		menuItems[x].setOutlineThickness(2);
+	}
+
+	menuItems[0].setString("Play");
+	menuItems[0].setOrigin(menuItems[0].getLocalBounds().width / 2, menuItems[0].getLocalBounds().height / 2);
+	menuItems[0].setPosition(384, 425);
+
+	menuItems[1].setString("Exit");
+	menuItems[1].setOrigin(menuItems[1].getLocalBounds().width / 2, menuItems[1].getLocalBounds().height / 2);
+	menuItems[1].setPosition(384, 500);
+
+	selectionIcon.setFont(menuFont);
+	selectionIcon.setOutlineColor(sf::Color::Black);
+	selectionIcon.setOutlineThickness(2);
+	selectionIcon.setString(">");
+	selectionIcon.setOrigin(selectionIcon.getLocalBounds().width / 2, selectionIcon.getLocalBounds().height / 2);
+	selectionIcon.setPosition(menuItems[0].getPosition().x - 100, menuItems[0].getPosition().y);
 }
 
 MenuState::~MenuState()
@@ -32,7 +41,7 @@ MenuState::~MenuState()
 
 void MenuState::activate()
 {
-	stateManager->setSkyColor(sf::Color::Cyan);
+	stateManager->setBackgroundColor(sf::Color::Cyan);
 }
 
 void MenuState::deactivate()
@@ -43,13 +52,62 @@ void MenuState::update(const float deltaTime)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
 	{
-		stateManager->changeState(StateType::Game);
+		if (selectedItem == 0)
+		{
+			stateManager->changeState(StateType::Game);
+		}
+		else
+		{
+			exit(0);
+		}
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+	{
+		moveUp();
+	}
+	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+	{
+		moveDown();
 	}
 }
 
 void MenuState::draw(sf::RenderWindow* window)
 {
 	window->draw(titleSprite);
-	window->draw(menuTitle);
-	window->draw(menuText);
+	for (int x = 0; x < 2; x++)
+	{
+		window->draw(menuItems[x]);
+	}
+	window->draw(selectionIcon);
+}
+
+void MenuState::moveUp()
+{
+	if (selectedItem == 0)
+	{
+		return;
+	}
+	else
+	{
+		selectedItem--;
+	}
+	updateSelectionIcon();
+}
+
+void MenuState::moveDown()
+{
+	if (selectedItem == 1)
+	{
+		return;
+	}
+	else
+	{
+		selectedItem++;
+	}
+	updateSelectionIcon();
+}
+
+void MenuState::updateSelectionIcon()
+{
+	selectionIcon.setPosition(selectionIcon.getPosition().x, menuItems[selectedItem].getPosition().y);
 }

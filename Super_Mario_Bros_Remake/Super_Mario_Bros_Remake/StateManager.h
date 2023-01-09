@@ -20,7 +20,7 @@ public:
 	void update(const float deltaTime);
 	void draw(sf::RenderWindow* window);
 
-	void setSkyColor(sf::Color color);
+	void setBackgroundColor(sf::Color color);
 	sf::Color getSkyColor();
 
 private:

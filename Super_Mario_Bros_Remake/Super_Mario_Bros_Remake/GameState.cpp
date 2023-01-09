@@ -409,5 +409,5 @@ void GameState::pauseMusic()
 
 void GameState::setSkyColor(sf::Color color)
 {
-	stateManager->setSkyColor(color);
+	stateManager->setBackgroundColor(color);
 }

@@ -81,7 +81,7 @@ void StateManager::draw(sf::RenderWindow* window)
 	}
 }
 
-void StateManager::setSkyColor(sf::Color color)
+void StateManager::setBackgroundColor(sf::Color color)
 {
 	skyColor = color;
 }

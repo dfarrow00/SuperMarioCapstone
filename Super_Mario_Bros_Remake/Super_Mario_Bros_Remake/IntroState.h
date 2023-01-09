@@ -13,6 +13,8 @@ public:
 	void update(const float deltaTime);
 	void draw(sf::RenderWindow* window);
 
+	void close();
+
 private:
 	sf::Font introFont;
 	sf::Text introTitle;
