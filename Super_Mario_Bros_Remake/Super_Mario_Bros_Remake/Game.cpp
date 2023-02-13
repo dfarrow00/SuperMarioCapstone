@@ -31,6 +31,13 @@ void Game::update()
 		{
 			window.close();
 		}
+		else if (event.type == sf::Event::KeyPressed)
+		{
+			if (event.key.code == sf::Keyboard::Escape)
+			{
+				stateManager.escapePressed();
+			}
+		}
 	}
 }
 

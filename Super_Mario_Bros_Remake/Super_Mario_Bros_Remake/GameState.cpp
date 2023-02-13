@@ -97,7 +97,7 @@ void GameState::update(const float deltaTime)
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 	{
-		endGame();
+		//stateManager->changeState(StateType::Paused);
 	}
 
 	updateGameObjects(deltaTime);

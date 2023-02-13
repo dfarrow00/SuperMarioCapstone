@@ -2,12 +2,15 @@
 #include "IntroState.h"
 #include "MenuState.h"
 #include "GameState.h"
+#include "PauseState.h"
 
 StateManager::StateManager(sf::RenderWindow* window)
 {
+	std::pair<StateType, State*> pauseState(StateType::Paused, new PauseState(this));
 	std::pair<StateType, State*> gameState(StateType::Game, new GameState(this, window));
 	std::pair<StateType, State*> menuState(StateType::Menu, new MenuState(this));
 	std::pair<StateType, State*> introState(StateType::Intro, new IntroState(this));
+	states.push_back(pauseState);
 	states.push_back(gameState);
 	states.push_back(menuState);
 	states.push_back(introState);
@@ -19,6 +22,18 @@ StateManager::~StateManager()
 	for (auto itr : states)
 	{
 		delete itr.second;
+	}
+}
+
+void StateManager::escapePressed()
+{
+	if (states.back().first == StateType::Game)
+	{
+		changeState(StateType::Paused);
+	}
+	else
+	{
+		changeState(StateType::Game);
 	}
 }
 

@@ -14,6 +14,8 @@ public:
 	StateManager(sf::RenderWindow* window);
 	~StateManager();
 
+	void escapePressed();
+
 	void changeState(StateType state);
 	void deleteState(StateType state);
 
