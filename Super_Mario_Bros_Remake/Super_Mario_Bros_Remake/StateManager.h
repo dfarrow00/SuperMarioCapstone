@@ -20,9 +20,6 @@ public:
 	void update(const float deltaTime);
 	void draw(sf::RenderWindow* window);
 
-	void setBackgroundColor(sf::Color color);
-	sf::Color getSkyColor();
-
 private:
 	std::vector<std::pair<StateType, State*>> states;
 	sf::Color skyColor;

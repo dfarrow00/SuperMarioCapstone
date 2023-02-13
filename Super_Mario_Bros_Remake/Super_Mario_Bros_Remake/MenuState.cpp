@@ -41,7 +41,7 @@ MenuState::~MenuState()
 
 void MenuState::activate()
 {
-	stateManager->setBackgroundColor(sf::Color::Cyan);
+	
 }
 
 void MenuState::deactivate()

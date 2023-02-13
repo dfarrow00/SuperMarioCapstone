@@ -29,7 +29,6 @@ IntroState::~IntroState()
 void IntroState::activate()
 {
 	timePassed = 0.0f;
-	stateManager->setBackgroundColor(sf::Color::Black);
 }
 
 void IntroState::deactivate()

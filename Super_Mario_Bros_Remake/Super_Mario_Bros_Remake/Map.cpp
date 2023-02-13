@@ -167,7 +167,7 @@ void Map::loadMap(int mapNumber)
 		else if (line.substr(0, line.find_first_of(' ')) == "Sky")
 		{
 			int skyNumber = line.at(4) - '0'; //Because all char encodings for digits are all in order from 48 to 57, the int value for any digit is itself - '0' (48 char code).
-			game->setSkyColor(skyColors[skyNumber]);
+			game->setBackground(skyNumber);
 		}
 		else
 		{
@@ -240,4 +240,9 @@ sf::Vector2f Map::getPipeExitPos()
 int Map::getFlagPoleScore(int tile)
 {
 	return flagPoleScores[tile];
+}
+
+int Map::getLevelWidth()
+{
+	return level[0].size();
 }

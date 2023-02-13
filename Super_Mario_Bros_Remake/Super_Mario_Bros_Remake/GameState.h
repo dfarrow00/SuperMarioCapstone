@@ -47,7 +47,7 @@ public:
 	void stopMusic();
 	void pauseMusic();
 
-	void setSkyColor(sf::Color color);
+	void setBackground(int skyColour);
 
 	sf::View* getView();
 	HUD* getHUD();
@@ -68,7 +68,7 @@ private:
 
 	int score = 0;
 	int coins = 0;
-	int levelNumber = 2;
+	int levelNumber = 1;
 	int levelToLoad;
 
 	bool paused = false;
@@ -78,7 +78,11 @@ private:
 	Map map;
 	sf::RenderWindow* window;
 	sf::View view;
+	sf::View backgroundView;
 	HUD hud;
+
+	sf::Texture backgroundTexture;
+	sf::Sprite backgroundSprite;
 
 	sf::Music overgroundMusic;
 	sf::Music undergroundMusic;

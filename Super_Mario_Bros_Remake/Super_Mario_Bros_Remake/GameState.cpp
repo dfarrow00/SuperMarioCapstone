@@ -28,6 +28,9 @@ GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stat
 
 	marioStarPowerTime = mario->getStarPowerTime();
 	marioPipeAnimTime = mario->getPipeAnimTime();
+
+	backgroundView = view;
+	backgroundView.setSize(sf::Vector2f(view.getSize().x * 3, view.getSize().y * 3));
 }
 
 GameState::~GameState()
@@ -132,7 +135,7 @@ void GameState::updateGameView()
 	if (mario->getPosition().x > view.getCenter().x)//Camera only follows mario when moving fowards, stays still when mario is moving backwards.
 	{
 		view.setCenter(mario->getPosition().x, window->getDefaultView().getCenter().y);
-		window->setView(view);
+		backgroundView.setCenter(mario->getPosition().x, window->getDefaultView().getCenter().y);
 	}
 }
 
@@ -153,6 +156,9 @@ void GameState::updateTimer(const float deltaTime)
 
 void GameState::draw(sf::RenderWindow* window)
 {
+	window->setView(backgroundView);
+	window->draw(backgroundSprite);
+	window->setView(view);
 	//All game objects are drawn other than first in array. This is because mario is always the first object and should be drawn above the map for the death animaton to be visible
 	for (int x = 1; x < gameObjects.size(); x++)
 	{
@@ -200,6 +206,8 @@ void GameState::loadLevel(int newLevelNumber)
 	mario->setFurthestXPos(mario->getPosition().x - (view.getSize().x / 2));
 
 	view = window->getDefaultView();
+	backgroundView = view;
+	backgroundView.setSize(sf::Vector2f(view.getSize().x * 3, view.getSize().y * 3));
 	window->setView(view);
 	if (levelNumber < 100)
 	{
@@ -407,7 +415,20 @@ void GameState::pauseMusic()
 	}
 }
 
-void GameState::setSkyColor(sf::Color color)
+void GameState::setBackground(int skyColour)
 {
-	stateManager->setBackgroundColor(color);
+	if (skyColour == 1)
+	{
+		backgroundTexture.loadFromFile("Resources/Sprites/test_cloud_background.png");
+		sf::IntRect bounds(0, 0, map.getLevelWidth() * 48, 1000);
+		backgroundSprite.setTextureRect(bounds);
+		backgroundTexture.setRepeated(true);
+		backgroundSprite.setTexture(backgroundTexture);
+		backgroundSprite.setScale(sf::Vector2f(4, 3));
+		backgroundSprite.setPosition(-800, -800);
+	}
+	else
+	{
+		backgroundSprite.setTextureRect(sf::IntRect(0, 0, 0, 0));
+	}
 }

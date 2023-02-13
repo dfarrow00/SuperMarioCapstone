@@ -36,7 +36,7 @@ void Game::update()
 
 void Game::render()
 {
-	window.clear(stateManager.getSkyColor());
+	window.clear();
 	stateManager.draw(&window);
 	window.display();
 }

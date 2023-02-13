@@ -44,6 +44,7 @@ public:
 
 	int getTile(int x, int y);
 	int getFlagPoleScore(int tile);
+	int getLevelWidth();
 
 	Level getCurrentLevel();
 	sf::Vector2f getSpawnPos();
