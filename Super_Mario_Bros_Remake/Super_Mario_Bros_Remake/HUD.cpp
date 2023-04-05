@@ -1,6 +1,6 @@
 #include "HUD.h"
 
-HUD::HUD(sf::RenderWindow* window) : window(window)
+HUD::HUD(sf::View* mainView) : mainView(mainView)
 {
 	font.loadFromFile("Resources/Fonts/PressStart2P-Regular.ttf");
 
@@ -41,7 +41,7 @@ void HUD::update(int newTime)
 	scoreValueText.setOrigin(scoreValueText.getLocalBounds().width / 2, scoreValueText.getLocalBounds().height / 2);
 	timeValueText.setOrigin(timeValueText.getLocalBounds().width / 2, timeValueText.getLocalBounds().height / 2);
 
-	sf::Vector2f center = window->getView().getCenter();
+	sf::Vector2f center = mainView->getCenter();
 
 	scoreLabelText.setPosition(center.x - 300, center.y - 340);
 	scoreValueText.setPosition(center.x - 300, center.y - 310);

@@ -1,16 +1,17 @@
-#include "MenuState.h"
+#include "GameOverState.h"
 #include <iostream>
 
-MenuState::MenuState(StateManager* stateMgr) : State(stateMgr)
+GameOverState::GameOverState(StateManager* stateMgr) : State(stateMgr)
 {
 	isTransparent = true;
-	titleTexture.loadFromFile("Resources/Sprites/SMB-Title.png");
-	titleSprite.setTexture(titleTexture);
-	titleSprite.setScale(0.75, 0.75);
-	titleSprite.setOrigin(titleSprite.getLocalBounds().width / 2, titleSprite.getLocalBounds().height / 2);
-	titleSprite.setPosition(384, 200);
-
 	menuFont.loadFromFile("Resources/Fonts/PressStart2P-Regular.ttf");
+
+	gameOverTitle.setFont(menuFont);
+	gameOverTitle.setOutlineColor(sf::Color::Black);
+	gameOverTitle.setOutlineThickness(2);
+	gameOverTitle.setString("Game Over!");
+	gameOverTitle.setOrigin(gameOverTitle.getLocalBounds().width / 2, gameOverTitle.getLocalBounds().height / 2);
+	gameOverTitle.setPosition(384, 300);
 
 	for (int x = 0; x < 2; x++)
 	{
@@ -19,7 +20,7 @@ MenuState::MenuState(StateManager* stateMgr) : State(stateMgr)
 		menuItems[x].setOutlineThickness(2);
 	}
 
-	menuItems[0].setString("Play");
+	menuItems[0].setString("Restart");
 	menuItems[0].setOrigin(menuItems[0].getLocalBounds().width / 2, menuItems[0].getLocalBounds().height / 2);
 	menuItems[0].setPosition(384, 425);
 
@@ -32,23 +33,26 @@ MenuState::MenuState(StateManager* stateMgr) : State(stateMgr)
 	selectionIcon.setOutlineThickness(2);
 	selectionIcon.setString(">");
 	selectionIcon.setOrigin(selectionIcon.getLocalBounds().width / 2, selectionIcon.getLocalBounds().height / 2);
-	selectionIcon.setPosition(menuItems[0].getPosition().x - 100, menuItems[0].getPosition().y);
+	selectionIcon.setPosition(menuItems[0].getPosition().x - 150, menuItems[0].getPosition().y);
+
+	background.setSize(sf::Vector2f(768, 720));
+	background.setPosition(0, 0);
+	background.setFillColor(sf::Color(0, 0, 0, 150));
 }
 
-MenuState::~MenuState()
+GameOverState::~GameOverState()
 {
 }
 
-void MenuState::activate()
-{
-	
-}
-
-void MenuState::deactivate()
+void GameOverState::activate()
 {
 }
 
-void MenuState::update(const float deltaTime)
+void GameOverState::deactivate()
+{
+}
+
+void GameOverState::update(const float deltaTime)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
@@ -60,9 +64,11 @@ void MenuState::update(const float deltaTime)
 	}
 }
 
-void MenuState::draw(sf::RenderWindow* window)
+void GameOverState::draw(sf::RenderWindow* window)
 {
-	window->draw(titleSprite);
+	window->setView(window->getDefaultView());
+	window->draw(background);
+	window->draw(gameOverTitle);
 	for (int x = 0; x < 2; x++)
 	{
 		window->draw(menuItems[x]);
@@ -70,7 +76,7 @@ void MenuState::draw(sf::RenderWindow* window)
 	window->draw(selectionIcon);
 }
 
-void MenuState::enterPressed()
+void GameOverState::enterPressed()
 {
 	if (selectedItem == 0)
 	{
@@ -82,7 +88,7 @@ void MenuState::enterPressed()
 	}
 }
 
-void MenuState::moveUp()
+void GameOverState::moveUp()
 {
 	if (selectedItem == 0)
 	{
@@ -95,7 +101,7 @@ void MenuState::moveUp()
 	updateSelectionIcon();
 }
 
-void MenuState::moveDown()
+void GameOverState::moveDown()
 {
 	if (selectedItem == 1)
 	{
@@ -108,7 +114,7 @@ void MenuState::moveDown()
 	updateSelectionIcon();
 }
 
-void MenuState::updateSelectionIcon()
+void GameOverState::updateSelectionIcon()
 {
 	selectionIcon.setPosition(selectionIcon.getPosition().x, menuItems[selectedItem].getPosition().y);
 }

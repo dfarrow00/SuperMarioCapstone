@@ -3,6 +3,7 @@ Improvements:
 - Try to find more efficient method for animation timers and end of level animation finish detection.
 - Possibly add static class for commonly used constant values like gravity.
 - Rework game object collisions to cut down code length using more general type checks where possible.
+- Make a parent class for menu states that includes interaction functionality.
 
 -Make game object destructor virtual
 

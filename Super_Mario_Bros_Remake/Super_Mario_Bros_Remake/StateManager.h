@@ -5,7 +5,7 @@
 
 enum class StateType
 {
-	Intro, Menu, Game, Paused
+	Intro, Menu, Game, Paused, GameOver
 };
 
 class StateManager
@@ -15,6 +15,7 @@ public:
 	~StateManager();
 
 	void escapePressed();
+	void enterPressed();
 
 	void changeState(StateType state);
 	void deleteState(StateType state);

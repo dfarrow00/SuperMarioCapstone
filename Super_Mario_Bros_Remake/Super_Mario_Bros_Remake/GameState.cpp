@@ -12,7 +12,7 @@
 #include "Platform.h"
 #include <iostream>
 
-GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stateMgr), window(win), map(this), hud(window), collisionHandler(&map, this)
+GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stateMgr), window(win), map(this), hud(&view), collisionHandler(&map, this)
 {
 	isTransparent = false;
 
@@ -44,6 +44,13 @@ GameState::~GameState()
 
 void GameState::activate()
 {
+	//TODO: Make more modular
+	if (mario->getFinishReached() || mario->getLives() < 1)
+	{
+		respawning = true;
+		levelToLoad = 1;
+		loadLevel(levelToLoad);
+	}
 	hud.activate();
 	playMusic();
 }
@@ -88,16 +95,19 @@ void GameState::update(const float deltaTime)
 		else
 		{
 			endGame();
+			return;
 		}
 	}
 	else if (mario->getFinishReached())
 	{
-		loadLevel(levelToLoad);
-	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
-	{
-		//stateManager->changeState(StateType::Paused);
+		if (levelToLoad < 3)
+		{
+			loadLevel(levelToLoad);
+		}
+		else
+		{
+			endGame();
+		}
 	}
 
 	updateGameObjects(deltaTime);
@@ -364,9 +374,7 @@ void GameState::resetLevel()
 
 void GameState::endGame()
 {
-	mario->resetLives();
-	resetLevel();
-	stateManager->changeState(StateType::Menu);
+	stateManager->changeState(StateType::GameOver);
 }
 
 void GameState::levelComplete(int flagScore, sf::Vector2f flagPolePos)

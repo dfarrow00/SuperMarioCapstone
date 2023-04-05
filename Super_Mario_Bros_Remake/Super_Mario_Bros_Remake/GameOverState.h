@@ -1,11 +1,11 @@
 #pragma once
 #include "StateManager.h"
 
-class MenuState : public State
+class GameOverState : public State
 {
 public:
-	MenuState(StateManager* stateMgr);
-	~MenuState();
+	GameOverState(StateManager* stateMgr);
+	~GameOverState();
 
 	void activate();
 	void deactivate();
@@ -20,11 +20,11 @@ private:
 	void moveDown();
 	void updateSelectionIcon();
 
-	sf::Texture titleTexture;
-	sf::Sprite titleSprite;
+	sf::RectangleShape background;
 
 	sf::Font menuFont;
 
+	sf::Text gameOverTitle;
 	sf::Text menuItems[2];
 	sf::Text selectionIcon;
 	int selectedItem = 0;

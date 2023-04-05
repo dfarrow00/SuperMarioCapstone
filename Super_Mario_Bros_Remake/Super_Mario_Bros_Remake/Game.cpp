@@ -5,7 +5,7 @@ Game::Game() : window(sf::VideoMode(768, 720), "Super Mario Bros Remake"), state
 	srand(time(nullptr));
 	clock.restart();
 
-	//window.setFramerateLimit(60);
+	window.setFramerateLimit(60);
 
 	sf::Image icon;
 	icon.loadFromFile("Resources/Sprites/Mario.png");
@@ -36,6 +36,10 @@ void Game::update()
 			if (event.key.code == sf::Keyboard::Escape)
 			{
 				stateManager.escapePressed();
+			}
+			else if (event.key.code == sf::Keyboard::Enter)
+			{
+				stateManager.enterPressed();
 			}
 		}
 	}

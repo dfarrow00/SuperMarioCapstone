@@ -3,13 +3,16 @@
 #include "MenuState.h"
 #include "GameState.h"
 #include "PauseState.h"
+#include "GameOverState.h"
 
 StateManager::StateManager(sf::RenderWindow* window)
 {
+	std::pair<StateType, State*> gameOverState(StateType::GameOver, new GameOverState(this));
 	std::pair<StateType, State*> pauseState(StateType::Paused, new PauseState(this));
 	std::pair<StateType, State*> gameState(StateType::Game, new GameState(this, window));
 	std::pair<StateType, State*> menuState(StateType::Menu, new MenuState(this));
 	std::pair<StateType, State*> introState(StateType::Intro, new IntroState(this));
+	states.push_back(gameOverState);
 	states.push_back(pauseState);
 	states.push_back(gameState);
 	states.push_back(menuState);
@@ -34,6 +37,22 @@ void StateManager::escapePressed()
 	else
 	{
 		changeState(StateType::Game);
+	}
+}
+
+void StateManager::enterPressed()
+{
+	if (states.back().first == StateType::Menu)
+	{
+		State* state = states.back().second;
+		MenuState* menuState = dynamic_cast<MenuState*>(state);
+		menuState->enterPressed();
+	}
+	else if (states.back().first == StateType::GameOver)
+	{
+		State* state = states.back().second;
+		GameOverState* gameOverState = dynamic_cast<GameOverState*>(state);
+		gameOverState->enterPressed();
 	}
 }
 

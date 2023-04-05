@@ -4,7 +4,7 @@
 class HUD
 {
 public:
-	HUD(sf::RenderWindow* window);
+	HUD(sf::View* mainView);
 	~HUD();
 
 	void activate();
@@ -45,5 +45,5 @@ private:
 	sf::Text livesLabelText;
 	sf::Text livesValueText;
 
-	sf::RenderWindow* window;
+	sf::View* mainView;
 };
