@@ -63,7 +63,7 @@ void Star::update(const float deltaTime)
 		}
 		else
 		{
-			velocity.y += GRAVITY * deltaTime;
+			velocity.y += Globals::GRAVITY * deltaTime;
 		}
 
 		onGround = false;

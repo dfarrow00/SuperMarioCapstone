@@ -179,7 +179,7 @@ void Mario::handleInput(const float deltaTime)
 
 	if (jumpTime <= 0.0f && !onGround)
 	{
-		velocity.y += GRAVITY * deltaTime;
+		velocity.y += Globals::GRAVITY * deltaTime;
 		currentState = MarioState::Jumping;
 	}
 
@@ -491,7 +491,7 @@ void Mario::updateDeathAnim(const float deltaTime)
 		playingDeathAnim = false;
 		return;
 	}
-	velocity.y += GRAVITY * deltaTime;
+	velocity.y += Globals::GRAVITY * deltaTime;
 }
 
 void Mario::playPowerUpAnim()

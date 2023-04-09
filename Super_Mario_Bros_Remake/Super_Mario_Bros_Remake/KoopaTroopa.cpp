@@ -134,7 +134,7 @@ void KoopaTroopa::updateDeathAnim(const float deltaTime)
 		playingDeathAnim = false;
 		return;
 	}
-	velocity.y += GRAVITY * deltaTime;
+	velocity.y += Globals::GRAVITY * deltaTime;
 }
 
 KoopaState KoopaTroopa::getCurrentState()

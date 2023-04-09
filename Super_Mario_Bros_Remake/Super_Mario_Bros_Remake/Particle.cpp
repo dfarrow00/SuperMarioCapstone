@@ -31,7 +31,7 @@ void Particle::update(const float deltaTime)
 		alive = false;
 	}
 
-	velocity.y += GRAVITY * deltaTime;
+	velocity.y += Globals::GRAVITY * deltaTime;
 	position = position + (velocity * deltaTime);
 	sprite.setPosition(position);
 }

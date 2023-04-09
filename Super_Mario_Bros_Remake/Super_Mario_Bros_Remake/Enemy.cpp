@@ -36,7 +36,7 @@ void Enemy::move(const float deltaTime)
 	}
 	else
 	{
-		velocity.y += GRAVITY * deltaTime;
+		velocity.y += Globals::GRAVITY * deltaTime;
 	}
 
 	position += velocity * deltaTime;

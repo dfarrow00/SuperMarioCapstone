@@ -1,7 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <cmath>
-#include <iostream>
+#include "Globals.h"
 
 class Map;
 class Animation;
@@ -130,7 +129,7 @@ protected:
 	bool collidingY = false;
 
 	float maxVelocity;
-	const float GRAVITY = 1600.0f;
+	//const float GRAVITY = 1600.0f;
 
 	int spriteHeight;
 
