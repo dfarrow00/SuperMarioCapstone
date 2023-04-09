@@ -44,7 +44,6 @@ GameState::~GameState()
 
 void GameState::activate()
 {
-	//TODO: Make more modular
 	if (mario->getFinishReached() || mario->getLives() < 1)
 	{
 		respawning = true;

@@ -33,6 +33,11 @@ KoopaTroopa::~KoopaTroopa()
 
 void KoopaTroopa::update(const float deltaTime)
 {
+	if (playingDeathAnim)
+	{
+		updateDeathAnim(deltaTime);
+	}
+
 	if (currentState == KoopaState::Shell && currentAnim != &shellAnim)
 	{
 		currentAnim = &shellAnim;
@@ -73,9 +78,13 @@ void KoopaTroopa::draw(sf::RenderWindow* window)
 void KoopaTroopa::hit()
 {
 	Enemy::hit();
-	if (currentState == KoopaState::Shell)
+	/*if (position.y >= 662)
 	{
 		alive = false;
+	}*/
+	if (currentState == KoopaState::Shell && !playingDeathAnim)
+	{
+		playDeathAnim();
 	}
 	else
 	{
@@ -107,6 +116,25 @@ void KoopaTroopa::kick(bool direction)
 void KoopaTroopa::activate()
 {
 	active = true;
+}
+
+void KoopaTroopa::playDeathAnim()
+{
+	playingDeathAnim = true;
+	active = false;
+	velocity = sf::Vector2f(0, -750);
+}
+
+void KoopaTroopa::updateDeathAnim(const float deltaTime)
+{
+	currentDeathAnimTime += deltaTime;
+	if (currentDeathAnimTime >= deathAnimTime)
+	{
+		alive = false;
+		playingDeathAnim = false;
+		return;
+	}
+	velocity.y += GRAVITY * deltaTime;
 }
 
 KoopaState KoopaTroopa::getCurrentState()

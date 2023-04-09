@@ -23,12 +23,19 @@ public:
 	void kick(bool direction);
 	void activate();
 
+	void playDeathAnim();
+	void updateDeathAnim(const float deltaTime);
+
 	KoopaState getCurrentState();
 private:
 	KoopaState currentState;
 
 	Animation walkingAnim;
 	Animation shellAnim;
+
+	bool playingDeathAnim = false;
+	float deathAnimTime = 3.5f;
+	float currentDeathAnimTime = 0.0f;
 
 	float stationaryShellTimer = 0.0f;
 	float stationaryTimeLimit;

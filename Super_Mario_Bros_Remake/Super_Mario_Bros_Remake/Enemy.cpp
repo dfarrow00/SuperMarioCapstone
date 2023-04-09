@@ -14,13 +14,13 @@ Enemy::~Enemy()
 
 void Enemy::move(const float deltaTime)
 {
-	if (position.y + (velocity.y * deltaTime) >= 670)
+	/*if (position.y + (velocity.y * deltaTime) >= 670)
 	{
 		velocity.x = 0.0f;
 		velocity.y = 0.0f;
 		hit();
 		return;
-	}
+	}*/
 
 	if (position.x + velocity.x < 0.0f || collidingX)
 	{
