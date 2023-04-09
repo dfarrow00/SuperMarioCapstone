@@ -46,6 +46,8 @@ void GameState::activate()
 {
 	if (mario->getFinishReached() || mario->getLives() < 1)
 	{
+		mario->resetLives();
+		hud.setLives(mario->getLives());
 		respawning = true;
 		levelToLoad = 1;
 		loadLevel(levelToLoad);
@@ -101,6 +103,7 @@ void GameState::update(const float deltaTime)
 	{
 		if (levelToLoad < 3)
 		{
+			timer = 400;
 			loadLevel(levelToLoad);
 		}
 		else
@@ -362,17 +365,17 @@ void GameState::resetLevel()
 	}
 	playMusic();
 	timer = 400;
-	coins = 0;
-	score = 0;
 	hud.setLives(mario->getLives());
-	hud.setScore(score);
-	hud.setCoins(coins);
 	view = window->getDefaultView();
 	window->setView(view);
 }
 
 void GameState::endGame()
 {
+	score = 0;
+	coins = 0;
+	hud.setScore(score);
+	hud.setCoins(coins);
 	stateManager->changeState(StateType::GameOver);
 }
 
