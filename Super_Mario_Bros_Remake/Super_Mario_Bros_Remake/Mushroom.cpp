@@ -1,17 +1,20 @@
 #include "Mushroom.h"
 #include "Map.h"
+#include <iostream>
 
 Mushroom::Mushroom(sf::Vector2f pos) : spawning(true)
 {
 	objectType = ObjectType::Mushroom;
 	texture.loadFromFile("Resources/Sprites/Mushroom.png");
 	sprite.setTexture(texture);
+
 	position = pos;
 	targetSpawnPos = position + sf::Vector2f(0, -48);
 	velocity = sf::Vector2f(0, -65);
 	alive = true;
 	spriteHeight = 48;
 	checkCollisions = false;
+
 	spawnSoundBuffer.loadFromFile("Resources/Audio/Powerup_Spawn.wav");
 	spawnSound.setBuffer(spawnSoundBuffer);
 	spawnSound.play();
@@ -23,8 +26,10 @@ Mushroom::~Mushroom()
 
 void Mushroom::update(const float deltaTime)
 {
+	//If playing spawning animation, check if target y co-ordinate has been reached.
 	if (spawning)
 	{
+		//If target co-ordinate reached, stop animation and activate functionality.
 		if (position.y <= targetSpawnPos.y)
 		{
 			spawning = false;
@@ -36,21 +41,12 @@ void Mushroom::update(const float deltaTime)
 	}
 	else
 	{
-		if (position.y + (velocity.y * deltaTime) >= 670)
-		{
-			velocity.x = 0.0f;
-			velocity.y = 0.0f;
-			hit();
-			return;
-		}
-
 		if (collidingX)
 		{
 			velocity.x = -velocity.x;
 			collidingX = false;
 		}
 
-		//Prob move to gameobject class
 		if (collidingY)
 		{
 			velocity.y = 0;
@@ -73,5 +69,6 @@ void Mushroom::draw(sf::RenderWindow* window)
 
 void Mushroom::hit()
 {
+	std::cout << "Hit" << std::endl;
 	alive = false;
 }

@@ -92,6 +92,7 @@ void HUD::setLevel(int levelNumber)
 	worldValueText.setString(std::to_string(level));
 }
 
+//Applies default settings for given text element.
 void HUD::setupText(sf::Text* text)
 {
 	text->setFont(font);

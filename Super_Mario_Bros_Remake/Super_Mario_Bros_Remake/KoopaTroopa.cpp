@@ -49,6 +49,7 @@ void KoopaTroopa::update(const float deltaTime)
 	if (currentState == KoopaState::Shell && velocity.x == 0.0f)
 	{
 		stationaryShellTimer += deltaTime;
+		//If max amount of stationary time has passed, return to walking state.
 		if (stationaryShellTimer >= stationaryTimeLimit)
 		{
 			currentState = KoopaState::Walking;
@@ -78,10 +79,6 @@ void KoopaTroopa::draw(sf::RenderWindow* window)
 void KoopaTroopa::hit()
 {
 	Enemy::hit();
-	/*if (position.y >= 662)
-	{
-		alive = false;
-	}*/
 	if (currentState == KoopaState::Shell && !playingDeathAnim)
 	{
 		playDeathAnim();
@@ -98,6 +95,7 @@ void KoopaTroopa::kick(bool direction)
 {
 	if (velocity.x == 0.0f)
 	{
+		//Direction = true, move to the right. Else, move left
 		if (direction)
 		{
 			velocity.x = 700.0f;

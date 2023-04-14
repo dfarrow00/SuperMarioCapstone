@@ -20,5 +20,5 @@ private:
 	Animation walkingAnim;
 	Animation deadAnim;
 
-	float deadTimer;
+	float deadTimer;//Amount of time goomba is in dead state before being removed.
 };

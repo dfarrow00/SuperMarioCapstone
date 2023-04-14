@@ -29,6 +29,7 @@ GameState::GameState(StateManager* stateMgr, sf::RenderWindow* win) : State(stat
 	marioStarPowerTime = mario->getStarPowerTime();
 	marioPipeAnimTime = mario->getPipeAnimTime();
 
+	//Background 'view' is scaled larger to apply parallax scrolling effect.
 	backgroundView = view;
 	backgroundView.setSize(sf::Vector2f(view.getSize().x * 3, view.getSize().y * 3));
 }
@@ -44,6 +45,7 @@ GameState::~GameState()
 
 void GameState::activate()
 {
+	//If game over, reset game
 	if (mario->getFinishReached() || mario->getLives() < 1)
 	{
 		mario->resetLives();
@@ -76,12 +78,14 @@ void GameState::update(const float deltaTime)
 {
 	if (paused) return;
 
-	if (mario->getStarPower() && starPowerTimer.getElapsedTime().asSeconds() >= marioStarPowerTime)
+	//If mario star power has completed, play level music.
+	if (mario->hasStarPower() && starPowerTimer.getElapsedTime().asSeconds() >= marioStarPowerTime)
 	{
 		playMusic();
 	}
 
-	if (mario->getPlayingPipeAnim() && pipeAnimTimer.getElapsedTime().asSeconds() > marioPipeAnimTime)
+	//If Mario has completed animation for entering pipe, load corresponding level.
+	if (mario->isPlayingPipeAnim() && pipeAnimTimer.getElapsedTime().asSeconds() > marioPipeAnimTime)
 	{
 		loadLevel(levelToLoad);
 	}
@@ -103,7 +107,7 @@ void GameState::update(const float deltaTime)
 	{
 		if (levelToLoad < 3)
 		{
-			timer = 400;
+			timeRemaining = 400;
 			loadLevel(levelToLoad);
 		}
 		else
@@ -144,7 +148,8 @@ void GameState::updateGameObjects(const float deltaTime)
 
 void GameState::updateGameView()
 {
-	if (mario->getPosition().x > view.getCenter().x)//Camera only follows mario when moving fowards, stays still when mario is moving backwards.
+	//View only follows mario when moving fowards, stays still when mario is moving backwards.
+	if (mario->getPosition().x > view.getCenter().x)
 	{
 		view.setCenter(mario->getPosition().x, window->getDefaultView().getCenter().y);
 		backgroundView.setCenter(mario->getPosition().x, window->getDefaultView().getCenter().y);
@@ -156,14 +161,14 @@ void GameState::updateTimer(const float deltaTime)
 	currentTimeInterval += deltaTime;
 	if (currentTimeInterval >= timerInterval)
 	{
-		timer--;
+		timeRemaining--;
 		currentTimeInterval = 0.0f;
-		if (timer < 0)
+		if (timeRemaining < 0)
 		{
 			endGame();
 		}
 	}
-	hud.update(timer);
+	hud.update(timeRemaining);
 }
 
 void GameState::draw(sf::RenderWindow* window)
@@ -176,7 +181,8 @@ void GameState::draw(sf::RenderWindow* window)
 	{
 		gameObjects[x]->draw(window);
 	}
-	if (mario->getPlayingPipeAnim())
+	//If playing pipe entering animation, draw behind map.
+	if (mario->isPlayingPipeAnim())
 	{
 		mario->draw(window);
 		map.draw(window, &view);
@@ -205,6 +211,7 @@ void GameState::loadLevel(int newLevelNumber)
 	map.loadMap(levelNumber);
 
 	mario->reset();
+	//If Mario is coming out of secret coin room, respawn at pipe exit.
 	if (levelNumber < prevLevelNumber && !respawning)
 	{
 		sf::Vector2f returnPos = map.getPipeExitPos();
@@ -350,6 +357,7 @@ void GameState::resetLevel()
 	stopMusic();
 	overgroundMusic.setPlayingOffset(sf::Time::Zero);
 	undergroundMusic.setPlayingOffset(sf::Time::Zero);
+	//If in sub level (coin room), load parent level.
 	if (levelNumber > 100)
 	{
 		int returnLevelNumber = levelNumber;
@@ -364,7 +372,7 @@ void GameState::resetLevel()
 		loadLevel(levelNumber);
 	}
 	playMusic();
-	timer = 400;
+	timeRemaining = 400;
 	hud.setLives(mario->getLives());
 	view = window->getDefaultView();
 	window->setView(view);
@@ -383,7 +391,7 @@ void GameState::levelComplete(int flagScore, sf::Vector2f flagPolePos)
 {
 	stopMusic();
 	addScore(flagScore);
-	addScore(timer * 50);
+	addScore(timeRemaining * 50);
 	hud.setScore(score);
 	mario->playLevelCompleteAnim(flagPolePos);
 	levelToLoad = levelNumber + 1;

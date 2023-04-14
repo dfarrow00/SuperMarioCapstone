@@ -3,6 +3,7 @@
 
 Animation::Animation(std::string filePath, int rowNumber, int frames, float animSpeed, int spriteHeight) : animationSpeed(animSpeed)
 {
+	//Load each frame of animation
 	spriteSheet.loadFromFile(filePath);
 	for (int x = 0; x < frames * 48; x += 48)
 	{
@@ -30,6 +31,7 @@ void Animation::reset()
 void Animation::update(const float deltaTime)
 {
 	elapsedTime += deltaTime;
+	//Progress to next frame if enough time has passed
 	if (elapsedTime >= animationSpeed)
 	{
 		currentFrame++;

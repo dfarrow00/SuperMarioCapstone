@@ -38,5 +38,5 @@ private:
 	float currentDeathAnimTime = 0.0f;
 
 	float stationaryShellTimer = 0.0f;
-	float stationaryTimeLimit;
+	float stationaryTimeLimit;//Max amount of time Koopa can be stationary in shell state before transitioning back to walking state.
 };

@@ -5,6 +5,7 @@ CoinBrick::CoinBrick(sf::Vector2f pos, GameState* gameState) : game(gameState)
 {
 	objectType = ObjectType::CoinBrick;
 	position = pos;
+	//If overground, load regular sprite. Else, load blue sprite.
 	if (game->getLevelNumber() == 1)
 	{
 		texture.loadFromFile("Resources/Sprites/Tile_Sheet.png", sf::IntRect(48, 0, 48, 48));
@@ -34,6 +35,7 @@ void CoinBrick::draw(sf::RenderWindow* window)
 
 void CoinBrick::hit()
 {
+	//Coin block can only be hit for 3.5 seconds after first hit, then becomes inactive.
 	if (!timerStarted)
 	{
 		clock.restart();
@@ -41,10 +43,11 @@ void CoinBrick::hit()
 		game->addCoinEffect(position);
 		activated = true;
 	}
-	else if (clock.getElapsedTime().asSeconds() < 3.5)
+	else if (clock.getElapsedTime().asSeconds() < activeDuration)
 	{
 		game->addCoinEffect(position);
 	}
+	//After active duration has expired, change to inactive block sprite and deactivate.
 	else if (activated)
 	{
 		game->addCoinEffect(position);

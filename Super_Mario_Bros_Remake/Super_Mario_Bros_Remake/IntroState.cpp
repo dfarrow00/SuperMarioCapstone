@@ -37,6 +37,7 @@ void IntroState::deactivate()
 
 void IntroState::update(const float deltaTime)
 {
+	//Fade in and Fade out animations
 	timePassed += deltaTime;
 	if (timePassed <= fadeInEndTime)
 	{

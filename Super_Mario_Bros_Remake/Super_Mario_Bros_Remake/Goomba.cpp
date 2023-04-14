@@ -18,7 +18,6 @@ Goomba::Goomba(sf::Vector2f pos, bool underground) : walkingAnim((underground ? 
 
 Goomba::~Goomba()
 {
-	
 }
 
 void Goomba::update(const float deltaTime)

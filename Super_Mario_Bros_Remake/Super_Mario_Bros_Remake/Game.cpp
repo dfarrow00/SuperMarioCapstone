@@ -3,10 +3,11 @@
 Game::Game() : window(sf::VideoMode(768, 720), "Super Mario Bros Remake"), stateManager(&window)
 {
 	srand(time(nullptr));
-	clock.restart();
+	clock.restart();//Clocked used to calculate delta time
 
 	window.setFramerateLimit(60);
 
+	//Sets executable window icon to mario image.
 	sf::Image icon;
 	icon.loadFromFile("Resources/Sprites/Mario.png");
 	window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
@@ -31,6 +32,7 @@ void Game::update()
 		{
 			window.close();
 		}
+		//Enter and Esc keys used for menu functionality.
 		else if (event.type == sf::Event::KeyPressed)
 		{
 			if (event.key.code == sf::Keyboard::Escape)

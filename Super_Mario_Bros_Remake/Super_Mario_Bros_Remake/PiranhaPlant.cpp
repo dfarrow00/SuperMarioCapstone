@@ -10,7 +10,7 @@ PiranhaPlant::PiranhaPlant(sf::Vector2f pos, bool underground) : movementAnimati
 	sprite.setPosition(position);
 	velocity = sf::Vector2f(0, 50);
 	checkCollisions = false;
-	targetPos = pos + sf::Vector2f(0, spriteHeight * 2);
+	targetPos = pos + sf::Vector2f(0, spriteHeight * 2);//Y co-ordinate to reach before changing movement direction.
 }
 
 PiranhaPlant::~PiranhaPlant()
@@ -19,11 +19,13 @@ PiranhaPlant::~PiranhaPlant()
 
 void PiranhaPlant::update(const float deltaTime)
 {
+	//If moving downwards and target position reached, changed direction.
 	if (velocity.y > 0 && position.y > targetPos.y)
 	{
 		velocity.y = velocity.y * -1;
 		targetPos.y = targetPos.y - (spriteHeight * 2);
 	}
+	//If moving upwards and target position reached, changed direction.
 	else if (velocity.y < 0 && position.y < targetPos.y)
 	{
 		velocity.y = velocity.y * -1;

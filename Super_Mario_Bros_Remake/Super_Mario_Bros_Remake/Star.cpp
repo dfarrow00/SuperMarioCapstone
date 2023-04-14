@@ -22,8 +22,10 @@ Star::~Star()
 
 void Star::update(const float deltaTime)
 {
+	//If playing spawning animation, check if target y co-ordinate has been reached.
 	if (spawning)
 	{
+		//If target co-ordinate reached, stop animation and activate functionality.
 		if (position.y <= targetSpawnPos.y)
 		{
 			spawning = false;
@@ -37,14 +39,6 @@ void Star::update(const float deltaTime)
 		anim.update(deltaTime);
 		sprite = anim.getCurrentSprite();
 
-		if (position.y + (velocity.y * deltaTime) >= 670)
-		{
-			velocity.x = 0.0f;
-			velocity.y = 0.0f;
-			hit();
-			return;
-		}
-
 		if (position.x + velocity.x * deltaTime < 0.0f)
 		{
 			velocity.x = -velocity.x;
@@ -56,7 +50,7 @@ void Star::update(const float deltaTime)
 			collidingX = false;
 		}
 
-
+		//If collides with ground, bounce.
 		if (onGround)
 		{
 			velocity.y = -700.0f;

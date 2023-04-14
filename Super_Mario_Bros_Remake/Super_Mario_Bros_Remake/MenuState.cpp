@@ -27,6 +27,7 @@ MenuState::MenuState(StateManager* stateMgr) : State(stateMgr)
 	menuItems[1].setOrigin(menuItems[1].getLocalBounds().width / 2, menuItems[1].getLocalBounds().height / 2);
 	menuItems[1].setPosition(384, 500);
 
+	//'>' symbol to indicate the currently selected option.
 	selectionIcon.setFont(menuFont);
 	selectionIcon.setOutlineColor(sf::Color::Black);
 	selectionIcon.setOutlineThickness(2);
@@ -108,6 +109,7 @@ void MenuState::moveDown()
 	updateSelectionIcon();
 }
 
+//Moves '>' indicator to y position of selected option text.
 void MenuState::updateSelectionIcon()
 {
 	selectionIcon.setPosition(selectionIcon.getPosition().x, menuItems[selectedItem].getPosition().y);

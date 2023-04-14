@@ -36,10 +36,10 @@ public:
 	int getLives();
 	float getStarPowerTime();
 	float getPipeAnimTime();
-	bool getInvinsible();
+	bool isInvincible();
 	bool getFinishReached();
-	bool getStarPower();
-	bool getPlayingPipeAnim();
+	bool hasStarPower();
+	bool isPlayingPipeAnim();
 private:
 	void loadSounds();
 
@@ -58,7 +58,7 @@ private:
 
 	int lives = 3;
 
-	float jumpTime = 0.0f;
+	float jumpHoldTime = 0.0f;
 	float jumpVelocity = 400.0f;
 	float speed = 800.0f;
 	float drag = 400.0f;
@@ -83,9 +83,9 @@ private:
 	float pipeAnimTime = 1.0f;
 	sf::Clock pipeAnimTimer;
 
-	float starPowerTime = 7.0f;
+	float starPowerDuration = 7.0f;
 	float currentStarPowerTime = 0.0f;
-	float colorChangeTimer = 0.1f;
+	float colorChangeRate = 0.1f;
 	float currentColorChangeTime = 0.0f;
 	std::vector<sf::Color> starPowerColors = { sf::Color::Red, sf::Color::Green, sf::Color::Blue };
 	int currentColor = 0;

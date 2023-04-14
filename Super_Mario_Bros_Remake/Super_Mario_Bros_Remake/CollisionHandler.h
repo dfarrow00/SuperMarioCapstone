@@ -29,7 +29,7 @@ public:
 	~CollisionHandler();
 
 	void checkMapCollisions(std::vector<GameObject*>& gameObjects);
-	void resolveCollision(GameObject* obj1, GameObject* obj2, sf::FloatRect intersection);
+	void resolveGameObjectCollision(GameObject* obj1, GameObject* obj2, sf::FloatRect intersection);
 	void checkObjectCollisions(std::vector<GameObject*>& gameObjects);
 	
 private:

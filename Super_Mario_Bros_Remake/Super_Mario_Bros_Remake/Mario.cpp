@@ -139,6 +139,7 @@ void Mario::handleInput(const float deltaTime)
 {
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
+		//Accelerates until max velocity is reached.
 		velocity.x -= speed * deltaTime;
 		if (velocity.x < -maxVelocity)
 		{
@@ -159,31 +160,34 @@ void Mario::handleInput(const float deltaTime)
 		facingLeft = false;
 	}
 
-	//Jumping
+	//If jump key is pressed and Mario is on the ground, jump.
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && onGround)
 	{
-		velocity.y = -jumpVelocity; //Not multiplied by dt as it is an impulse force and will be the same for all framerates
-		jumpTime = 0.4f;
+		velocity.y = -jumpVelocity;
+		jumpHoldTime = 0.4f;
 		currentState = MarioState::Jumping;
 		jumpSound.play();
 	}
+	//If jump button being held, keep jumping.
 	else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) && !onGround)
 	{
-		jumpTime -= deltaTime;
+		jumpHoldTime -= deltaTime;
 		currentState = MarioState::Jumping;
 	}
+	//If jump button released, set amount of time jump button held to zero.
 	else if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 	{
-		jumpTime = 0.0f;
+		jumpHoldTime = 0.0f;
 	}
 
-	if (jumpTime <= 0.0f && !onGround)
+	//If max jump button hold time has been reached, re-apply gravity.
+	if (jumpHoldTime <= 0.0f && !onGround)
 	{
 		velocity.y += Globals::GRAVITY * deltaTime;
 		currentState = MarioState::Jumping;
 	}
 
-	//Applying drag
+	//Apply drag along x axis.
 	if (velocity.x > 0)
 	{
 		velocity.x -= drag * deltaTime;
@@ -204,6 +208,7 @@ void Mario::handleInput(const float deltaTime)
 
 void Mario::checkCollisionStates(const float deltaTime)
 {
+	//If Mario is exiting view bounds, set collidingX flag.
 	if ((position.x < furthestXPosition - 384 && velocity.x < 0) || position.x <= 0.0f)
 	{
 		collidingX = true;
@@ -216,7 +221,7 @@ void Mario::checkCollisionStates(const float deltaTime)
 
 	if (collidingY)
 	{
-		velocity.y = 1.0f;
+		velocity.y = 1.0f;//Still slightly pushed into ground to allow for ground checking to still function correctly.
 	}
 }
 
@@ -276,6 +281,7 @@ void Mario::updateState(const float deltaTime)
 
 	currentAnim->update(deltaTime);
 	sprite = currentAnim->getCurrentSprite();
+	//If facing left, flip sprite.
 	if (facingLeft)
 	{
 		sprite.setOrigin({ sprite.getLocalBounds().width, 0 });
@@ -291,6 +297,7 @@ void Mario::updateInvincibility(const float deltaTime)
 		currentInvTime = 0.0f;
 		return;
 	}
+	//Flashing take damage animation
 	currentInvTime += deltaTime;
 	flashingTimer += deltaTime;
 	if (flashingTimer >= flashingRate)
@@ -298,6 +305,7 @@ void Mario::updateInvincibility(const float deltaTime)
 		isVisible = !isVisible;
 		flashingTimer = 0.0f;
 	}
+	//If invincibility time expired, reset.
 	if (currentInvTime > invinsibilityTime)
 	{
 		invinsible = false;
@@ -341,6 +349,7 @@ void Mario::setVelocityY(float value)
 	velocity.y = value;
 }
 
+//Change Mario sprite size.
 void Mario::setBig(bool value)
 {
 	if (!isBig && value)
@@ -362,7 +371,7 @@ void Mario::setFurthestXPos(float value)
 	furthestXPosition = value;
 }
 
-bool Mario::getInvinsible()
+bool Mario::isInvincible()
 {
 	return invinsible;
 }
@@ -375,6 +384,7 @@ void Mario::playLevelCompleteAnim(sf::Vector2f flagPolePos)
 	checkCollisions = false;
 	currentState = MarioState::Grabbing_Flag;
 
+	//Move to edge of the flagpole.
 	position.x = flagPolePos.x;
 	if (facingLeft)
 	{
@@ -389,6 +399,7 @@ void Mario::playLevelCompleteAnim(sf::Vector2f flagPolePos)
 	{
 		position.y = flagPolePos.y;
 	}
+	//If Mario is lower than the bottom of the flag, move Mario up.
 	else if (!isBig && position.y > 528)
 	{
 		position.y = 528;
@@ -407,6 +418,7 @@ void Mario::updateLevelCompleteAnim(const float deltaTime)
 		currentState = MarioState::Grabbing_Flag;
 	}
 
+	//If Mario has reached bottom of the flag, stop sliding.
 	if ((!isBig && position.y >= 528 && !velocity.y == 0.0f) || (isBig && position.y >= 480 && !velocity.y == 0.0f))
 	{
 		velocity.y = 0.0f;
@@ -458,12 +470,12 @@ bool Mario::getFinishReached()
 	return finishReached;
 }
 
-bool Mario::getStarPower()
+bool Mario::hasStarPower()
 {
 	return starPower;
 }
 
-bool Mario::getPlayingPipeAnim()
+bool Mario::isPlayingPipeAnim()
 {
 	return playingPipeAnim;
 }
@@ -521,13 +533,14 @@ void Mario::updateStarPower(const float deltaTime)
 {
 	currentStarPowerTime += deltaTime;
 	currentColorChangeTime += deltaTime;
-	if (currentStarPowerTime >= starPowerTime)
+	if (currentStarPowerTime >= starPowerDuration)
 	{
 		starPower = false;
 		currentStarPowerTime = 0.0f;
 		marioStarPowerSound.stop();
 	}
-	if (currentColorChangeTime >= colorChangeTimer)
+	//If colour change rate has been completed, change mario sprite to next colour.
+	if (currentColorChangeTime >= colorChangeRate)
 	{
 		currentColor++;
 		if (currentColor >= starPowerColors.size())
@@ -550,7 +563,7 @@ void Mario::resetLives()
 }
 float Mario::getStarPowerTime()
 {
-	return starPowerTime;
+	return starPowerDuration;
 }
 
 float Mario::getPipeAnimTime()

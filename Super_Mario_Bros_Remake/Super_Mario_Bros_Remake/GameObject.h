@@ -5,6 +5,7 @@
 class Map;
 class Animation;
 
+//Used to reduce frquency of casting.
 enum class ObjectType
 {
 	Mario, Coin, CoinBrick, Goomba, KoopaTroopa, RedKoopaTroopa, Mushroom, Particle, Star, CoinPickup, PiranhaPlant, Platform

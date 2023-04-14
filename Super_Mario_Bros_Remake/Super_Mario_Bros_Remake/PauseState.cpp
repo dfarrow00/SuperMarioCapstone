@@ -11,6 +11,7 @@ PauseState::PauseState(StateManager* stateMgr) : State(stateMgr)
 	pauseText.setOrigin(pauseText.getLocalBounds().width / 2, pauseText.getLocalBounds().height / 2);
 	pauseText.setPosition(384, 360);
 
+	//Translucent background
 	background.setSize(sf::Vector2f(768, 720));
 	background.setPosition(0, 0);
 	background.setFillColor(sf::Color(0, 0, 0, 150));

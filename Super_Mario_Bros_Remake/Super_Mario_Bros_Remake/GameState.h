@@ -42,7 +42,6 @@ public:
 
 	void clearGameObjects();
 
-	//Add play music function which plays which music is needed for current level.
 	void playMusic();
 	void stopMusic();
 	void pauseMusic();
@@ -60,7 +59,7 @@ private:
 	void resetLevel();
 	void endGame();
 
-	int timer = 400;
+	int timeRemaining = 400;
 	float timerInterval = 0.4;
 	float currentTimeInterval = 0.0f;
 	float marioStarPowerTime;

@@ -7,6 +7,7 @@
 
 StateManager::StateManager(sf::RenderWindow* window)
 {
+	//Add state objects to state vector.
 	std::pair<StateType, State*> gameOverState(StateType::GameOver, new GameOverState(this));
 	std::pair<StateType, State*> pauseState(StateType::Paused, new PauseState(this));
 	std::pair<StateType, State*> gameState(StateType::Game, new GameState(this, window));
@@ -42,6 +43,7 @@ void StateManager::escapePressed()
 
 void StateManager::enterPressed()
 {
+	//If current state is 'Menu' or 'GameOver', call 'enterPressed' function.
 	if (states.back().first == StateType::Menu)
 	{
 		State* state = states.back().second;
@@ -60,6 +62,7 @@ void StateManager::changeState(StateType state)
 {
 	for (auto itr = states.begin(); itr != states.end(); itr++)
 	{
+		//If state type to change to found, move new state to top of stack.
 		if (itr->first == state)
 		{
 			states.back().second->deactivate();
@@ -93,6 +96,7 @@ void StateManager::update(const float deltaTime)
 
 void StateManager::draw(sf::RenderWindow* window)
 {
+	//If current state is transparent, draw state behind it too.
 	if (states.back().second->transparent())
 	{
 		auto itr = states.end();

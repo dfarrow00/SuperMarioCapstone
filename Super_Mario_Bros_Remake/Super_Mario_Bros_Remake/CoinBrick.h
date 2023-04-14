@@ -19,4 +19,5 @@ private:
 	sf::Clock clock;
 	bool timerStarted = false;
 	bool activated = false;
+	float activeDuration = 3.5;
 };

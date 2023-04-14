@@ -6,6 +6,7 @@
 
 Map::Map(GameState* gameState) : game(gameState)
 {
+	//Loading tile sprites from spritesheet.
 	tileSize = 48;
 	tileSheet.loadFromFile("Resources/Sprites/Tile_Sheet.png");
 	int tileCount = 1;
@@ -20,6 +21,7 @@ Map::Map(GameState* gameState) : game(gameState)
 		}
 	}
 
+	//End level flagpole scores
 	flagPoleScores.emplace(95, 100);
 	flagPoleScores.emplace(96, 400);
 	flagPoleScores.emplace(97, 800);
@@ -41,7 +43,6 @@ Map::~Map()
 
 void Map::update(const float deltaTime)
 {
-
 }
 
 void Map::draw(sf::RenderWindow* window, sf::View* view)
@@ -55,10 +56,12 @@ void Map::draw(sf::RenderWindow* window, sf::View* view)
 	{
 		for (int x = 0; x < level[y].size(); x++)
 		{
-			if ((x * tileSize) + tileSize < viewLeft || x * tileSize > viewRight)//If the tile is outside of the camera's view, dont draw it.
+			//If the tile is outside of the camera's view, don't draw it.
+			if ((x * tileSize) + tileSize < viewLeft || x * tileSize > viewRight)
 			{
 				continue;
 			}
+			//If tile value at this co-ordinate is zero, no tile is needed to be drawn.
 			else if (level[y][x] == 0)
 			{
 				continue;
@@ -66,11 +69,13 @@ void Map::draw(sf::RenderWindow* window, sf::View* view)
 			else
 			{
 				int tileNumber = level[y][x];
+				//If tile is a mushroom containing '?' block, draw the '?' block tile.
 				if (tileNumber == 20)
 				{
 					tiles[3]->setPosition(x * tileSize, y * tileSize);
 					window->draw(tiles[3]->sprite);
 				}
+				//If tile is a star power or mushroom containing brick block, draw brick sprite. 
 				else if (tileNumber == 30 || tileNumber == 32)
 				{
 					if (game->getLevelNumber() == 1)
@@ -84,21 +89,25 @@ void Map::draw(sf::RenderWindow* window, sf::View* view)
 						window->draw(tiles[13]->sprite);
 					}
 				}
+				//If tile is left pipe entrance, draw pipe top.
 				else if (tileNumber == 40)
 				{
 					tiles[6]->setPosition(x * tileSize, y * tileSize);
 					window->draw(tiles[6]->sprite);
 				}
+				//If tile is right pipe entrance, draw pipe top.
 				else if (tileNumber == 41)
 				{
 					tiles[7]->setPosition(x * tileSize, y * tileSize);
 					window->draw(tiles[7]->sprite);
 				}
+				//If tile is part of the flag pole, draw the flag pole pipe.
 				else if (tileNumber >= 95 && tileNumber <= 98)
 				{
 					tiles[10]->setPosition(x * tileSize, y * tileSize);
 					window->draw(tiles[10]->sprite);
 				}
+				//If tile is the flag of the flagpole, draw the flag.
 				else if (tileNumber == 99)
 				{
 					tiles[11]->setPosition(x * tileSize, y * tileSize);
@@ -121,6 +130,7 @@ std::vector<std::vector<int>> Map::getCurrentLevel()
 
 void Map::loadMap(int mapNumber)
 {
+	//Load level text file.
 	level.clear();
 	std::ifstream file;
 	std::string fileName("Resources/Maps/Level");
@@ -134,9 +144,11 @@ void Map::loadMap(int mapNumber)
 		return;
 	}
 
+	//For each line in the text file, process the data.
 	std::string line;
 	while (std::getline(file, line))
 	{
+		//If text file line is defining map geometry, store the digits in the 'level' vector.
 		if (isdigit(line.at(0)))
 		{
 			std::vector<int> row;
@@ -145,15 +157,18 @@ void Map::loadMap(int mapNumber)
 			for (int x = 0; x < line.length(); x++)
 			{
 				stream >> number;
+				//If flagpole number is read, store the 'x' coordinate.
 				if (number == 99)
 				{
 					flagPolePos = sf::Vector2f(x * tileSize, level.size() + 1 * tileSize);
 				}
+				//If number read is pipe exit, store the pipe exit co-ordinates.
 				else if (number == 42)
 				{
 					pipeExitPos = sf::Vector2f(x * tileSize, level.size() * tileSize);
 					number = 0;
 				}
+				//If number read is coin brock block, add coin brick game object in corresponding location.
 				else if (number == 31)
 				{
 					number = 0;
@@ -164,11 +179,13 @@ void Map::loadMap(int mapNumber)
 			}
 			level.push_back(row);
 		}
+		//If text file line is defining the background, read the data and set the level background.
 		else if (line.substr(0, line.find_first_of(' ')) == "Sky")
 		{
 			int skyNumber = line.at(4) - '0'; //Because all char encodings for digits are all in order from 48 to 57, the int value for any digit is itself - '0' (48 char code).
 			game->setBackground(skyNumber);
 		}
+		//If line is defining a gameobject or entity, spawn the corresponding game object.
 		else
 		{
 			std::string entity;
