@@ -176,7 +176,8 @@ void GameState::draw(sf::RenderWindow* window)
 	window->setView(backgroundView);
 	window->draw(backgroundSprite);
 	window->setView(view);
-	//All game objects are drawn other than first in array. This is because mario is always the first object and should be drawn above the map for the death animaton to be visible
+	/*All game objects are drawn other than first in array.This is because mario is always
+	the first object and should be drawn above the map for the death animaton to be visible*/
 	for (int x = 1; x < gameObjects.size(); x++)
 	{
 		gameObjects[x]->draw(window);
@@ -437,7 +438,7 @@ void GameState::setBackground(int skyColour)
 {
 	if (skyColour == 1)
 	{
-		backgroundTexture.loadFromFile("Resources/Sprites/test_cloud_background.png");
+		backgroundTexture.loadFromFile("Resources/Sprites/sky_background.png");
 		sf::IntRect bounds(0, 0, map.getLevelWidth() * 48, 1000);
 		backgroundSprite.setTextureRect(bounds);
 		backgroundTexture.setRepeated(true);

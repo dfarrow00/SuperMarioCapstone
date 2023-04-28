@@ -14,7 +14,6 @@ public:
 
 	void hit();
 private:
-	float speed = 300.0f;
 	float lifetime = 0.25;
 
 	sf::SoundBuffer soundBuffer;

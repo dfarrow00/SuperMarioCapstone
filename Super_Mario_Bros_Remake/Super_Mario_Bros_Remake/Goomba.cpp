@@ -6,9 +6,11 @@ Goomba::Goomba(sf::Vector2f pos, bool underground) : walkingAnim((underground ? 
 {
 	objectType = ObjectType::Goomba;
 	position = pos;
+
 	currentAnim = &walkingAnim;
 	sprite = currentAnim->getCurrentSprite();
 	sprite.setPosition(position);
+
 	velocity = sf::Vector2f(-75, 0);
 	deadTimer = 2.0f;
 	isBig = false;

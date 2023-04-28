@@ -10,8 +10,10 @@ Map::Map(GameState* gameState) : game(gameState)
 	tileSize = 48;
 	tileSheet.loadFromFile("Resources/Sprites/Tile_Sheet.png");
 	int tileCount = 1;
+	//For each row in the tile sheet
 	for (int y = 0; y < tileSize * 4; y += tileSize)
 	{
+		//For each column in the tile sheet
 		for (int x = 0; x < tileSize * 5; x += tileSize)
 		{
 			sf::Sprite sprite(tileSheet, sf::IntRect(x, y, tileSize, tileSize));
@@ -140,7 +142,7 @@ void Map::loadMap(int mapNumber)
 
 	if (!file.is_open())
 	{
-		std::cout << "Failed to load map file!" << std::endl;
+		std::cerr << "Failed to load map file!" << std::endl;
 		return;
 	}
 

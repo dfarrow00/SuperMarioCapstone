@@ -69,6 +69,5 @@ void Mushroom::draw(sf::RenderWindow* window)
 
 void Mushroom::hit()
 {
-	std::cout << "Hit" << std::endl;
 	alive = false;
 }

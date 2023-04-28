@@ -99,6 +99,7 @@ void StateManager::draw(sf::RenderWindow* window)
 	//If current state is transparent, draw state behind it too.
 	if (states.back().second->transparent())
 	{
+		//Iterates backwards through vector until state that is not transparent found.
 		auto itr = states.end();
 		while (itr != states.begin())
 		{
@@ -108,6 +109,7 @@ void StateManager::draw(sf::RenderWindow* window)
 			}
 			itr--;
 		}
+		//Iterates forwards from last transparent state and draws each.
 		for (; itr != states.end(); itr++)
 		{
 			itr->second->draw(window);

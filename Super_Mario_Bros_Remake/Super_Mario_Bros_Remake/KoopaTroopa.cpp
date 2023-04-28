@@ -95,7 +95,7 @@ void KoopaTroopa::kick(bool direction)
 {
 	if (velocity.x == 0.0f)
 	{
-		//Direction = true, move to the right. Else, move left
+		//Direction = true, move to the right
 		if (direction)
 		{
 			velocity.x = 700.0f;

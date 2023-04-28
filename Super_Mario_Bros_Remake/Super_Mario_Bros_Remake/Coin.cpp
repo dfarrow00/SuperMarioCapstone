@@ -9,6 +9,7 @@ Coin::Coin(sf::Vector2f pos) : anim("Resources/Sprites/Coin_SpriteSheet.png", 0,
 	soundBuffer.loadFromFile("Resources/Audio/Coin_Pickup.wav");
 	sound.setBuffer(soundBuffer);
 	sound.play();
+	velocity.y = 300.0f;
 }
 
 Coin::~Coin()
@@ -24,7 +25,7 @@ void Coin::update(const float deltaTime)
 		return;
 	}
 
-	position.y -= speed * deltaTime;
+	position.y -= velocity.y * deltaTime;
 
 	anim.update(deltaTime);
 	sprite = anim.getCurrentSprite();

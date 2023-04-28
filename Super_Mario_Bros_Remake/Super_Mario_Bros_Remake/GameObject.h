@@ -130,7 +130,6 @@ protected:
 	bool collidingY = false;
 
 	float maxVelocity;
-
 	int spriteHeight;
 
 	Animation* currentAnim;
