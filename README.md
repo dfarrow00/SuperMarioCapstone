@@ -1,4 +1,4 @@
-# Capstone Project Summer Development
+# Super Mario Bros C++ Remake Capstone Project
 
 Welcome to the repository for my university capstone project - a remake of Super Mario Bros in C++ using the SFML library!
 
